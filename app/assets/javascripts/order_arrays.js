@@ -17,7 +17,16 @@
 //
 'use strict';
 
-var order_arrays_form = function() {
+import { bootstrap_dialog, modal_options } from '../../assets/javascripts/scaffolds';
+import {
+  fake_select2,
+  beforeSendWaiting,
+  completeWaiting,
+  ajaxError,
+  mustache_i18n
+} from '../../assets/javascripts/ajax';
+
+const order_arrays_form = function() {
   $('#order_array_base_date').datepicker({
     language: I18n.currentLocale(),
     autoclose: true,
@@ -28,15 +37,11 @@ var order_arrays_form = function() {
   });
 };
 
-var order_arrays_new = function(params) {
-  'use strict';
-
+const order_arrays_new = function(params) {
   order_arrays_form();
 };
 
-var order_arrays_edit = function(params) {
-  'use strict';
-
+const order_arrays_edit = function(params) {
   var order_array_id = params.order_array_id,
     planning_id = params.planning_id,
     block_save_select_change = false,
@@ -44,13 +49,13 @@ var order_arrays_edit = function(params) {
 
   order_arrays_form();
 
-  var filter_text = function(exactText, normalizedValue, filter) {
+  const filter_text = function(exactText, normalizedValue, filter) {
     return !!String(normalizedValue).match(new RegExp(filter.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), 'i'));
   };
 
   var formatNoMatches = I18n.t('web.select2.empty_result');
 
-  var select2_build_options = function(products, product_ids) {
+  const select2_build_options = function(products, product_ids) {
     var data_products = [];
     $.each(products, function(i, product) {
       data_products.push({
@@ -70,7 +75,7 @@ var order_arrays_edit = function(params) {
     return data_products;
   };
 
-  var set_fake_select2 = function(products, selector, shift) {
+  const set_fake_select2 = function(products, selector, shift) {
     fake_select2(selector, function(select) {
       var data = $.map(select[0].options || [], function(option) {
         return {
@@ -124,13 +129,13 @@ var order_arrays_edit = function(params) {
     });
   };
 
-  var build_fake_select2 = function(container, products, product_ids) {
+  const build_fake_select2 = function(container, products, product_ids) {
     return container.html(SMT['order_arrays/fake_select2']({
       products: select2_build_options(products, product_ids)
     }));
   };
 
-  var build_total = function(e, table, shift) {
+  const build_total = function(e, table, shift) {
     var $table = $(table),
       sum_column = [],
       grand_total = {};
@@ -182,7 +187,7 @@ var order_arrays_edit = function(params) {
     table_trigger_update();
   };
 
-  var table_trigger_update = function() {
+  const table_trigger_update = function() {
     if (table_neeed_update) {
       table_neeed_update = false;
       $("#order_array").find("table").trigger("update");
@@ -191,7 +196,7 @@ var order_arrays_edit = function(params) {
 
   var products = {};
 
-  var display_order_array = function(data) {
+  const display_order_array = function(data) {
     var container = $('#order_array').find("div");
     $.each(data.products, function(i, product) {
       products[product.id] = product;
@@ -207,7 +212,7 @@ var order_arrays_edit = function(params) {
     data.i18n = mustache_i18n;
     $(container).html(SMT['order_arrays/edit'](data));
 
-    var false_formater = function() {
+    const false_formater = function() {
       return false;
     };
     var no_sorter = {
@@ -274,7 +279,7 @@ var order_arrays_edit = function(params) {
 
     set_fake_select2(products, $('td[data-id] select'), shift);
 
-    var change_order = function(product_id, add_product, remove_product, paste, copy, selector_function) {
+    const change_order = function(product_id, add_product, remove_product, paste, copy, selector_function) {
       var orders = {};
       block_save_select_change = true;
       selector_function().each(function(i, select) {

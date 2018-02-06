@@ -1,9 +1,7 @@
+<% javascript 'destination' %>
+
 <% content_for :title, t('.title') %>
-<h1>
-  <%= t '.title' %>
-  <a href="/plannings_by_destinations/<%= @destination.id %>">
-    <%= t('.show_plans_by_destination') %>
-  </a>
-</h1>
+
+<h1><%= t '.title' %></h1>
 
 <%= render 'form' %>

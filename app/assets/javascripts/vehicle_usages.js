@@ -17,9 +17,10 @@
 //
 'use strict';
 
-var vehicle_usages_form = function(params) {
-  'use strict';
+import { customColorInitialize, routerOptionsSelect , templateTag } from '../../assets/javascripts/scaffolds';
+import { selectTag } from './tags';
 
+const vehicle_usages_form = function(params) {
   /* Speed Multiplier */
   $('form.number-to-percentage').submit(function(e) {
     $.each($(e.target).find('input[type=\'number\'].number-to-percentage'), function(i, element) {
@@ -98,9 +99,7 @@ var vehicle_usages_form = function(params) {
   });
 };
 
-var devicesObserveVehicle = (function() {
-  'use strict';
-
+const devicesObserveVehicle = (function() {
   var _buildSelect = function(name, datas) {
     var el = $('[data-device=' + name + ']');
     var options = {

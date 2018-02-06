@@ -1,4 +1,7 @@
+<% javascript 'vehicle_usage_set' %>
+
 <% content_for :title, t('.title') %>
+
 <h1><%= t '.title' %></h1>
 
 <% if current_user.customer.too_many_vehicle_usage_sets? %>

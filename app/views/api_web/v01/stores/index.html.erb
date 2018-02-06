@@ -1,4 +1,7 @@
+<% javascript 'api_web/v01/destination' %>
+
 <div id="map"></div>
+
 <%
 layers = (current_user.customer.profile.layers + [current_user.layer]).sort_by(&:id).uniq.collect{ |layer|
   {

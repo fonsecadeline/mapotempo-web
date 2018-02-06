@@ -1,5 +1,9 @@
+<% javascript 'vehicle_usage_set' %>
+
 <% invisible_class = current_user.customer.vehicle_usage_sets.size > 1 ? '' : 'invisible' %>
+
 <% content_for :title, t('.title') %>
+
 <h1><%= t '.title' %></h1>
 
 <% if current_user.customer.too_many_vehicle_usage_sets? && current_user.customer.vehicle_usage_sets.size > 1 %>

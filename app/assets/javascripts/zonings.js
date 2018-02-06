@@ -17,9 +17,16 @@
 //
 'use strict';
 
-var zonings_edit = function(params) {
-  'use strict';
+import { RoutesLayer } from '../../assets/javascripts/routes_layers';
+import { mapInitialize, initializeMapHash } from '../../assets/javascripts/scaffolds';
+import { mustache_i18n, beforeSendWaiting, completeAjaxMap, ajaxError, completeWaiting } from '../../assets/javascripts/ajax';
 
+import 'leaflet-draw';
+import './i18n/leaflet.draw.i18n';
+
+import leafletPip from '@mapbox/leaflet-pip';
+
+export const zonings_edit = function(params) {
   /**********************************************
    Override by prototype _onTouch() leaflet Draw
   ************************************************/
@@ -28,7 +35,7 @@ var zonings_edit = function(params) {
     var clientX;
     var clientY;
     if (originalEvent.touches && originalEvent.touches[0] && !this._clickHandled && !this._touchHandled && !this._disableMarkers && L.Browser.touch) {
-      // Add L.Browser.touch condition do not block dblcick event anymore, as we are checking if browser is truly a touch screen.
+      // Add L.Browser.touch condition do not block dblclick event anymore, as we are checking if browser is truly a touch screen.
       clientX = originalEvent.touches[0].clientX;
       clientY = originalEvent.touches[0].clientY;
       this._disableNewMarkers();

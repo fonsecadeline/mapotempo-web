@@ -21,4 +21,6 @@
 
 <!-- Javascripts -->
 <!-- Placed inside head element to support turbolinks -->
+<%= javascript_pack_tag 'vendor', 'data-turbolinks-track': 'reload' %>
 <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+<%= yield(:javascript) %>

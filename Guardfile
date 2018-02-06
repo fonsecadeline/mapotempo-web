@@ -24,6 +24,11 @@ group :server do
   end
 end
 
+guard 'process', name: 'Webpacker', command: './bin/webpack-dev-server' do
+  watch(%r{^config/.+(?<!locales)/.*})
+  watch(%r{^config/*/[^.][^/]+\.(rb|yml)(?<!i18n-js\.yml)})
+end
+
 # guard 'delayed', number_of_workers: 2, environment: 'development' do
 #   watch(%r{^app/jobs/(.+)\.rb})
 #   watch(%r{^app/models/(.+)\.rb})

@@ -6,14 +6,15 @@ Route optimization with numerous stops. Based on [OpenStreetMap](http://www.open
 
 1. [Project dependencies](#project-dependencies)
 2. [Install Bundler Gem](#install-bundler-gem)
-3. [Requirements for all systems](#requirements-for-all-systems)
-4. [Install project](#install-project)
-5. [Configuration](#configuration)
-6. [Background Tasks](#background-tasks)
-7. [Initialization](#nitialization)
-8. [Running](#running)
-9. [Running on producton](#running-on-production)
-10. [Launch tests](#launch-tests)
+3. [Install Node modules](#install-node-modules)
+4. [Requirements for all systems](#requirements-for-all-systems)
+5. [Install project](#install-project)
+6. [Configuration](#configuration)
+7. [Background Tasks](#background-tasks)
+8. [Initialization](#Initialization)
+9. [Running](#running)
+10. [Running on producton](#running-on-production)
+11. [Launch tests](#launch-tests)
 
 ### Project dependencies
 
@@ -21,7 +22,7 @@ Route optimization with numerous stops. Based on [OpenStreetMap](http://www.open
 
 Install Ruby (> 2.2 is needed) and other dependencies from system package.
 
-For exemple, with __Ubuntu__, follows this instructions:
+For example, with __Ubuntu__, follows this instructions:
 
 To know the last version, check with this command tools
 
@@ -52,6 +53,21 @@ Install ruby (>2.2 is needed), bundler and some dependencies from system package
 Install ruby (>2.2 is needed), bundler and some dependencies from system package.
 
     brew install postgresql icu4c geos
+
+### Install Node modules
+
+In addition to gems, node modules must be installed for Javascript files.
+To install all dependencies, run the following command after installing yarn:
+
+    yarn install
+
+All packages will be available through _node_modules_ directory.
+
+If a npm package includes assets, they must be declared in the _config/initializers/assets.rb_ file:
+
+    Rails.application.config.assets.paths += Dir["#{Rails.root}/node_modules/package/asset_dir"]
+
+## Requirements for all systems
 
 ### Install Bundler Gem
 
@@ -171,11 +187,19 @@ External resources can be configured trough environment variables:
 
 ## Running
 
-Start standalone rails server with
+Start standalone rails server with:
 
     rails server
 
+Start Webpack to auto-compile JS assets (and reload browser on change):
+
+    ./bin/webpack-dev-server
+
 Enjoy at [http://localhost:3000](http://localhost:3000)
+
+To run both server in on command, you can launch Guard (configuration in _Guardfile_):
+
+    guard
 
 Start the background jobs runner with
 

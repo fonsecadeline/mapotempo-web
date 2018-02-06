@@ -17,20 +17,22 @@
 //
 'use strict';
 
-var api_web_v01_plannings_print = function(params) {
-  'use strict';
+import {
+  plannings_edit
+} from '../../plannings';
 
-  $('.btn-print').click(function() {
+const api_web_v01_plannings_print = function (params) {
+  $('.btn-print').click(function () {
     window.print();
   });
 };
 
 Paloma.controller('ApiWeb/V01/Plannings', {
-  edit: function() {
+  edit: function () {
     this.params.apiWeb = true;
     plannings_edit(this.params);
   },
-  print: function() {
+  print: function () {
     api_web_v01_plannings_print(this.params);
   }
 });

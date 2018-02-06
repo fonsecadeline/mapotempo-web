@@ -1,39 +1,14 @@
 GIT
-  remote: git://github.com/Mapotempo/leaflet-control-geocoder-rails.git
-  revision: fb49d6e2259bca79f397486236ec6f414ab6451e
-  specs:
-    leaflet-control-geocoder-rails (1.0.0.3)
-
-GIT
   remote: git://github.com/Mapotempo/leaflet-controlledbounds-rails.git
   revision: cfe7e1688b05fe6f8314331c791e4412276b253f
   specs:
     leaflet-controlledbounds-rails (0.0.1)
 
 GIT
-  remote: git://github.com/Mapotempo/leaflet-encoded-rails.git
-  revision: 16bca35c05dc318a432704d0b447852912ece805
-  specs:
-    leaflet-encoded-rails (0.1.0)
-
-GIT
-  remote: git://github.com/Mapotempo/leaflet-markercluster-rails.git
-  revision: 29942b66b7d11d2acffcf6aed37d020fb3c8c904
-  specs:
-    leaflet-markercluster-rails (1.0.4)
-      railties (>= 3.1)
-
-GIT
   remote: git://github.com/Mapotempo/leaflet-pattern-rails.git
   revision: 8d33d456168bd4a8fcd42d56cd14718e81ac1b72
   specs:
     leaflet-pattern-rails (0.0.2)
-
-GIT
-  remote: git://github.com/Mapotempo/leaflet-responsive-popup-rails.git
-  revision: 1166f3b893faa52a3157a5c3925533efb75248d5
-  specs:
-    leaflet-responsive-popup-rails (0.2.0.0)
 
 GIT
   remote: git://github.com/Mapotempo/mapotempo_web_by_time_distance.git
@@ -54,12 +29,6 @@ GIT
     paloma (5.0.0)
 
 GIT
-  remote: git://github.com/Mapotempo/sidebar-v2-gh-pages-rails.git
-  revision: 11f7717f4eca02b4be4567142d2df6e0274c8fc1
-  specs:
-    sidebar-v2-gh-pages-rails (0.0.1)
-
-GIT
   remote: git://github.com/Mapotempo/twitter_bootstrap_form_for.git
   revision: 5ec6e134eda8742009310d58f80adb88de3de56e
   specs:
@@ -75,19 +44,6 @@ GIT
       railties (>= 3.1.0)
 
 GIT
-  remote: git://github.com/frodrigo/leaflet-draw-rails.git
-  revision: edef878c8ada3daf04e93fe0af0914708f3bc789
-  specs:
-    leaflet-draw-rails (0.4.9.0)
-
-GIT
-  remote: git://github.com/frodrigo/leaflet-hash-rails.git
-  revision: 4e9cc190e5a6811f5dab872a4d0a2506713ffcfe
-  specs:
-    leaflet-hash-rails (1.0.1)
-      railties (>= 3.1.0)
-
-GIT
   remote: git://github.com/frodrigo/leaflet_numbered_markers-rails.git
   revision: 1f88c5329c3d5a4c866ceb4f7100a96a2a71a51a
   specs:
@@ -98,13 +54,6 @@ GIT
   revision: 030371e0190a3f42a3fa0aa165942c273194de5b
   specs:
     tidy-html5 (0.1.2)
-
-GIT
-  remote: git://github.com/ngonzalez/pnotify-rails.git
-  revision: 614bdbbf98ed3fa5a4ecf6df34b5c2223eb31e8e
-  branch: remove-materials-css
-  specs:
-    pnotify-rails (3.0.0)
 
 GIT
   remote: git://github.com/seyhunak/twitter-bootstrap-rails.git
@@ -184,12 +133,6 @@ GEM
       rack (>= 0.9.0)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
-    bootstrap-datepicker-rails (1.8.0.1)
-      railties (>= 3.0)
-    bootstrap-filestyle-rails (1.2.1)
-    bootstrap-select-rails (1.12.4)
-    bootstrap-slider-rails (9.8.0)
-      railties (>= 3.2, < 6.0)
     bootstrap-wysihtml5-rails (0.3.3.8)
       railties (>= 3.0)
     brakeman (4.3.1)
@@ -355,25 +298,13 @@ GEM
     jbuilder (2.8.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
-    jquery-rails (4.3.3)
-      rails-dom-testing (>= 1, < 3)
-      railties (>= 4.2.0)
-      thor (>= 0.14, < 2.0)
-    jquery-simplecolorpicker-rails (0.5.0)
-      railties (>= 3.1.0)
-    jquery-tablesorter (1.21.1)
-      railties (>= 3.2, < 6)
     jquery-turbolinks (2.1.0)
       railties (>= 3.1.0)
       turbolinks
-    jquery-ui-rails (5.0.5)
-      railties (>= 3.2.16)
     json (1.8.6)
     jwt (2.1.0)
     launchy (2.4.3)
       addressable (~> 2.3)
-    leaflet-rails (1.3.1)
-      rails (>= 4.2.0)
     less (2.6.0)
       commonjs (~> 0.2.7)
     less-rails (4.0.0)
@@ -388,7 +319,6 @@ GEM
       railties (>= 3.2)
     libnotify (0.9.4)
       ffi (>= 1.0.11)
-    libv8 (3.16.14.19)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -471,6 +401,8 @@ GEM
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-cors (1.0.2)
+    rack-proxy (0.6.3)
+      rack
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.11)
@@ -641,6 +573,7 @@ GEM
       libv8 (~> 3.16.14.15)
       ref
     thor (0.20.3)
+    thread (0.2.2)
     thread_safe (0.3.6)
     tilt (2.0.9)
     timeliness (0.3.8)
@@ -679,8 +612,13 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
+    webpacker (3.2.1)
+      activesupport (>= 4.2)
+      rack-proxy (>= 0.6.1)
+      railties (>= 4.2)
     xpath (3.2.0)
       nokogiri (~> 1.8)
+
 
 PLATFORMS
   ruby
@@ -695,10 +633,6 @@ DEPENDENCIES
   barby
   better_errors
   binding_of_caller
-  bootstrap-datepicker-rails
-  bootstrap-filestyle-rails
-  bootstrap-select-rails
-  bootstrap-slider-rails
   bootstrap-wysihtml5-rails
   brakeman
   browser
@@ -718,7 +652,6 @@ DEPENDENCIES
   devise
   devise-i18n
   devise-i18n-views
-  execjs
   figaro
   font-awesome-rails
   grape (< 1)
@@ -739,21 +672,10 @@ DEPENDENCIES
   iconv
   iso_country_codes
   jbuilder
-  jquery-rails
-  jquery-simplecolorpicker-rails
-  jquery-tablesorter (< 1.21.2)
   jquery-timeentry-rails!
   jquery-turbolinks
-  jquery-ui-rails (< 6)
-  leaflet-control-geocoder-rails!
   leaflet-controlledbounds-rails!
-  leaflet-draw-rails!
-  leaflet-encoded-rails!
-  leaflet-hash-rails!
-  leaflet-markercluster-rails!
   leaflet-pattern-rails!
-  leaflet-rails (> 1.0.2)
-  leaflet-responsive-popup-rails!
   leaflet_numbered_markers-rails!
   letter_opener_web
   libnotify
@@ -772,7 +694,6 @@ DEPENDENCIES
   paloma!
   pg (< 1)
   phonelib
-  pnotify-rails!
   polylines
   premailer-rails
   pry-rails
@@ -797,16 +718,13 @@ DEPENDENCIES
   savon
   savon-multipart (~> 2.0.2)
   sdoc (~> 0.4)
-  select2-rails (= 4.0.0)
   selenium-webdriver
-  sidebar-v2-gh-pages-rails!
   sim_annealing
   simplecov
   smt_rails (= 0.2.9)
   spring
   sprockets
   swagger-docs
-  therubyracer
   tidy-html5!
   turbolinks (< 5)
   twitter-bootstrap-rails!
@@ -815,6 +733,7 @@ DEPENDENCIES
   validates_timeliness
   web-console (~> 2)
   webmock
+  webpacker
 
 BUNDLED WITH
    1.17.1

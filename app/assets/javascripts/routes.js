@@ -17,9 +17,7 @@
 //
 'use strict';
 
-var routes_show = function(params) {
-  'use strict';
-
+const routes_show = function(params) {
   if (!params.print_map) {
     window.print();
   } else {

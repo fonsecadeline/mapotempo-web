@@ -17,8 +17,26 @@
 //
 'use strict';
 
-var destinations_form = function(params, api) {
+import GlobalConfiguration from '../../assets/javascripts/configuration.js.erb';
+import { selectTag } from '../../assets/javascripts/tags';
+import {
+  mapInitialize,
+  customColorInitialize,
+  templateTag,
+  bootstrap_dialog,
+  modal_options
+} from '../../assets/javascripts/scaffolds';
+import {
+  beforeSendWaiting,
+  ajaxError,
+  completeWaiting,
+  phoneNumberCall,
+  mustache_i18n,
+  fake_select2,
+  progressDialog
+} from '../../assets/javascripts/ajax';
 
+const destinations_form = function(params, api) {
   var destination_id = params.destination_id,
     marker_lat = $(":input[name$=\\[lat\\]]").val(),
     marker_lng = $(":input[name$=\\[lng\\]]").val(),
@@ -66,9 +84,9 @@ var destinations_form = function(params, api) {
 
   var prepare_display_destination = function(destination) {
     if (destination.geocoding_accuracy) {
-      if (destination.geocoding_accuracy > <%= Mapotempo::Application.config.geocoder.accuracy_success %>) {
+      if (destination.geocoding_accuracy > GlobalConfiguration.geocoderAccuracySuccess) {
         destination.geocoding_status = 'success';
-      } else if (destination.geocoding_accuracy > <%= Mapotempo::Application.config.geocoder.accuracy_warning %>) {
+      } else if (destination.geocoding_accuracy > GlobalConfiguration.geocoderAccuracyWarning) {
         destination.geocoding_status = 'warning';
       } else {
         destination.geocoding_status = 'danger';
@@ -82,9 +100,9 @@ var destinations_form = function(params, api) {
     var $row = $(row),
       id = $row.attr('data-destination_id');
 
-    <% if Mapotempo::Application.config.geocode_complete %>
+    if (GlobalConfiguration.geocodeComplete) {
       geocodeComplete(row, api);
-    <% end %>
+    }
 
     $row.on("change", ":input", function(event, move) {
       if (move === undefined && event.currentTarget.name.match(/\[street\]|\[postalcode\]|\[city\]|\[country\]|\[lat\]|\[lng\]$/))
@@ -451,8 +469,6 @@ var destinations_form = function(params, api) {
 };
 
 var destinations_import = function(params, api) {
-  'use strict';
-
   var dialog_upload = bootstrap_dialog({
     title: I18n.t(api + '.index.dialog.import.title'),
     icon: 'fa-upload',
@@ -514,8 +530,6 @@ var destinations_import = function(params, api) {
 };
 
 var destinations_index = function(params, api) {
-  'use strict';
-
   var default_city = params.default_city,
     default_country = params.default_country,
     take_over_default = params.take_over_default,
@@ -581,9 +595,9 @@ var destinations_index = function(params, api) {
     destination.enable_orders = enable_orders;
     destination.i18n = mustache_i18n;
     if (destination.geocoding_accuracy) {
-      if (destination.geocoding_accuracy > <%= Mapotempo::Application.config.geocoder.accuracy_success %>) {
+      if (destination.geocoding_accuracy > GlobalConfiguration.geocoderAccuracySuccess) {
         destination.geocoding_status = 'success';
-      } else if (destination.geocoding_accuracy > <%= Mapotempo::Application.config.geocoder.accuracy_warning %>) {
+      } else if (destination.geocoding_accuracy > GlobalConfiguration.geocoderAccuracyWarning) {
         destination.geocoding_status = 'warning';
       } else {
         destination.geocoding_status = 'danger';
@@ -655,9 +669,9 @@ var destinations_index = function(params, api) {
       id = $row.attr('data-destination_id');
     if (isEditable || editable) {
 
-      <% if Mapotempo::Application.config.geocode_complete %>
+      if (GlobalConfiguration.geocodeComplete) {
         geocodeComplete($row, api);
-      <% end %>
+      }
 
       $row.on("change", ":input:not(:checkbox)", function(event, move) {
         if (move === undefined && event.currentTarget.name.match(/\[street\]|\[postalcode\]|\[city\]|\[country\]|\[lat\]|\[lng\]$/))
@@ -1163,11 +1177,11 @@ var destinations_index = function(params, api) {
             ids: destination_ids.join()
           }),
           beforeSend: beforeSendWaiting,
-          success: function() {
-            $.map($('table tbody :checkbox:checked').closest('tr'), function(row) {
-              var $row = $(row);
-              var id = $row.data('destination_id');
-              $row.remove();
+          success: function(data) {
+            $.map($('table tbody :checkbox:checked').closest('tr'), function(row, i) {
+              var row = $(row);
+              var id = row.data('destination_id');
+              row.remove();
               if (markers[id]) {
                 deleteMarkerOnMapRelease(id);
               }
@@ -1183,7 +1197,8 @@ var destinations_index = function(params, api) {
 
   var checkForDisplayDestinations = function(data) {
     var isAccuracyDanger = data.destinations && $.grep(data.destinations, function(dest) {
-      return dest.geocoding_accuracy && dest.geocoding_accuracy < <%= Mapotempo::Application.config.geocoder.accuracy_warning %>;
+
+    return dest.geocoding_accuracy && dest.geocoding_accuracy < GlobalConfiguration.geocoderAccuracyWarning;
     }).length > 0;
 
     if (isAccuracyDanger) {
@@ -1241,8 +1256,7 @@ var destinations_index = function(params, api) {
   });
 };
 
-var destinations_new = function(params, api) {
-  'use strict';
+export const destinations_new = function(params, api) {
   destinations_form(params, api);
 }
 
@@ -1287,9 +1301,7 @@ var geocodeComplete = function(field, api) {
   }
 };
 
-var destinations_edit = function(params, api) {
-  'use strict';
-
+export const destinations_edit = function(params, api) {
   destinations_form(params, api);
 };
 

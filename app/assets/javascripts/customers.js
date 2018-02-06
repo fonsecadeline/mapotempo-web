@@ -17,15 +17,16 @@
 //
 'use strict';
 
-var customers_index = function(params) {
-  'use strict';
+import { beforeSendWaiting, completeWaiting, ajaxError } from '../../assets/javascripts/ajax';
+import { routerOptionsSelect, mapInitialize } from '../../assets/javascripts/scaffolds';
 
+const customers_index = function (params) {
   var map_layers = params.map_layers,
     map_attribution = params.map_attribution;
 
   var is_map_init = false;
 
-  var map_init = function() {
+  var map_init = function () {
 
     var map = mapInitialize(params);
     L.control.attribution({
@@ -48,14 +49,10 @@ var customers_index = function(params) {
 
     }
 
-    var display_customers = function(data) {
-
-      $.each(data.customers, function(i, customer) {
-
+    const display_customers = function (data) {
+      $.each(data.customers, function (i, customer) {
         var iconImg = '/images/point-' + determineIconColor(customer) + '.svg';
-
-        var marker = L.marker(new L.LatLng(customer.lat, customer.lng), {
-
+        L.marker(new L.LatLng(customer.lat, customer.lng), {
           icon: new L.NumberedDivIcon({
             number: customer.max_vehicles,
             iconUrl: iconImg,
@@ -64,9 +61,7 @@ var customers_index = function(params) {
             popupAnchor: new L.Point(0, -6),
             className: "small"
           })
-
         }).addTo(layer).bindPopup(customer.name);
-
       });
 
       map.invalidateSize();
@@ -97,7 +92,7 @@ var customers_index = function(params) {
     }
   });
 
-  var onFilterChanged = function(text) {
+  const onFilterChanged = function(text) {
     $('body').addClass('ajax_waiting');
     var customersCount = 0, customersNoTestCount = 0, vehiclesCount = 0, vehiclesNoTestCount = 0;
     var customersVisibility = {};
@@ -141,12 +136,10 @@ var customers_index = function(params) {
     onFilterChanged(filterText);
 };
 
-var customers_edit = function(params) {
-  'use strict';
-
+const customers_edit = function (params) {
   /* Speed Multiplier */
-  $('form.number-to-percentage').submit(function(e) {
-    $.each($(e.target).find('input[type=\'number\'].number-to-percentage'), function(i, element) {
+  $('form.number-to-percentage').submit(function (e) {
+    $.each($(e.target).find('input[type=\'number\'].number-to-percentage'), function (i, element) {
       var value = $(element).val() ? Number($(element).val()) / 100 : 1;
       $($(document.createElement('input')).attr('type', 'hidden').attr('name', 'customer[' + $(element).attr('name') + ']').val(value)).insertAfter($(element));
     });
@@ -176,7 +169,7 @@ var customers_edit = function(params) {
     spinnerImage: ''
   });
 
-  var getLocaleFromCurrentLocale = function() {
+  const getLocaleFromCurrentLocale = function() {
     for (var locale in $.fn.wysihtml5.locale) {
       if (locale.indexOf(I18n.currentLocale()) !== -1) {
         return locale;
@@ -195,7 +188,7 @@ var customers_edit = function(params) {
     }
   });
 
-  var smsCharacterCount = function() {
+  const smsCharacterCount = function() {
     var count = ($('#customer_sms_template').val() || $('#customer_sms_template').attr('placeholder')).length;
     var color = count > 160 ? 'red' : count > 140 ? 'darkorange' : 'black';
     $('#sms_character_count').html('<span style="color: ' + color + '">' + I18n.t('customers.form.sms_character_count', {c: count}) + '</span>');
@@ -298,11 +291,8 @@ var displayLayerWarning = function() {
   $(".layer-unauthorized").removeClass('hidden');
 };
 
-var devicesObserveCustomer = (function() {
-  'use strict';
-
+const devicesObserveCustomer = (function () {
   var FLEET = 'fleet';
-
   function _devicesInitCustomer(base_name, config, params) {
     var requests = [];
 
@@ -335,7 +325,7 @@ var devicesObserveCustomer = (function() {
 
     function _userCredential() {
       var hash = {};
-      $.each(config.forms.settings, function(key) {
+      $.each(config.forms.settings, function (key) {
         hash[key] = $('#' + base_name + '_' + config.name + '_' + key).val() || void(0);
         if (key == 'password' && hash[key] == params.default_password)
           hash[key] = void(0);
@@ -346,7 +336,7 @@ var devicesObserveCustomer = (function() {
     function _allFieldsFilled() {
       var isNotEmpty = true;
       var inputs = $('input[type="text"], input[type="password"]', '#' + config.name + '_container');
-      inputs.each(function() {
+      inputs.each(function () {
         if ($(this).val() === '') {
           isNotEmpty = false;
         }
@@ -355,7 +345,7 @@ var devicesObserveCustomer = (function() {
     }
 
     function _ajaxCall(all) {
-      $.when($(requests)).done(function() {
+      $.when($(requests)).done(function () {
         if (!_allFieldsFilled()) return;
         requests.push($.ajax({
           url: '/api/0.1/devices/' + config.name + '/auth/' + params.customer_id + '.json',
@@ -363,7 +353,7 @@ var devicesObserveCustomer = (function() {
             check_only: 1
           }),
           dataType: 'json',
-          beforeSend: function() {
+          beforeSend: function (jqXHR, settings) {
             if (!all) hideNotices();
             beforeSendWaiting();
           },
@@ -371,7 +361,7 @@ var devicesObserveCustomer = (function() {
           success: function(data) {
             (data && data.error) ? errorCallback(data.error) : successCallback();
           },
-          error: function(jqXHR, textStatus) {
+          error: function(jqXHR, textStatus, error) {
             errorCallback(jqXHR.status === 400 && textStatus === 'error' ? I18n.t('customers.form.devices.sync.no_credentials') : textStatus);
           }
         }));
@@ -385,11 +375,11 @@ var devicesObserveCustomer = (function() {
     }
 
     // Check Credentials: Observe User Events with Delay
-    var _observe = function() {
+    const _observe = function () {
       var timeout_id;
 
       // Anonymous function handle setTimeout()
-      var checkCredentialsWithDelay = function() {
+      var checkCredentialsWithDelay = function () {
         if (timeout_id) clearTimeout(timeout_id);
         timeout_id = setTimeout(function() { _ajaxCall(false); }, 750);
       };
@@ -403,7 +393,7 @@ var devicesObserveCustomer = (function() {
     /* Password Inputs: set fake password  (input view fake) */
     if ("password" in config) {
       var password_field = '#' + [base_name, config.name, "password"].join('_');
-      if ($(password_field).val() == '') {
+      if ($(password_field).val() === '') {
         $(password_field).val(params.default_password);
       }
     }
@@ -417,16 +407,20 @@ var devicesObserveCustomer = (function() {
           data: $.extend(_userCredential(), {
             customer_id: params.customer_id
           }),
-          beforeSend: beforeSendWaiting,
-          complete: completeWaiting,
-          success: function() {
+          beforeSend: function(jqXHR, settings) {
+            beforeSendWaiting();
+          },
+          complete: function(jqXHR, textStatus) {
+            completeWaiting();
+          },
+          success: function(data, textStatus, jqXHR) {
             alert(I18n.t('customers.form.devices.sync.complete'));
           }
         });
       }
     });
 
-    // Check credantial for current device config
+    // Check credential for current device config
     // Observe Widget if Customer has Service Enabled or Admin (New Customer)
     checkCredentials();
     _observe();
@@ -434,10 +428,10 @@ var devicesObserveCustomer = (function() {
 
   /* Chrome / FF, Prevent Sending Default Password
      The browsers would ask to remember it. */
-  (function() {
-    $('form.clear-passwords').on('submit', function(e) {
-      $.each($(e.target).find('input[type=\'password\']'), function(i, element) {
-        if ($(element).val() == params.default_password) {
+  (function () {
+    $('form.clear-passwords').on('submit', function (e) {
+      $.each($(e.target).find('input[type=\'password\']'), function (i, element) {
+        if ($(element).val() === params.default_password) {
           $(element).val('');
         }
       });
@@ -445,8 +439,8 @@ var devicesObserveCustomer = (function() {
     });
   })();
 
-  var initialize = function(params) {
-    $.each(params['devices'], function(deviceName, config) {
+  const initialize = function (params) {
+    $.each(params['devices'], function (deviceName, config) {
       config.name = deviceName;
       _devicesInitCustomer('customer_devices', config, params);
     });
@@ -526,23 +520,23 @@ var devicesObserveCustomer = (function() {
     });
   };
 
-  return { init: initialize };
+  return {init: initialize};
 })();
 
 Paloma.controller('Customers', {
-  index: function() {
+  index: function () {
     customers_index(this.params);
   },
-  new: function() {
+  new: function () {
     customers_edit(this.params);
   },
-  create: function() {
+  create: function () {
     customers_edit(this.params);
   },
-  edit: function() {
+  edit: function () {
     customers_edit(this.params);
   },
-  update: function() {
+  update: function () {
     customers_edit(this.params);
   },
   import: function() {

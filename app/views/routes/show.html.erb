@@ -1,4 +1,7 @@
+<% javascript 'route' %>
+
 <% content_for :title, @route.ref || @route.vehicle_usage.vehicle.name %>
+
 <% if @route.planning.customer.print_map %>
   <%= button_tag class: 'btn btn-primary btn-print' do %><i class="fa fa-print fa-fw"></i> <%= t '.print' %><% end %>
 <% end %>

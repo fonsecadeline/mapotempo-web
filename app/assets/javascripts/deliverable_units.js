@@ -19,9 +19,7 @@
 // All this logic will automatically be available in application.js.
 'use strict';
 
-var deliverable_units_form = function() {
-  'use strict';
-
+const deliverable_units_form = function() {
   //for turbolinks, when clicking on link_to
   $('.selectpicker').selectpicker();
 

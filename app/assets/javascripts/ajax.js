@@ -17,28 +17,30 @@
 //
 'use strict';
 
-var ajaxWaitingGlobal = 0;
-var progressDialogTimerId;
+import { modal_options } from './scaffolds';
 
-var beforeSendWaiting = function() {
-  if (ajaxWaitingGlobal == 0) {
+let ajaxWaitingGlobal = 0;
+let progressDialogTimerId;
+
+export const beforeSendWaiting = function() {
+  if (ajaxWaitingGlobal === 0) {
     $('body').addClass('ajax_waiting');
   }
   ajaxWaitingGlobal++;
 };
 
-var completeWaiting = function() {
+export const completeWaiting = function() {
   ajaxWaitingGlobal--;
-  if (ajaxWaitingGlobal == 0) {
+  if (ajaxWaitingGlobal === 0) {
     $('body').removeClass('ajax_waiting');
   }
 };
 
-var completeAjaxMap = function() {
+export const completeAjaxMap = function() {
   completeWaiting();
 };
 
-var ajaxError = function(request, status, error) {
+export const ajaxError = function(request, status, error) {
   var otext = request.responseText;
   var text;
   try {
@@ -57,15 +59,15 @@ var ajaxError = function(request, status, error) {
   }
 };
 
-var mustache_i18n = function() {
+export const mustache_i18n = function() {
   return function(text) {
     return I18n.t(text);
   };
 };
 
-var needCbAfterDeletingJob = true;
-var progressDialogFrozen = false;
-var freezeProgressDialog = function(dialog) {
+let needCbAfterDeletingJob = true;
+let progressDialogFrozen = false;
+export const freezeProgressDialog = function(dialog) {
   if (!progressDialogFrozen) {
     dialog.find('[data-dismiss]').hide();
     dialog.off('hidden.bs.modal'); // important to avoid canceling old jobs
@@ -75,7 +77,7 @@ var freezeProgressDialog = function(dialog) {
   }
 };
 
-var unfreezeProgressDialog = function(dialog, delayedJob, url, callback) {
+export const unfreezeProgressDialog = function(dialog, delayedJob, url, callback) {
   dialog.find('[data-dismiss]').show();
   dialog.data()['bs.modal'].options.backdrop = false;
   dialog.on('hidden.bs.modal', function() {
@@ -115,9 +117,9 @@ var unfreezeProgressDialog = function(dialog, delayedJob, url, callback) {
   progressDialogFrozen = false;
 };
 
-var iteration = undefined;
-var isProgressing = false;
-var progressDialog = function(delayedJob, dialog, url, callback, options) {
+let iteration = undefined;
+let isProgressing = false;
+export const progressDialog = function(delayedJob, dialog, url, callback, options) {
   if (delayedJob !== undefined) {
     var timeout = 2000;
     var duration;
@@ -270,7 +272,7 @@ var progressDialog = function(delayedJob, dialog, url, callback, options) {
 };
 
 
-var fake_select2 = function(selector, callback) {
+export const fake_select2 = function(selector, callback) {
   var fake_select2_replace = function(fake_select) {
     var select = fake_select.prev();
     fake_select.hide();
@@ -306,7 +308,7 @@ var fake_select2 = function(selector, callback) {
     .on('keydown', fake_select2_key_event);
 };
 
-var phoneNumberCall = function(object, userCall) {
+export const phoneNumberCall = function(object, userCall) {
   object.numberHref   = userCall.replace("{TEL}", object.phone_number);
   object.numberTarget = (document.location.protocol === "http:") ? '_blank' : '_self';
 };

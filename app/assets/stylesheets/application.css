@@ -27,33 +27,44 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  *
- *= require_self
- * require jquery-ui/sortable
- *= require jquery-ui/autocomplete
- *= require jquery-ui/dialog
- *= require select2
- *= require select2-bootstrap
- *= require bootstrap-select
- *= require jquery-tablesorter/theme.bootstrap
- *= require jquery.simplecolorpicker
- *= require jquery.simplecolorpicker-fontawesome
+
+ * From npm
+ *= require jquery-ui/themes/base/autocomplete
+ *= require jquery-ui/themes/base/dialog
+ *= require select2/dist/css/select2
+ *= require select2-bootstrap-theme/dist/select2-bootstrap
+ *= require bootstrap-select/dist/css/bootstrap-select
+ *= require tablesorter/dist/css/theme.default.min
+ *= require tablesorter/dist/css/theme.bootstrap.min
+ *= require jquery-simplecolorpicker/jquery.simplecolorpicker
+ *= require jquery-simplecolorpicker/jquery.simplecolorpicker-fontawesome
+ *= require bootstrap-datepicker/dist/css/bootstrap-datepicker3
+ *= require bootstrap-slider/dist/css/bootstrap-slider
+ *= require leaflet/dist/leaflet
+ *= require leaflet-draw/dist/leaflet.draw
+ *= require leaflet-control-geocoder/dist/Control.Geocoder
+ *= require leaflet.markercluster/dist/MarkerCluster
+ *= require leaflet.markercluster/dist/MarkerCluster.Default
+ *= require sidebar-v2/css/leaflet-sidebar
+ *= require leaflet-responsive-popup/leaflet.responsive.popup
+ *= require pnotify/dist/pnotify
+ *= require pnotify/dist/pnotify.buttons
+ *= require pnotify/dist/pnotify.history
+ *= require pnotify/dist/pnotify.mobile
+ *= require pnotify/dist/pnotify.nonblock
+
+ * From gem
  *= require jquery.timeentry
+ *= require leaflet_numbered_markers
  *= require bootstrap-wysihtml5
- *= require bootstrap-datepicker3
- *= require bootstrap-slider
- *= require leaflet
- *= require leaflet.draw
- *= require Control.Geocoder
  *= require twitter-bootstrap-static/bootstrap
+
  * font awesome must be after bootstrap to overwrite glyphicons
  *= require font-awesome
  *= require bootstrap_and_overrides
- *= require leaflet
- *= require leaflet_numbered_markers
- *= require leaflet.markercluster
- *= require leaflet.markercluster-default
- *= require leaflet-sidebar
- *= require leaflet.responsive.popup
- *= require pnotify
+ *= require jquery-ui-overrides
+
+ * From local
+ *= require_self
  *= require_tree .
  */

@@ -17,7 +17,13 @@
 //
 'use strict';
 
-var api_web_v01_display_destinations_ = function(api, map, data) {
+import { RoutesLayer } from '../../routes_layers'
+import { mapInitialize, initializeMapHash } from '../../scaffolds';
+import { destinations_edit } from '../../destinations';
+import GlobalConfiguration from '../../configuration.js.erb';
+
+
+export const api_web_v01_display_destinations_ = function(api, map, data) {
   var tags = {};
 
   var prepare_display_destination = function(destination) {
@@ -85,8 +91,6 @@ var api_web_v01_display_destinations_ = function(api, map, data) {
 };
 
 var api_web_v01_destinations_index = function(params, api) {
-  'use strict';
-
   var progressBar = Turbolinks.enableProgressBar();
   progressBar && progressBar.advanceTo(25);
 
@@ -133,7 +137,7 @@ var api_web_v01_destinations_index = function(params, api) {
     url: '/api-web/0.1/' + api + '.json',
     method: params.method,
     data: ajaxParams,
-    beforeSend: beforeSendWaiting,
+    beforeSend:beforeSendWaiting,
     success: function(data) {
       if ((data.destinations && data.destinations.length) || (data.stores && data.stores.length)) {
         display_destinations(data);

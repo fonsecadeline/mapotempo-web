@@ -1,4 +1,7 @@
+<% javascript 'destination' %>
+
 <% content_for :title, t('.title') %>
+
 <h1><%= t '.title' %></h1>
 
 <% if current_user.customer.too_many_destinations? %>

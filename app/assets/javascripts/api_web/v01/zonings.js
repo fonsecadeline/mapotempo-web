@@ -17,6 +17,10 @@
 //
 'use strict';
 
+import {
+  zonings_edit
+} from '../../zonings';
+
 Paloma.controller('ApiWeb/V01/Zonings', {
   edit: function() {
     zonings_edit(this.params);

@@ -17,9 +17,10 @@
 //
 'use strict';
 
-var api_web_v01_routes_index = function(params) {
-  'use strict';
+import { mapInitialize, initializeMapHash } from '../../scaffolds';
+import { RoutesLayer } from '../../../../assets/javascripts/routes_layers';
 
+const api_web_v01_routes_index = function(params) {
   var progressBar = Turbolinks.enableProgressBar();
   progressBar && progressBar.advanceTo(25);
 
@@ -85,9 +86,7 @@ var api_web_v01_routes_index = function(params) {
   progressBar && progressBar.advanceTo(50);
 };
 
-var api_web_v01_routes_print = function(params) {
-  'use strict';
-
+const api_web_v01_routes_print = function(params) {
   $('.btn-print').click(function() {
     window.print();
   });

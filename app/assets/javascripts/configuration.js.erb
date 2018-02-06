@@ -17,12 +17,16 @@
 //
 'use strict';
 
-var GlobalConfiguration = {
+const GlobalConfiguration = {
   destinationColorDefault: "<%= Mapotempo::Application.config.destination_color_default %>",
   destinationIconDefault: "<%= Mapotempo::Application.config.destination_icon_default %>",
   destinationIconSizeDefault: "<%= Mapotempo::Application.config.destination_icon_size_default %>",
   storeColorDefault: "<%= Mapotempo::Application.config.store_color_default %>",
   storeIconDefault: "<%= Mapotempo::Application.config.store_icon_default %>",
-  storeIconSizeDefault: "<%= Mapotempo::Application.config.store_icon_size_default %>"
-}
+  storeIconSizeDefault: "<%= Mapotempo::Application.config.store_icon_size_default %>",
+  geocoderAccuracySuccess: <%= Mapotempo::Application.config.geocode_geocoder.accuracy_success %>,
+  geocoderAccuracyWarning: <%= Mapotempo::Application.config.geocode_geocoder.accuracy_warning %>,
+  geocodeComplete: <%= Mapotempo::Application.config.geocode_complete %>
+};
 
+export default GlobalConfiguration;

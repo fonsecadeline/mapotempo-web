@@ -1,19 +1,22 @@
+import { bootstrap_dialog, modal_options } from '../javascripts/scaffolds'
+import { ajaxError, beforeSendWaiting, completeWaiting } from '../javascripts/ajax';
+
 /* global bootstrap_dialog modal_options */
-var planningsShow = function(params) {
+const planningsShow = function(params) {
   'use strict';
   var planningQuantities = [];
   var vehiclesUsagesByPlanning = [];
 
-  var templateVehicle = function(vehicle) {
+  const templateVehicle = function(vehicle) {
     if (vehicle.id)
       return $("<span><span class='color_small' style='background: " + params.vehicles[parseInt(vehicle.id)].color + "'></span>&nbsp;</span>").append($("<span/>").text(vehicle.text));
   };
 
-  var getSelectedVisits = function() {
+  const getSelectedVisits = function() {
     return $('#visits').find('input:checkbox:visible:checked');
   };
 
-  var getSelectedPlannings = function(objName) {
+  const getSelectedPlannings = function(objName) {
     var visits = getSelectedVisits();
     var list = [];
     for (var index = 0; index < visits.length; index++) {
@@ -24,13 +27,13 @@ var planningsShow = function(params) {
   };
 
   var movedDestinations;
-  var countMovedDestinations = function(max) {
+  const countMovedDestinations = function(max) {
     movedDestinations++;
     $('.progress-bar').css('width', (movedDestinations * 100 / max) + '%');
     if (movedDestinations == max) location.href = '';
   };
 
-  var getQuantitiesByPlanning = function() {
+  const getQuantitiesByPlanning = function() {
     var quantitiesByPlanning = $('#visits .stop-id:checked:visible');
     var selectedStops = {};
     for (var index = 0; index < quantitiesByPlanning.length; index++) {
@@ -46,6 +49,7 @@ var planningsShow = function(params) {
           unit_icon: $quantity.data('unit-icon')
         });
       }
+
       if (selectedStops[planningId]) {
         selectedStops[planningId].quantities.forEach(function(quantity) {
           quantities.forEach(function(qt) {
@@ -64,7 +68,7 @@ var planningsShow = function(params) {
     return selectedStops;
   };
 
-  var getStopsToMoveByPlanning = function() {
+  const getStopsToMoveByPlanning = function() {
     var stopsToMoveByPlanning = {};
     var stopsToMoveByPlanningElement = $('#visits .stop-id:checked:visible');
     for (var index = 0; index < stopsToMoveByPlanningElement.length; index++) {
@@ -79,7 +83,7 @@ var planningsShow = function(params) {
     return stopsToMoveByPlanning;
   };
 
-  var getVehicleCapacities = function(vehicleId, planningId) {
+  const getVehicleCapacities = function(vehicleId, planningId) {
     if (!vehicleId) return [];
     var capacities = vehiclesUsagesByPlanning[planningId][vehicleId];
     return Object.keys(capacities.default_capacities).map(function(id) {
@@ -88,12 +92,12 @@ var planningsShow = function(params) {
     }).filter(function(element) { return element; });
   };
 
-  var getVehicleQuantities = function(vehicleId, planningId) {
+  const getVehicleQuantities = function(vehicleId, planningId) {
     if (!vehicleId) return [];
     return [{ quantities: vehiclesUsagesByPlanning[planningId][vehicleId].vehicle_quantities }];
   };
 
-  var modifyVehicle = function(vehicleElement, planningId) {
+  const modifyVehicle = function(vehicleElement, planningId) {
     $('#planning-list .vehicle-color[data-planning-id="' + planningId + '"]')
       .css('background', vehicleElement.color);
     $('#planning-list .vehicle-name[data-planning-id="' + planningId + '"]')
@@ -101,7 +105,7 @@ var planningsShow = function(params) {
     $('#planning-list-' + planningId).show();
   };
 
-  var cleanUncheckedQuantities = function() {
+  const cleanUncheckedQuantities = function() {
     var uncheckedVisits = $('#visits .stop-id:visible:not(:checked)');
     for (var index = 0; index < uncheckedVisits.length; index++) {
       var $element = $(uncheckedVisits[index]);
@@ -111,7 +115,7 @@ var planningsShow = function(params) {
     }
   };
 
-  var getVehiclesUsagesByPlanning = function(planningId, fnct) {
+  const getVehiclesUsagesByPlanning = function(planningId, fnct) {
     $.ajax({
       type: 'GET',
       dataType: 'json',
@@ -129,7 +133,7 @@ var planningsShow = function(params) {
     });
   };
 
-  var getPlanningQuantities = function(planningId, fnct) {
+  const getPlanningQuantities = function(planningId, fnct) {
     $.ajax({
       type: 'GET',
       dataType: 'json',
@@ -147,7 +151,7 @@ var planningsShow = function(params) {
     });
   };
 
-  var renderData = function(steped, objct) {
+  const renderData = function(steped, objct) {
     if (steped !== 2) return;
     objct.stopsToMoveByPlanning[objct.planningId].forEach(function() {
       modifyVehicle({color: objct.$vehicleElement.data('color'), value: objct.$vehicleElement.html()}, objct.planningId);
@@ -169,7 +173,7 @@ var planningsShow = function(params) {
     });
   };
 
-  var calculateCapacities = function() {
+  const calculateCapacities = function() {
     cleanUncheckedQuantities();
     var quantitiesByPlanning = getQuantitiesByPlanning();
     var $vehicleElement = $('#vehicle-id').find(":selected");

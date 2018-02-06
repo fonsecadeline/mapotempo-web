@@ -17,13 +17,21 @@
 //
 'use strict';
 
+import GlobalConfiguration from '../../assets/javascripts/configuration.js.erb';
+import { defaultMapZoom } from '../../assets/javascripts/scaffolds';
+import {
+  beforeSendWaiting,
+  mustache_i18n,
+  phoneNumberCall,
+  completeAjaxMap,
+  ajaxError
+} from '../../assets/javascripts/ajax';
+
 /******************
  * PopupModule
  *
  */
-var popupModule = (function() {
-  'use strict';
-
+const popupModule = (function() {
   var _context,
     _previousMarker,
     _activeClickMarker,
@@ -31,7 +39,7 @@ var popupModule = (function() {
     _ajaxRequest = { current: null },
     _ajaxTimer = 100;
 
-  var _ajaxCanBeProceeded = function() {
+  const _ajaxCanBeProceeded = function() {
     var currentTime = (!Date.now) ? (new Date().getTime()) : Date.now(); // Ensure IE <9 compatibility
     if ((currentTime - _ajaxTimer) >= 100) {
       _ajaxTimer = currentTime;
@@ -40,7 +48,7 @@ var popupModule = (function() {
     return false;
   };
 
-  var _buildContentForPopup = function(marker, map) {
+  const _buildContentForPopup = function(marker, map) {
 
     var route = marker.properties.route_id && _context.options.routes.filter(function(route) {
       return route.route_id == marker.properties.route_id;
@@ -79,7 +87,7 @@ var popupModule = (function() {
     }
   };
 
-  var getPopupContent = function(url, marker, map) {
+  const getPopupContent = function(url, marker, map) {
     if (marker.getPopup())
       return;
 
@@ -120,7 +128,7 @@ var popupModule = (function() {
     });
   };
 
-  var createPopupForLayer = function(layer, map) {
+  const createPopupForLayer = function(layer, map) {
     if (_previousMarker)
       _previousMarker.closePopup();
 
@@ -130,11 +138,11 @@ var popupModule = (function() {
     _buildContentForPopup(layer, map);
   };
 
-  var initializeModule = function(options, that) {
+  const initializeModule = function(options, that) {
     _context = that;
   };
 
-  var _closeCurrentRequest = function() {
+  const _closeCurrentRequest = function() {
     if (!_ajaxRequest.current) return;
 
     _ajaxRequest.current.abort();
@@ -259,7 +267,7 @@ var removeInactiveStops = function(data) {
 };
 
 var nbRoutes = 0;
-var RoutesLayer = L.FeatureGroup.extend({
+export const RoutesLayer = L.FeatureGroup.extend({
   defaultOptions: {
     outOfRouteId: undefined,
     routes: [],

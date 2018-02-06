@@ -16,21 +16,41 @@
 // <http://www.gnu.org/licenses/agpl.html>
 //
 'use strict';
+import { RoutesLayer } from '../../assets/javascripts/routes_layers';
+import { selectTag } from '../../assets/javascripts/tags';
+import {
+  beforeSendWaiting,
+  completeAjaxMap,
+  ajaxError,
+  completeWaiting,
+  fake_select2,
+  mustache_i18n,
+  progressDialog
+} from '../../assets/javascripts/ajax';
+import {
+  templateTag,
+  bootstrap_dialog,
+  mapInitialize,
+  initializeMapHash,
+  templateSelectionColor,
+  templateResultColor,
+  dropdownAutoDirection
+} from '../../assets/javascripts/scaffolds';
 
 $(function() {
   $('[data-toggle="tooltip"]').tooltip();
 });
 
-var getPlanningsId = function() {
+const getPlanningsId = function() {
   return $.makeArray($('#plannings').find('input[type=checkbox]:checked').map(function(index, id) { return $(id).val(); }));
 };
 
-var iCalendarExport = function(planningId) {
+const iCalendarExport = function(planningId) {
   var url = $('#ical_export').attr('href'), ids;
   // Initialize data only for index
   $('#btn-export').click(function(e) {
     ids = getPlanningsId();
-    if (ids.length == 0) {
+    if (ids.length === 0) {
       warning(I18n.t('plannings.index.export.none_planning'));
       e.preventDefault();
     }
@@ -49,6 +69,7 @@ var iCalendarExport = function(planningId) {
       else
         ajaxParams.ids = ids.join(',');
     }
+
     $.ajax({
       url: $(e.target).attr('href'),
       type: 'GET',
@@ -62,7 +83,7 @@ var iCalendarExport = function(planningId) {
   });
 };
 
-var spreadsheetModalExport = function(columns, planningId) {
+const spreadsheetModalExport = function(columns, planningId) {
   $('#planning-spreadsheet-modal').on('show.bs.modal', function() {
     if ($('[name=spreadsheet-route]').val())
       $('[name=spreadsheet-out-of-route]').parent().parent().hide();
@@ -156,7 +177,7 @@ var spreadsheetModalExport = function(columns, planningId) {
   });
 };
 
-var plannings_form = function() {
+const plannings_form = function() {
   $('#planning_date, #planning_begin_date, #planning_end_date, #isochrone_date, #isodistance_date').datepicker({
     language: I18n.currentLocale(),
     autoclose: true,
@@ -196,9 +217,7 @@ var plannings_form = function() {
   });
 };
 
-var plannings_new = function(params) {
-  'use strict';
-
+const plannings_new = function(params) {
   var onPlanningCreateModal = bootstrap_dialog({
     title: I18n.t('plannings.new.title'),
     icon: 'fa-calendar-check-o',
@@ -217,9 +236,7 @@ var plannings_new = function(params) {
   });
 };
 
-var plannings_edit = function(params) {
-  'use strict';
-
+export const plannings_edit = function(params) {
   plannings_form();
 
   var prefered_unit = (!params.prefered_unit ? "km" : params.prefered_unit),
@@ -1016,7 +1033,6 @@ var plannings_edit = function(params) {
 
   // called first during plan initialization (context: plan), and several times after a route need to be refreshed (context: route)
   var initRoutes = function(context, data, options) {
-
     fake_select2($(".color_select", context), function(select) {
       select.select2({
         minimumResultsForSearch: -1,
@@ -1547,8 +1563,8 @@ var plannings_edit = function(params) {
       }
     }
 
-    var updateRouteModel = function(i, route) {
-      var vehicle_usage = {};
+    const updateRouteModel = function(i, route) {
+      let vehicle_usage = {};
       $.each(vehicles_usages_map, function(i, v) {
         if (v.vehicle_usage_id == route.vehicle_usage_id) vehicle_usage = v;
       });
@@ -2164,7 +2180,6 @@ var plannings_edit = function(params) {
   spreadsheetModalExport(params.spreadsheet_columns, params.planning_id);
 
   var devicesObservePlanning = (function() {
-    'use strict';
 
     var _context;
 
@@ -2397,7 +2412,6 @@ var plannings_edit = function(params) {
 };
 
 var plannings_show = function(params) {
-  'use strict';
 
   if (!params.print_map) {
     window.print();
@@ -2409,7 +2423,6 @@ var plannings_show = function(params) {
 };
 
 var plannings_index = function(params) {
-  'use strict';
 
   var requestPending = false;
 

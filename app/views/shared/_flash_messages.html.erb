@@ -1,14 +1,15 @@
-<script type="text/javascript">
-  $(document).on('page:change', function() {
-    hideNotices();
-    <% flash.each do |k, v| %>
-      <% if ['alert', 'error'].include?(k) %>
-        stickyError(<%= v.to_json.html_safe %>);
-      <% elsif 'notice' == k %>
-        notice(<%= v.to_json.html_safe %>);
-      <% else %>
-        notify(<%= k.to_json.html_safe %>, <%= v.to_json.html_safe %>, { hide: false });
-      <% end %>
+<% if flash.any? %>
+  <div class="flash-content">
+    <% flash.each do |message_type, message| %>
+      <div class="flash-message" data-level="<%= message_type %>">
+        <% if message.is_a? Array%>
+          <% message.each do |m| %>
+            <%= m.html_safe %>
+          <% end %>
+        <% else %>
+          <%= message.html_safe %>
+        <% end %>
+      </div>
     <% end %>
-  });
-</script>
+  </div>
+<% end %>

@@ -17,9 +17,11 @@
 //
 'use strict';
 
-var api_web_v01_zones_index = function(params) {
-  'use strict';
+import { mapInitialize, initializeMapHash } from '../../scaffolds';
+import { beforeSendWaiting, completeWaiting, ajaxError, mustache_i18n } from '../../ajax';
+import { api_web_v01_display_destinations_ } from './destinations';
 
+const api_web_v01_zones_index = function(params) {
   var progressBar = Turbolinks.enableProgressBar();
   progressBar && progressBar.advanceTo(25);
 
@@ -55,7 +57,7 @@ var api_web_v01_zones_index = function(params) {
 
   var fitBounds = initializeMapHash(map, true);
 
-  var setColor = function(polygon, vehicle_id, speed_multiplier) {
+  const setColor = function(polygon, vehicle_id, speed_multiplier) {
     polygon.setStyle((speed_multiplier === 0) ? {
       color: '#FF0000',
       fillColor: '#707070',
@@ -106,7 +108,7 @@ var api_web_v01_zones_index = function(params) {
     }
   });
 
-  var addZone = function(zone, geom) {
+  const addZone = function(zone, geom) {
     var geoJsonLayer;
     if (geom instanceof L.GeoJSON) {
       geoJsonLayer = geom;
@@ -118,7 +120,7 @@ var api_web_v01_zones_index = function(params) {
     featureGroup.addLayer(geom);
   };
 
-  var displayZoning = function(data) {
+  const displayZoning = function(data) {
     api_web_v01_display_destinations_('destinations', map, data);
 
     map.storesLayers.clearLayers();

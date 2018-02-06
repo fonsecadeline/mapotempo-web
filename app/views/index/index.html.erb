@@ -1,3 +1,5 @@
+<% javascript 'index' %>
+
 <% if user_signed_in? %>
   <% if @customer || current_user.admin? %>
     <% if current_user.admin? || (!@customer.end_subscription || @customer.end_subscription > Time.now) %>

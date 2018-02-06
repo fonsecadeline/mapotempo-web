@@ -164,6 +164,15 @@ a.disabled {
   }
 }
 
+.select2-container--bootstrap.input-sm,
+.select2-container--bootstrap.input-lg {
+  border-radius: 0;
+  font-size: 12px;
+  height: auto;
+  line-height: 1;
+  padding: 0;
+}
+
 /* Tables */
 .table {
   word-wrap: break-word;
@@ -647,4 +656,8 @@ input.form-control.number-of-days {
   .stop-status-none {
     background: none;
   }
+}
+
+.flash-content {
+  display: none;
 }

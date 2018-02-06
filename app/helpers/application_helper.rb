@@ -19,6 +19,12 @@ require 'value_to_boolean'
 require 'exceptions'
 
 module ApplicationHelper
+  def javascript(*files)
+    files.each do |file|
+      content_for(:javascript) { javascript_pack_tag(file, {'data-turbolinks-track': 'reload'}) }
+    end
+  end
+
   def span_tag(content)
     content_tag :span, content, class: 'default-color'
   end

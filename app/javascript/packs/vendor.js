@@ -1,0 +1,83 @@
+/* eslint no-console:0 */
+// This file is automatically compiled by Webpack, along with any other files
+// present in this directory. You're encouraged to place your actual application logic in
+// a relevant structure within app/javascript and only use these pack files to reference
+// that code so it'll be compiled.
+//
+// To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
+// layout file, like app/views/layouts/application.html.erb
+'use strict';
+
+// FIXME: jQuery 3 not working with pnotify
+import 'expose-loader?$!expose-loader?jQuery!jquery';
+import 'jquery-ujs';
+
+import 'select2';
+import 'select2/dist/js/i18n/fr';
+import 'select2/dist/js/i18n/en';
+import 'select2/dist/js/i18n/es';
+import 'select2/dist/js/i18n/pt';
+import 'select2/dist/js/i18n/he';
+
+import 'bootstrap-select';
+
+import 'bootstrap-filestyle';
+
+import 'bootstrap-datepicker';
+import 'bootstrap-datepicker/dist/locales/bootstrap-datepicker.fr.min';
+import 'bootstrap-datepicker/dist/locales/bootstrap-datepicker.fr-CH.min';
+import 'bootstrap-datepicker/dist/locales/bootstrap-datepicker.en-GB.min';
+import 'bootstrap-datepicker/dist/locales/bootstrap-datepicker.pt-BR.min';
+import 'bootstrap-datepicker/dist/locales/bootstrap-datepicker.es.min';
+// he not available, yet
+// pt-PT not available, yet
+
+import 'bootstrap-slider';
+
+import 'jquery-ui/ui/widgets/autocomplete';
+import 'jquery-ui/ui/widgets/sortable';
+import 'jquery-ui/ui/widgets/dialog';
+
+import 'tablesorter';
+import 'tablesorter/dist/js/widgets/widget-filter-formatter-html5.min';
+import 'tablesorter/dist/js/widgets/widget-filter-formatter-jui.min';
+import 'tablesorter/dist/js/widgets/widget-scroller.min';
+import 'tablesorter/dist/js/widgets/widget-columnSelector.min';
+
+import 'jquery-simplecolorpicker';
+
+import 'expose-loader?PNotify!pnotify';
+import 'pnotify/dist/pnotify.buttons';
+import 'pnotify/dist/pnotify.nonblock';
+import 'pnotify/dist/pnotify.desktop';
+
+import 'expose-loader?L!leaflet';
+import 'leaflet-polylineoffset';
+import 'leaflet.markercluster';
+import 'leaflet-control-geocoder';
+import 'leaflet-hash';
+import 'sidebar-v2/js/leaflet-sidebar';
+import 'leaflet-responsive-popup';
+import 'polyline-encoded';
+
+import '../../assets/javascripts/screenLog.js.erb';
+
+
+// Manage flash messages
+$(document).on('page:change', function () {
+  hideNotices();
+
+  $('.flash-message').each((index, element) => {
+    const $element = $(element);
+    const level = $element.data('level');
+    const content = $element.html().trim();
+
+    if (level === 'alert' || level === 'error') {
+      stickyError(content);
+    } else if (level === 'notice') {
+      notice(content);
+    } else {
+      notify(content);
+    }
+  });
+});

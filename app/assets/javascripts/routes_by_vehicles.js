@@ -17,7 +17,22 @@
 //
 'use strict';
 
-var routesByVehicleShow = function(params) {
+import { RoutesLayer } from './routes_layers'
+import {
+  templateSelectionColor,
+  templateResultColor,
+  mapInitialize,
+  initializeMapHash
+} from './scaffolds'
+import {
+  beforeSendWaiting,
+  completeAjaxMap,
+  ajaxError,
+  mustache_i18n,
+  fake_select2
+} from './ajax'
+
+const routesByVehicleShow = function(params) {
   'use strict';
 
   var colorCodes = params.color_codes.slice(),
@@ -118,7 +133,7 @@ var routesByVehicleShow = function(params) {
     });
   };
 
-  var sidebarRoutes = function(data) {
+  const sidebarRoutes = function(data) {
     data.i18n = mustache_i18n;
     $.each(data.routes, function(i, route) {
       updateColorsForRoutesAndStops(i, route);

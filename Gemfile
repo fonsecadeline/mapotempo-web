@@ -10,8 +10,6 @@ gem 'uglifier', '< 4.0' # TODO: fixme with use strict functions should be declar
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails'
 
-# Use jquery as the JavaScript library
-gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks', '< 5' # FIXME: turbolinks not working with anchors in url
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -97,8 +95,6 @@ gem 'swagger-docs'
 
 gem 'rails-i18n'
 gem 'http_accept_language'
-gem 'execjs'
-gem 'therubyracer'
 gem 'devise'
 gem 'devise-i18n'
 gem 'devise-i18n-views'
@@ -108,15 +104,6 @@ gem 'validates_timeliness'
 gem 'rails_engine_decorators'
 gem 'activerecord-import'
 
-gem 'font-awesome-rails'
-gem 'twitter-bootstrap-rails', github: 'seyhunak/twitter-bootstrap-rails', ref: 'd3776ddd0b89d28fdebfd6e1c1541348cc90e5cc' # FIXME wait for >3.2.2 with drop font-awesome, require Rails 5
-gem 'twitter_bootstrap_form_for', github: 'Mapotempo/twitter_bootstrap_form_for' # FIXME wait for pull request
-gem 'bootstrap-filestyle-rails'
-gem 'bootstrap-wysihtml5-rails'
-gem 'bootstrap-datepicker-rails'
-
-gem 'bootstrap-select-rails'
-
 gem 'sanitize'
 gem 'iconv'
 
@@ -124,32 +111,26 @@ gem 'pg', '< 1' # TODO: fix me for active record 4.2.11 compatibility
 
 gem 'sprockets'
 
-gem 'leaflet-rails', '> 1.0.2'
-gem 'leaflet-markercluster-rails', github: 'Mapotempo/leaflet-markercluster-rails' # FIXME wait for https://github.com/scpike/leaflet-markercluster-rails/pull/8
-gem 'leaflet-draw-rails', github: 'frodrigo/leaflet-draw-rails' # FIXME wait for https://github.com/zentrification/leaflet-draw-rails/pull/1
+gem 'webpacker'
+
+gem 'font-awesome-rails'
+gem 'twitter-bootstrap-rails', github: 'seyhunak/twitter-bootstrap-rails', ref: 'd3776ddd0b89d28fdebfd6e1c1541348cc90e5cc' # FIXME wait for >3.2.2 with drop font-awesome, require Rails 5
+gem 'twitter_bootstrap_form_for', github: 'Mapotempo/twitter_bootstrap_form_for' # FIXME wait for pull request
+gem 'bootstrap-wysihtml5-rails'
+
 gem 'leaflet_numbered_markers-rails', github: 'frodrigo/leaflet_numbered_markers-rails'
-gem 'leaflet-control-geocoder-rails', github: 'Mapotempo/leaflet-control-geocoder-rails'
 gem 'leaflet-controlledbounds-rails', github: 'Mapotempo/leaflet-controlledbounds-rails'
-gem 'leaflet-hash-rails', github: 'frodrigo/leaflet-hash-rails'
 gem 'leaflet-pattern-rails', github: 'Mapotempo/leaflet-pattern-rails'
-gem 'sidebar-v2-gh-pages-rails', github: 'Mapotempo/sidebar-v2-gh-pages-rails'
-gem 'leaflet-encoded-rails', github: 'Mapotempo/leaflet-encoded-rails'
-gem 'leaflet-responsive-popup-rails', github: 'Mapotempo/leaflet-responsive-popup-rails'
 
 gem 'jquery-turbolinks'
-gem 'jquery-ui-rails', '< 6' # FIXME Support IE10 removed in jQuery UI 1.12 + bad performances for large list sortable
-gem 'jquery-tablesorter', '< 1.21.2' # FIXME waiting for a replacement (v59)
-gem 'jquery-simplecolorpicker-rails'
 gem 'jquery-timeentry-rails', github: 'frodrigo/jquery-timeentry-rails'
-gem 'select2-rails', '= 4.0.0' # FIXME test compatibility with planning sidebar
+
 gem 'i18n-js'
 gem 'mustache'
 gem 'smt_rails', '0.2.9' # FIXME: JS not working in 0.3.0
 gem 'paloma', github: 'Mapotempo/paloma' # FIXME wait for https://github.com/Mapotempo/paloma/commit/25cbba9f33c7b36f4f4878035ae53541a0036ee9 but paloma not maintained !
 gem 'browser'
 gem 'color'
-
-gem 'bootstrap-slider-rails'
 
 gem 'daemons'
 gem 'delayed_job'
@@ -174,8 +155,6 @@ gem 'rest-client'
 gem 'macaddr'
 gem 'rubyzip'
 gem 'barby'
-
-gem 'pnotify-rails', github: 'ngonzalez/pnotify-rails', branch: 'remove-materials-css' # FIXME wait for https://github.com/navinpeiris/pnotify-rails/pull/12
 
 gem 'nokogiri'
 gem 'addressable'

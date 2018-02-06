@@ -17,9 +17,9 @@
 //
 'use strict';
 
-var user_edit_settings = function(params) {
-  'use strict';
+import { mapInitialize } from '../../assets/javascripts/scaffolds';
 
+const user_edit_settings = function(params) {
   var available_layers = params.map_available_layers;
 
   var map = mapInitialize(params);

@@ -15,18 +15,18 @@
 // along with Mapotempo. If not, see:
 // <http://www.gnu.org/licenses/agpl.html>
 //
+// Turbolinks hack to display notify on previous page
+// $(document).on('page:restore', function () {
+//   PNotify.prototype.options.stack.context = $('body');
+// });
+
 PNotify.prototype.options.styling = 'fontawesome';
 
 PNotify.prototype.options.buttons.labels = {
   close: I18n.t('web.dialog.close')
 };
 
-// Turbolinks hack to display notify on previous page
-// $(document).on('page:restore', function () {
-//   PNotify.prototype.options.stack.context = $('body');
-// });
-
-var isWindowVisible = (function() {
+const isWindowVisible = (function() {
   var stateKey, eventKey, keys = {
     hidden: 'visibilitychange',
     webkitHidden: 'webkitvisibilitychange',

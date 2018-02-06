@@ -17,11 +17,12 @@
 //
 'use strict';
 
+import { customColorInitialize } from '../../assets/javascripts/scaffolds';
+import { beforeSendWaiting, completeWaiting, ajaxError } from '../../assets/javascripts/ajax';
+
 // Place all the behaviors and hooks related to the matching controller here.
 // All this logic will automatically be available in application.js.
-var tags_form = function() {
-  'use strict';
-
+const tags_form = function() {
   $('#tag_color').simplecolorpicker({
     theme: 'fontawesome'
   });
@@ -47,22 +48,7 @@ Paloma.controller('Tags', {
   }
 });
 
-var templateTag = function(item) {
-  var color = $(item.element).attr('data-color');
-  var icon = $(item.element).attr('data-icon');
-
-  if (icon && color) {
-    return $('<span><i style="color:#' + color + '" class="fa ' + icon + '"></i>&nbsp;</span>').append($("<span/>").text(item.text));
-  } else if (icon) {
-    return $('<span><i class="fa ' + icon + '"></i>&nbsp;</span>').append($("<span/>").text(item.text));
-  } else if (color) {
-    return $('<span><i style="color:#' + color + '" class="fa fa-flag"></i>&nbsp;</span>').append($("<span/>").text(item.text));
-  } else {
-    return item.text;
-  }
-};
-
-var selectTag = function(event) {
+export const selectTag = function(event) {
   console.log('Selecting ...');
   if (event.params.args.data.newTag) {
     event.preventDefault();
@@ -72,7 +58,7 @@ var selectTag = function(event) {
       contentType: 'application/json',
       url: '/api/0.1/tags.json',
       success: function(data) {
-        var $select = $(event.target);
+        const $select = $(event.target);
         $select.parent().find('.select2-search__field').val('');
 
         $select.find('option').filter(function() { this.value == data.label }).remove();

@@ -17,10 +17,10 @@
 //
 'use strict';
 
-var vehicle_usage_sets_index = function(params) {
-  'use strict';
+import { bootstrap_dialog, modal_options } from '../../assets/javascripts/scaffolds';
 
-  var showAccordionCheckElements = function(show) {
+const vehicle_usage_sets_index = function(params) {
+  const showAccordionCheckElements = function(show) {
     ['[id^=vehicle_usage_sets_]', '#add', '.btn-destroy'].map(function(str) {
       show ? $(str).removeClass('invisible') : $(str).addClass('invisible');
     });
@@ -86,7 +86,7 @@ var vehicle_usage_sets_index = function(params) {
   }
 };
 
-var vehicle_usage_sets_edit = function(params) {
+const vehicle_usage_sets_edit = function(params) {
   $('#vehicle_usage_set_open, #vehicle_usage_set_close, #vehicle_usage_set_rest_start, #vehicle_usage_set_rest_stop, #vehicle_usage_set_rest_duration, #vehicle_usage_set_service_time_start, #vehicle_usage_set_service_time_end, #vehicle_usage_set_work_time').timeEntry({
     show24Hours: true,
     spinnerImage: '',
@@ -94,9 +94,7 @@ var vehicle_usage_sets_edit = function(params) {
   });
 };
 
-var vehicle_usage_sets_import = function(params) {
-  'use strict';
-
+const vehicle_usage_sets_import = function(params) {
   var dialogUpload = bootstrap_dialog({
     title: I18n.t('vehicle_usage_sets.import.dialog.import.title'),
     icon: 'fa-upload',
