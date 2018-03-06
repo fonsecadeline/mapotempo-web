@@ -12,9 +12,10 @@ ENV REDIS_HOST redis-cache
 ADD . /srv/app/
 
 # Install dependencies
-RUN apt-get update && apt-get install -y apt-transport-https curl
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN apt-get update && \
+    apt-get install -y apt-transport-https curl && \
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    apt-get update && \
     apt-get install -y git build-essential zlib1g-dev libicu-dev g++ libgeos-dev libgeos++-dev libpq-dev\
     zlib1g libicu57 libgeos-3.5.1 libpq5 postgresql-client && \
     curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
