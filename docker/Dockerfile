@@ -6,19 +6,25 @@ ARG TAG
 ENV TAG ${TAG:-master}
 
 ENV RAILS_ENV production
+ENV NODE_ENV production
 ENV REDIS_HOST redis-cache
 
 ADD . /srv/app/
 
 # Install dependencies
+RUN apt-get update && apt-get install -y apt-transport-https curl
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN apt-get update && \
     apt-get install -y git build-essential zlib1g-dev libicu-dev g++ libgeos-dev libgeos++-dev libpq-dev\
     zlib1g libicu57 libgeos-3.5.1 libpq5 postgresql-client && \
+    curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
+    apt-get install -y nodejs yarn && \
     \
 # Install app
     cd /srv/app && \
     rm -Rf docker && \
     bundle install --full-index --without test development && \
+    npm install && \
     bundle exec rake i18n:js:export && \
     bundle exec rake assets:precompile && \
     \
