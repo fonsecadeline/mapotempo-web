@@ -15,6 +15,12 @@
 # along with Mapotempo. If not, see:
 # <http://www.gnu.org/licenses/agpl.html>
 #
+task :test do
+  # Rake::Task['assets:precompile'].invoke # Seems to be taken into account after in next replay...
+  `bin/webpack`
+  Rake::Task['test'].invoke
+end
+
 begin
   Rake::Task['test'].enhance do
     if !ENV.key?('BRAKEMAN') || ENV['BRAKEMAN'] != 'false'

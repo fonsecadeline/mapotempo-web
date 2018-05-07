@@ -170,7 +170,8 @@ if ENV['BENCHMARK'] == 'true'
       Capybara.javascript_driver = :selenium_chrome
 
       Capybara.configure do |config|
-        config.default_max_wait_time = 30 # seconds
+        # Time after assert_selector fails (for instance to wait end of ajax query)
+        config.default_max_wait_time = 45 # seconds
       end
     end
 
