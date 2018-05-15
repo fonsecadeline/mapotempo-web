@@ -58,6 +58,8 @@ class VehicleUsageSet < ApplicationRecord
   before_create :check_max_vehicle_usage_set
   before_update :update_outdated
 
+  scope :includes_vehicles, -> { includes([vehicle_usage: [{vehicle: :router}], customer: :router]) }
+
   amoeba do
     exclude_association :plannings
 

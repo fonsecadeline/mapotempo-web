@@ -411,7 +411,7 @@ class PlanningsController < ApplicationController
     VehicleUsage.with_stores.scoping do
       if @with_stops
         if (params[:route_id] || params[:route_ids]) && %i[move switch].exclude?(action_name.to_sym)
-          Route.where(id: [params[:route_id]] + (params[:route_ids] ? params[:route_ids].split(',') : [])).includes_destinations.scoping do
+          Route.where(id: [params[:route_id]] + (params[:route_ids] ? params[:route_ids].split(',') : [])).includes_destinations.includes_vehicle_usages.scoping do
             yield
           end
         elsif %i[automatic_insert move optimize switch].include?(action_name.to_sym)
@@ -419,7 +419,7 @@ class PlanningsController < ApplicationController
             yield
           end
         elsif %i[show edit].exclude?(action_name.to_sym) || !request.format.html?
-          Route.includes_destinations.scoping do
+          Route.includes_destinations.includes_vehicle_usages.scoping do
             yield
           end
         else
@@ -509,7 +509,9 @@ class PlanningsController < ApplicationController
   def capabilities
     @isochrone = [[@planning.vehicle_usage_set, Zoning.new.isochrone?(@planning.vehicle_usage_set, false)]]
     @isodistance = [[@planning.vehicle_usage_set, Zoning.new.isodistance?(@planning.vehicle_usage_set, false)]]
-    @isoline_need_time = [[@planning.vehicle_usage_set, @planning.vehicle_usage_set.vehicle_usages.any?{ |vu| vu.vehicle.default_router_options['traffic'] }]]
+    # VehicleUsageSet.includes_vehicles.scoping do
+      @isoline_need_time = [[@planning.vehicle_usage_set, @planning.vehicle_usage_set.vehicle_usages.any?{ |vu| vu.vehicle.default_router_options['traffic'] }]]
+    # end
   end
 
   def format_csv(format)
