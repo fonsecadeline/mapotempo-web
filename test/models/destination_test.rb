@@ -145,4 +145,20 @@ class DestinationTest < ActiveSupport::TestCase
     dest.save!
     assert route.reload.outdated
   end
+
+  test 'should have geocoder version' do
+    destination = destinations(:destination_one)
+
+    destination.geocode
+    assert destination.geocoder_version
+    assert_not_equal nil, destination.geocoder_version
+  end
+
+  test 'geocoded_at should not be nil' do
+    destination = destinations(:destination_one)
+
+    destination.geocode
+    assert destination.geocoded_at
+    assert_not_equal nil, destination.geocoded_at
+  end
 end

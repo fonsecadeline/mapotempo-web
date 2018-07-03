@@ -54,15 +54,22 @@ class GeocodeAddokWrapper
         })
 
         @cache.write(key, result && result.body)
+
       rescue RestClient::Exception => e
         raise GeocodeError.new e.message
       end
     end
 
     data = JSON.parse(result)
+    parsed_geojson = {}
     if !data['features'].empty?
-      parse_geojson_feature(data['features'][0])
+      parsed_geojson = parse_geojson_feature(data['features'][0])
     end
+    if !data['geocoding'].empty?
+      parsed_geojson[:geocoder_version] = data['geocoding']['version']
+      parsed_geojson[:geocoded_at] = DateTime.now
+    end
+    parsed_geojson
   end
 
   def code_free(q, country, limit = 10, lat = nil, lng = nil)
@@ -147,6 +154,7 @@ class GeocodeAddokWrapper
     type = feature['properties']['geocoding']['type']
     label = feature['properties']['geocoding']['label']
     coordinates = feature['geometry']['coordinates'] if feature['geometry'] && feature['geometry']['coordinates']
-    {lat: coordinates && coordinates[1], lng: coordinates && coordinates[0], quality: @@result_types[type], accuracy: score, free: label}
+    version = feature['properties']['geocoding']['version']
+    {lat: coordinates && coordinates[1], lng: coordinates && coordinates[0], quality: @@result_types[type], accuracy: score, free: label, geocoder_version: version, geocoded_at: Time.now}
   end
 end

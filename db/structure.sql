@@ -2,14 +2,15 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.7
--- Dumped by pg_dump version 9.6.7
+-- Dumped from database version 9.6.11
+-- Dumped by pg_dump version 9.6.11
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
@@ -41,8 +42,6 @@ CREATE EXTENSION IF NOT EXISTS hstore WITH SCHEMA public;
 
 COMMENT ON EXTENSION hstore IS 'data type for storing sets of (key, value) pairs';
 
-
-SET search_path = public, pg_catalog;
 
 SET default_tablespace = '';
 
@@ -226,7 +225,9 @@ CREATE TABLE public.destinations (
     geocoding_level integer,
     phone_number character varying,
     ref character varying,
-    state character varying
+    state character varying,
+    geocoded_at timestamp without time zone,
+    geocoder_version character varying
 );
 
 
@@ -752,7 +753,9 @@ CREATE TABLE public.stores (
     color character varying,
     icon character varying,
     icon_size character varying,
-    state character varying
+    state character varying,
+    geocoded_at timestamp without time zone,
+    geocoder_version character varying
 );
 
 
@@ -2771,3 +2774,5 @@ INSERT INTO schema_migrations (version) VALUES ('20181227141833');
 INSERT INTO schema_migrations (version) VALUES ('20190315184420');
 
 INSERT INTO schema_migrations (version) VALUES ('20190417121926');
+
+INSERT INTO schema_migrations (version) VALUES ('20190107081835');

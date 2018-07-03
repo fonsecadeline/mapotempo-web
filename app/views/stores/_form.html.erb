@@ -112,6 +112,10 @@
       </div>
     </div>
   </fieldset>
+
+  <%= hidden_field :store, :geocoder_version, :value => @store.geocoder_version %>
+  <%= hidden_field :store, :geocoded_at, :value => @store.geocoded_at %>
+
   <%= f.actions do %>
     <%= f.submit %>
   <% end %>

@@ -157,6 +157,8 @@ class StoresController < ApplicationController
                                   :lat,
                                   :lng,
                                   :ref,
+                                  :geocoder_version,
+                                  :geocoded_at,
                                   :geocoding_accuracy,
                                   :geocoding_level,
                                   :color, :icon,

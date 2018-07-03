@@ -125,6 +125,10 @@
     <%= t('destinations.form.visit.enable_multi_visits') %>
     </p>
   <% end %>
+
+  <%= hidden_field :destination, :geocoder_version, :value => @destination.geocoder_version %>
+  <%= hidden_field :destination, :geocoded_at, :value => @destination.geocoded_at %>
+
   <%= f.actions do %>
     <%= f.submit %>
   <% end %>

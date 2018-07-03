@@ -35,8 +35,8 @@ class Location < ApplicationRecord
   nilify_blanks before: :validation
   validates :customer, presence: true
   validates :name, presence: true
-#  validates :street, presence: true
-#  validates :city, presence: true
+  # validates :street, presence: true
+  # validates :city, presence: true
   validates :lat, numericality: {only_float: true}, allow_nil: true
   validates :lng, numericality: {only_float: true}, allow_nil: true
   validates_inclusion_of :lat, in: -90..90, allow_nil: true, message: ->(*_) { I18n.t('activerecord.errors.models.location.lat_outside_range') }
@@ -63,6 +63,7 @@ class Location < ApplicationRecord
     if json['features'].present?
       {
         success: true,
+        geocoder_info: { geocoder_version: json['geocoding']['version'], geocoded_at: Time.now },
         result: json['features'].first['properties']['geocoding']
       }
     end
@@ -79,9 +80,12 @@ class Location < ApplicationRecord
 
   def geocode_result(address)
     if address
+      self.geocoder_version = address[:geocoder_version]
+      self.geocoded_at = address[:geocoded_at]
+
       self.lat, self.lng, self.geocoding_accuracy, self.geocoding_level = address[:lat], address[:lng], address[:accuracy], address[:quality]
     else
-      self.lat = self.lng = self.geocoding_accuracy = self.geocoding_level = nil
+      self.lat = self.lng = self.geocoding_accuracy = self.geocoding_level = self.geocoder_version = self.geocoded_at = nil
     end
     @is_gecoded = true
   end

@@ -118,4 +118,20 @@ class StoreTest < ActiveSupport::TestCase
     assert_equal store.icon, store.default_icon
     assert_equal Mapotempo::Application.config.store_icon_size_default, store.default_icon_size
   end
+
+  test 'should have geocoder version' do
+    store = stores(:store_one)
+
+    store.geocode
+    assert store.geocoder_version
+    assert_not_equal nil, store.geocoder_version
+  end
+
+  test 'geocoded_at should not be nil' do
+    store = stores(:store_one)
+
+    store.geocode
+    assert store.geocoded_at
+    assert_not_equal nil, store.geocoded_at
+  end
 end

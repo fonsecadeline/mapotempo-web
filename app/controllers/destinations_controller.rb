@@ -226,6 +226,8 @@ class DestinationsController < ApplicationController
       :comment,
       :geocoding_accuracy,
       :geocoding_level,
+      :geocoder_version,
+      :geocoded_at,
       tag_ids: [],
       visits_attributes: [
         :id,

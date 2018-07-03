@@ -37,4 +37,6 @@ class V01::Entities::Destination < Grape::Entity
   expose(:geocoding_level, documentation: { type: String, values: ['point', 'house', 'street', 'intersection', 'city'] })
   expose(:tag_ids, documentation: { type: Integer, is_array: true })
   expose(:visits, using: V01::Entities::Visit, documentation: { type: V01::Entities::Visit, is_array: true, param_type: 'form' })
+  expose(:geocoded_at, documentation: { type: DateTime})
+  expose(:geocoder_version, documentation: {type: String})
 end
