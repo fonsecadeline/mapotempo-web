@@ -142,6 +142,21 @@ class V01::Devices::FleetTest < ActiveSupport::TestCase
     end
   end
 
+  test 'sending_route_should_contain_quantities' do
+    @customer.update(enable_orders: false)
+    route = routes(:route_one_one)
+
+    [{method: :put, status: 200}, {method: :post, status: 404}].each do |obj|
+      stub_request(:get, %r{.*api/0.1/routes.*}).to_return(status: obj[:status])
+      stub_request(obj[:method], %r{.*api/0.1/routes.*})
+        .with(body: /"quantities":/)
+        .to_return(status: 200)
+
+      post api('devices/fleet/send', customer_id: @customer.id, route_id: route.id)
+      assert_equal 201, last_response.status, last_response.body
+    end
+  end
+
   test 'fetch stops and update quantities' do
     customers(:customer_one).update(job_optimizer_id: nil)
 

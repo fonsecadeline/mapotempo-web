@@ -33,13 +33,16 @@ module RoutesHelper
     }.collect{ |id, v|
       unit = route.planning.customer.deliverable_units.find{ |du| du.id == id }
       next unless unit
+
       q = number_with_precision(v, precision: 2, delimiter: I18n.t('number.format.delimiter'), strip_insignificant_zeros: true).to_s
       q += '/' + number_with_precision(vehicle.default_capacities[id], precision: 2, delimiter: I18n.t('number.format.delimiter'), strip_insignificant_zeros: true).to_s if vehicle && vehicle.default_capacities[id]
       q += "\u202F" + unit.label if unit.label
       {
         id: id,
-        quantity: q,
-        unit_icon: unit.default_icon
+        quantity: v,
+        label: unit.label,
+        unit_icon: unit.default_icon,
+        quantity_formatted: q
       }
     }.compact
   end
@@ -61,7 +64,7 @@ module RoutesHelper
     devices_route = route.vehicle_usage.vehicle.devices
 
     devices_route.each do |key, value|
-      if devices && devices.has_key?(key)
+      if devices && devices.key?(key)
         match_device = if value.is_a?(Array)
           { items: devices[key].select{ |dv| value.include? dv[:id] } }
         else
@@ -79,11 +82,11 @@ module RoutesHelper
     refs.split(',').collect(&:strip).collect{ |ref|
       begin
         "<div class=\"ref barcode barcode_#{code}\">" +
-        Barby::Code128B.new(ref).encoding.split('').collect{ |c|
-          "<span class=\"barcode_x barcode_#{c}\"></span>"
-        }.join('') +
-        "</div>"
-      rescue Exception => e
+          Barby::Code128B.new(ref).encoding.split('').collect{ |c|
+            "<span class=\"barcode_x barcode_#{c}\"></span>"
+          }.join('') +
+          '</div>'
+      rescue StandardError
         "<span class=\"ui-state-error\">#{I18n.t('errors.routes.bad_barcode_char')}</span>"
       end
     }.join("\n").html_safe

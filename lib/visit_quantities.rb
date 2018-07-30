@@ -16,24 +16,23 @@
 # <http://www.gnu.org/licenses/agpl.html>
 #
 class VisitQuantities
-
   def self.normalize(visit, vehicle, options = {})
     options[:with_default] = true unless options.key? :with_default
     quantities = visit.send(options[:with_default] ? :default_quantities : :quantities)
     visit.destination.customer.deliverable_units.map{ |du|
-      if quantities && (quantities[du.id] && quantities[du.id] != 0 || visit.quantities_operations[du.id])
-        q = number_with_precision(quantities[du.id], precision: 2, delimiter: I18n.t('number.format.delimiter'), strip_insignificant_zeros: true).to_s
-        q += '/' + number_with_precision(vehicle.default_capacities[du.id], precision: 2, delimiter: I18n.t('number.format.delimiter'), strip_insignificant_zeros: true).to_s if vehicle && vehicle.default_capacities[du.id]
-        q += "\u202F" + du.label if du.label
-        q = I18n.t("activerecord.attributes.deliverable_unit.operation_#{visit.quantities_operations[du.id]}") + " (#{q})" if visit.quantities_operations[du.id]
-        {
-          deliverable_unit_id: du.id,
-          quantity: q,
-          quantity_float: quantities[du.id],
-          unit_icon: du.default_icon
-        }
-      end
+      next unless quantities && (quantities[du.id] && quantities[du.id] != 0 || visit.quantities_operations[du.id])
+
+      q = number_with_precision(quantities[du.id], precision: 2, delimiter: I18n.t('number.format.delimiter'), strip_insignificant_zeros: true).to_s
+      q += '/' + number_with_precision(vehicle.default_capacities[du.id], precision: 2, delimiter: I18n.t('number.format.delimiter'), strip_insignificant_zeros: true).to_s if vehicle && vehicle.default_capacities[du.id]
+      q += "\u202F" + du.label if du.label
+      q = I18n.t("activerecord.attributes.deliverable_unit.operation_#{visit.quantities_operations[du.id]}") + " (#{q})" if visit.quantities_operations[du.id]
+      {
+        deliverable_unit_id: du.id,
+        quantity: quantities[du.id], # FLOAT
+        label: du.label,
+        unit_icon: du.default_icon,
+        quantity_formatted: q # STRING
+      }
     }.compact
   end
-
 end

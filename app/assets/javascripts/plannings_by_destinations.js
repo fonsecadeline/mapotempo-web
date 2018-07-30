@@ -41,7 +41,7 @@ var planningsShow = function(params) {
       for (var idx = 0; idx < quantitiesElements.length; idx++) {
         var $quantity = $(quantitiesElements[idx]);
         quantities.push({
-          quantity_float: parseFloat($quantity.data('quantity')),
+          quantity: parseFloat($quantity.data('quantity')),
           deliverable_unit_id: $quantity.data('deliverable-unit-id'),
           unit_icon: $quantity.data('unit-icon')
         });
@@ -50,7 +50,7 @@ var planningsShow = function(params) {
         selectedStops[planningId].quantities.forEach(function(quantity) {
           quantities.forEach(function(qt) {
             if (quantity.deliverable_unit_id == qt.deliverable_unit_id)
-              quantity.quantity_float += qt.quantity_float;
+              quantity.quantity += qt.quantity;
           });
         });
       } else {

@@ -23,11 +23,7 @@ json.last_sent_to route.last_sent_to if route.last_sent_to
 json.last_sent_at_formatted l(route.last_sent_at) if route.last_sent_at
 json.optimized_at_formatted l(route.optimized_at) if route.optimized_at
 unless route.planning.customer.enable_orders
-  json.quantities route_quantities(route) do |units|
-    json.id units[:id] if units[:id]
-    json.quantity units[:quantity] if units[:quantity]
-    json.unit_icon units[:unit_icon]
-  end
+  json.quantities route_quantities(route)
 end
 if route.vehicle_usage_id
   json.name (route.ref ? "#{route.ref} " : '') + route.vehicle_usage.vehicle.name unless @with_planning

@@ -41,8 +41,8 @@ module FleetBuilder
 
     destinations += route.stops.select{ |stop| stop.active? && stop.time }.sort_by(&:index).map do |destination|
       visit = destination.is_a?(StopVisit)
-      labels = visit ? (destination.visit.tags + destination.visit.destination.tags).map(&:label).join(', ') : nil
-      quantities = visit ? destination.is_a?(StopVisit) ? (customer.enable_orders ? (destination.order ? destination.order.products.collect(&:code).join(',') : '') : destination.visit.default_quantities ? VisitQuantities.normalize(destination.visit, route.vehicle_usage.try(&:vehicle)).map { |d| "\u2022 #{d[:quantity]}" }.join("\r\n") : '') : nil : nil
+      # labels = visit ? (destination.visit.tags + destination.visit.destination.tags).map(&:label).join(', ') : nil
+
       time_windows = []
       time_windows << {
         start: p_time(route, destination.open1).strftime('%FT%T.%L%:z'),
@@ -69,7 +69,6 @@ module FleetBuilder
           destination.comment,
           # destination.priority ? I18n.t('activerecord.attributes.visit.priority') + I18n.t('text.separator') + destination.priority_text : nil,
           # labels.present? ? I18n.t('activerecord.attributes.visit.tags') + I18n.t('text.separator') + labels : nil,
-          # quantities.present? ? I18n.t('activerecord.attributes.visit.quantities') + I18n.t('text.separator') + "\r\n" + quantities : nil
         ].compact.join("\r\n\r\n").strip : nil,
         phone: visit ? destination.phone_number : nil,
         reference: visit ? destination.visit.destination.ref : nil,
@@ -81,7 +80,8 @@ module FleetBuilder
           state: destination.state,
           street: destination.street
         },
-        time_windows: visit ? time_windows : nil
+        time_windows: visit ? time_windows : nil,
+        quantities: destination.is_a?(StopVisit) && !customer.enable_orders ? VisitQuantities.normalize(destination.visit, route.vehicle_usage.try(&:vehicle)) : nil
       }.compact
     end
 

@@ -241,7 +241,7 @@ class VehicleUsage < ApplicationRecord
         deliverable_unit_id: unit.id,
         label: unit.label,
         unit_icon: unit.default_icon,
-        quantity_float: value
+        quantity: value
       }
     end
     hash

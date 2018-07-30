@@ -19,7 +19,7 @@ class SmsTest < ActionController::TestCase
                 date: I18n.l(date, format: :weekday),
                 time: date.beginning_of_day + s.time,
                 visit_ref: "fake ref for all !! =)",
-                quantities: VisitQuantities.normalize(s.visit, nil).map{ |q| q[:quantity] }.join(' ').tr("\u202F", ' '),
+                quantities: VisitQuantities.normalize(s.visit, nil).map{ |q| q[:quantity_formatted] }.join(' ').tr("\u202F", ' '),
                 vehicle_name: route.vehicle_usage.vehicle.name,
                 phone_number: route.vehicle_usage.vehicle.phone_number
             }

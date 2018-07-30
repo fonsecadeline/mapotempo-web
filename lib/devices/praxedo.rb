@@ -220,7 +220,8 @@ class Praxedo < DeviceBase
 
         {
           order_id: decode_uid(intervention[:id]),
-          quantities: quantities
+          quantities: quantities,
+          update_quantities: true
           # Status are not sync (using TomTom's statuses)
         }
       end

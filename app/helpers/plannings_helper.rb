@@ -29,6 +29,27 @@ module PlanningsHelper
 
   def planning_vehicles_usages_map(planning)
     PlanningConcern.vehicles_usages_map(planning)
+    planning.vehicle_usage_set.vehicle_usages.active.each_with_object({}) do |vehicle_usage, hash|
+      hash[vehicle_usage.vehicle_id] = vehicle_usage.vehicle.slice(:name, :color, :capacities, :default_capacities).merge(vehicle_usage_id: vehicle_usage.id, vehicle_id: vehicle_usage.vehicle_id, router_dimension: vehicle_usage.vehicle.default_router_dimension, work_or_window_time: vehicle_usage.work_or_window_time, vehicle_quantities: PlanningsHelper.route_quantities(planning, vehicle_usage))
+    end
+  end
+
+  def self.route_quantities(planning, vehicle_usage)
+    quantities = []
+    planning.routes.find{ |route|
+      route.vehicle_usage == vehicle_usage
+    }.quantities.select{ |_k, value| value > 0 }.each do |id, value|
+      unit = planning.customer.deliverable_units.find{ |du| du.id == id }
+      next unless unit
+
+      quantities << {
+        deliverable_unit_id: unit.id,
+        label: unit.label,
+        unit_icon: unit.default_icon,
+        quantity: value
+      }
+    end
+    quantities
   end
 
   def planning_quantities(planning)

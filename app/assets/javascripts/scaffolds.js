@@ -106,7 +106,7 @@ $(document).on('ready page:load', function() {
 
   /**
    * @param {[capacity:, ​​​id:, ​​​label:, ​​​unitIcon:]} vehicleCapacities
-   * @param {[take_over:, quantities:[deliverable_unit_id:,​​​​​quantity_float:,​​​​​unit_icon:]]} stops
+   * @param {[take_over:, quantities:[deliverable_unit_id:,​​​​​quantity:,​​​​​unit_icon:]]} stops
    * @param {[{ capacity:, id:, label:, quantity:, unit_icon:}]} controllerParamsQuantities
    * @param {boolean} withCapacity
    * @param {boolean} withDuration
@@ -191,7 +191,7 @@ $(document).on('ready page:load', function() {
 
         stop.quantities.forEach(function(quantity) {
           var oldValue = result.quantities[quantity.deliverable_unit_id] ? result.quantities[quantity.deliverable_unit_id].value : 0;
-          var value = quantity.quantity_float + oldValue;
+          var value = quantity.quantity + oldValue;
           var details = controllerParamsQuantities.filter(function(obj) { return obj.id == quantity.deliverable_unit_id; })[0];
 
           result.quantities[quantity.deliverable_unit_id] = {

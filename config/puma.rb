@@ -7,3 +7,4 @@ preload_app!
 rackup DefaultRackup
 port 3000
 environment 'development'
+worker_timeout 1000000

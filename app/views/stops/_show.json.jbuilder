@@ -52,10 +52,7 @@ if stop.is_a?(StopVisit)
       json.orders order.products.collect(&:code).join(', ')
     end
   else
-    json.quantities visit_quantities(visit, stop.route.vehicle_usage_id && stop.route.vehicle_usage.vehicle) do |units|
-      json.quantity units[:quantity] if units[:quantity]
-      json.unit_icon units[:unit_icon]
-    end
+    json.quantities visit_quantities(visit, stop.route.vehicle_usage_id && stop.route.vehicle_usage.vehicle)
   end
   if stop.status
     json.status t("plannings.edit.stop_status.#{stop.status.downcase}", default: stop.status)

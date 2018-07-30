@@ -114,7 +114,7 @@
   {{#duration}}<li><i class="fa fa-clock-o fa-fw"></i> {{#i18n}}plannings.edit.popup.duration{{/i18n}} {{duration}}</li>{{/duration}}
   {{#priority_text}}<li><i class="fa fa-signal fa-fw"></i> {{#i18n}}plannings.edit.popup.priority{{/i18n}} {{priority_text}}</li>{{/priority_text}}
   {{#quantities}}
-    <li><i class="fa {{unit_icon}} fa-fw"></i> {{#i18n}}plannings.edit.popup.quantity{{/i18n}} {{quantity}}</li>
+    <li><i class="fa {{unit_icon}} fa-fw"></i> {{#i18n}}plannings.edit.popup.quantity{{/i18n}} {{quantity_formatted}}</li>
   {{/quantities}}
   {{#orders}}<li><i class="fa fa-cube fa-fw"></i> {{#i18n}}plannings.edit.popup.orders{{/i18n}} {{orders}}</li>{{/orders}}
   {{#tags_present}}<li><i class="fa fa-tag fa-fw"></i> {{#i18n}}plannings.edit.popup.tags{{/i18n}} {{#tags}}{{label}} {{/tags}}</li>{{/tags_present}}
