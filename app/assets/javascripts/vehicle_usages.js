@@ -102,7 +102,8 @@ var devicesObserveVehicle = (function() {
   'use strict';
 
   var _buildSelect = function(name, datas) {
-    $('[data-device=' + name + ']').select2({
+    var el = $('[data-device=' + name + ']');
+    var options = {
       data: datas || [],
       theme: 'bootstrap',
       width: '100%',
@@ -115,13 +116,22 @@ var devicesObserveVehicle = (function() {
       templateSelection: function(data_selection) {
         return data_selection.text;
       }
-    });
+    }
+
+    if (el.attr('name').includes("ids")) {
+      options.allowClear = false;
+      options.multiple = true;
+    }
+
+    el.select2(options);
   };
 
   // this is used to set a default value for select2 builder - Update datas from ajax request
   var _addDataToSelect2 = function(name, datas, devices) {
     _buildSelect(name, datas);
-    $('[data-device=' + name + ']').val(devices[name + "_id"] || devices[name + "_ref"] || devices[name + "_user"] || datas[0]).trigger("change");
+    var el = $('[data-device=' + name + ']');
+    el.val(devices[name + "_id"] || devices[name + "_ids"] || devices[name + "_ref"] || devices[name + "_user"] || datas[0])
+      .trigger("change");
   };
 
   var _devicesInitVehicle = function(name, params) {

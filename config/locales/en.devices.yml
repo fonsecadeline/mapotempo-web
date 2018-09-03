@@ -67,6 +67,9 @@ en:
             code_inter_stop: "Intervention code for stop point"
             code_mat: "Code for the material to deliver"
             code_route: "Code for the route"
+          sopac:
+            username: "Username"
+            password: "Password"
       vehicle:
         devices:
           fleet_demo:

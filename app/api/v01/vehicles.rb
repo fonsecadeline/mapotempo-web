@@ -145,6 +145,36 @@ class V01::Vehicles < Grape::API
       end
     end
 
+    desc 'Get vehicles\'s temperature.',
+      detail: 'return vehicle temperature',
+      nickname: 'getTemperature',
+      is_array: true,
+      success: V01::Entities::VehicleTemperature
+    params do
+      optional :ids, type: Array[Integer]
+    end
+    get 'temperature' do
+      customer = current_customer
+      temperatures = []
+      errors = []
+      begin
+        if customer.device.configured?(:sopac)
+          device = Mapotempo::Application.config.devices[:sopac]
+          service = Object.const_get(device.class.name + 'Service').new(options)
+          if service.respond_to?(:vehicles_temperature)
+            temperatures += service.vehicles_temperature(customer)
+          end
+        end
+      rescue DeviceServiceError => e
+        errors << e.message
+      end
+      if errors.any?
+        { errors: errors }
+      else
+        present temperatures, with: V01::Entities::VehicleTemperature
+      end
+    end
+
     desc 'Fetch vehicle.',
       nickname: 'getVehicle',
       success: V01::Entities::Vehicle

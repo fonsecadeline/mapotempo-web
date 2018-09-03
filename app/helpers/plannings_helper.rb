@@ -56,4 +56,11 @@ module PlanningsHelper
     }
     devices
   end
+
+  def available_temperature?
+    device_list = current_user.customer.vehicles.select { |e|
+      e.devices[:sopac_ids] != nil
+    }
+    !device_list.empty?
+  end
 end

@@ -238,6 +238,7 @@ var plannings_edit = function(params) {
     backgroundTaskIntervalId,
     currentZoom = 17,
     needUpdateStopStatus = params.update_stop_status && withStopsInSidePanel,
+    needUpdateTemperature = params.available_temperature,
     availableStopStatus = params.available_stop_status,
     outOfRouteId = params.routes_array.filter(function(route) {
       return !route.vehicle_usage_id;
@@ -264,7 +265,8 @@ var plannings_edit = function(params) {
     }).map(function(vehicle) {
       return vehicle.id;
     }),
-    quantities = params.quantities;
+    quantities = params.quantities,
+    routes_devices;
   colorCodes.unshift('');
 
   function getZonings() {
@@ -323,7 +325,7 @@ var plannings_edit = function(params) {
   var vehicleMarkers = [];
 
   var displayVehicles = function(data) {
-    data.forEach(function(pos) {
+    $.each(data, function(i, pos) {
       if ($.isNumeric(pos.lat) && $.isNumeric(pos.lng)) {
         var route = routes.filter(function(route) {
           return (pos.vehicle_id in vehicles_usages_map) && (route.vehicle_usage_id === vehicles_usages_map[pos.vehicle_id].vehicle_usage_id);
@@ -335,17 +337,27 @@ var plannings_edit = function(params) {
             '<span class="fa-stack" data-route_id="' + route.route_id + '"><i class="fa fa-truck fa-stack-2x vehicle-icon pulse" style="color: ' + (route.color || vehicles_usages_map[pos.vehicle_id].color) + '"></i>' + direction_icon + '</span>' :
             '<i class="fa fa-truck fa-lg vehicle-icon" style="color: ' + (route.color || vehicles_usages_map[pos.vehicle_id].color) + '"></i>';
           vehicleLayer.removeLayer(vehicleMarkers[pos.vehicle_id]);
-          vehicleMarkers[pos.vehicle_id] = L.marker(new L.LatLng(pos.lat, pos.lng), {
-            icon: new L.divIcon({
-              html: iconContent,
-              iconSize: new L.Point(24, 24),
-              iconAnchor: new L.Point(12, 12),
-              popupAnchor: new L.Point(0, -12),
-              className: 'vehicle-position'
-            }),
-            zIndexOffset: 800,
-            title: vehicles_usages_map[pos.vehicle_id].name + ' - ' + pos.device_name + ' - ' + I18n.t('plannings.edit.vehicle_speed') + ' ' + (prefered_unit === 'km' ? (pos.speed || 0) + ' km/h - ' : (Math.ceil10(pos.speed/1.609344) || 0) + ' mph - ') + I18n.t('plannings.edit.vehicle_last_position_time') + ' ' + (pos.time_formatted || (new Date(pos.time)).toLocaleString())
-          }).addTo(vehicleLayer);
+
+          var icon = new L.divIcon({
+            html: iconContent,
+            iconSize: new L.Point(24, 24),
+            iconAnchor: new L.Point(12, 12),
+            popupAnchor: new L.Point(0, -12),
+            className: 'vehicle-position'
+          });
+
+          vehicleMarkers[pos.vehicle_id].setLatLng(new L.LatLng(pos.lat, pos.lng))
+            .setIcon(icon)
+            .addTo(vehicleLayer);
+
+          var t = vehicleMarkers[pos.vehicle_id].getTooltip();
+          if (t) {
+            var content = $(t._content);
+            content.find('#position-device-name').html(pos.device_name);
+            content.find('#device-speed').html(prefered_unit === 'km' ? (pos.speed || 0) + ' km/h' : Math.ceil10(pos.speed / 1.609344) || 0 + ' mph');
+            content.find("#speed-last").html(pos.time_formatted || (new Date(pos.time)).toLocaleString())
+            vehicleMarkers[pos.vehicle_id].setTooltipContent('<div>' + content.html() + '</div>');
+          }
         }
       }
     });
@@ -361,13 +373,9 @@ var plannings_edit = function(params) {
           ids: vehicleIdsPosition
         },
         dataType: 'json',
-        beforeSend: function() {
-          requestVehiclePositionPending = true;
-        },
-        complete: function() {
-          requestVehiclePositionPending = false;
-        },
-        success: function(data) {
+        beforeSend: function() { requestVehiclePositionPending = true },
+        complete: function() { requestVehiclePositionPending = false },
+        success: function (data) {
           if (data && data.errors) {
             nbBackgroundTaskErrors++;
             if (nbBackgroundTaskErrors > 1) clearInterval(backgroundTaskIntervalId);
@@ -387,7 +395,6 @@ var plannings_edit = function(params) {
   };
 
   var updateStopsStatus = function(data) {
-
     var updateStopAndStoreStatusContent = function(content, el) {
       var klass = (el.store) ? 'store-status' : 'stop-status';
       var $elt = content.find('.toggle-status, .' + klass);
@@ -419,19 +426,19 @@ var plannings_edit = function(params) {
     if (data) {
       var routeL, routeStops, marker, $item;
 
-      data.forEach(function(route) {
+      $.each(data, function(i, route) {
         if (route.vehicle_usage_id) {
           var $route = $("[data-route_id='" + route.id + "']");
           var startStop = $route.find('[data-store_id]');
 
           // Adapter pattern for stores
           var startAdapter = { store: true, status: route.departure_status, status_code: route.departure_status_code, eta_formated: route.departure_eta_formated };
-          var stopAdapter  = { store: true, status: route.arrival_status, status_code: route.arrival_status_code, eta_formated: route.arrival_eta_formated };
+          var stopAdapter = { store: true, status: route.arrival_status, status_code: route.arrival_status_code, eta_formated: route.arrival_eta_formated };
 
           updateStopAndStoreStatusContent(startStop.first(), startAdapter);
           updateStopAndStoreStatusContent(startStop.last(), stopAdapter);
 
-          route.stops.forEach(function(stop) {
+          $.each(route.stops, function(i, stop) {
             var sort = function(element) {
               return (element.properties.index == stop.index) ? element : void(0);
             };
@@ -466,12 +473,8 @@ var plannings_edit = function(params) {
         data: {
           details: true
         },
-        beforeSend: function() {
-          requestUpdateStopsStatusPending = true;
-        },
-        complete: function() {
-          requestUpdateStopsStatusPending = false;
-        },
+        beforeSend: function() { requestUpdateStopsStatusPending = true },
+        complete: function() { requestUpdateStopsStatusPending = false },
         success: function(data) {
           if (data && data.errors) {
             nbBackgroundTaskErrors++;
@@ -491,6 +494,52 @@ var plannings_edit = function(params) {
     }
   };
 
+  var requestUpdatedTemperaturePending = false;
+  var requestUpdatedTemperature = function requestUpdatedTemperature(addToTooltip) {
+    if (!requestUpdatedTemperaturePending) {
+      $.ajax({
+        type: 'GET',
+        url: '/api/0.1/vehicles/temperature.json',
+        data: {
+          ids: vehicles_array.map(function(vehicle) { vehicle.id })
+        },
+        dataType: 'json',
+        beforeSend: function() { requestUpdatedTemperaturePending = true },
+        complete: function() { requestUpdatedTemperaturePending = false },
+        success: onReceiveTemperature,
+        error: function () {
+          nbBackgroundTaskErrors++;
+          if (nbBackgroundTaskErrors > 1) clearInterval(backgroundTaskIntervalId);
+        }
+      });
+    }
+
+    function onReceiveTemperature(vehicles) {
+      var i18nTemp = I18n.t('plannings.edit.temperature_label');
+      var i18nStatement = I18n.t('plannings.edit.last_temperature_statement_label');
+
+      $.each(vehicles, function(i, v) {
+        $.each(v.device_infos, function (i, device) {
+          var temp = '#temperature-' + v.vehicle_id + '-' + device.device_id;
+          var tempTxt = i18nTemp + ' ' + device.temperature + 'C°'
+          $(temp).find('span').html(tempTxt);
+
+          var dateStatement = '#last-date-' +v.vehicle_id + '-' + device.device_id;
+          var dateStatementTxt = i18nStatement + ' ' + device.time_formatted
+          $(dateStatement).find('span').html(dateStatementTxt)
+
+          var t = vehicleMarkers[v.vehicle_id].getTooltip();
+          if (addToTooltip && t) {
+            var content = $(t._content);
+            content.find(temp + ' span').html(tempTxt);
+            content.find(dateStatement + ' span').html(dateStatementTxt);
+            vehicleMarkers[v.vehicle_id].setTooltipContent('<div>' + content.html() + '</div>')
+          }
+        });
+      });
+    }
+  }
+
   var backgroundTask = function() {
     if (vehicleIdsPosition.length) {
       requestVehiclePosition();
@@ -498,7 +547,18 @@ var plannings_edit = function(params) {
     if (needUpdateStopStatus) {
       requestUpdateStopsStatus();
     }
+    if (needUpdateTemperature) {
+      requestUpdatedTemperature(true);
+    }
   };
+
+  function initMarkers() {
+    $.each(vehicleIdsPosition, function (i, id) {
+      vehicleMarkers[id] = L.marker(new L.LatLng(0, 0));
+    });
+
+    backgroundTask();
+  }
 
   if (vehicleIdsPosition.length || needUpdateStopStatus) {
     if (vehicleIdsPosition.length) {
@@ -506,7 +566,7 @@ var plannings_edit = function(params) {
       if (!params.overlay_layers) params.overlay_layers = {};
       params.overlay_layers[I18n.t("plannings.edit.vehicles")] = vehicleLayer;
     }
-    backgroundTask();
+    initMarkers();
     backgroundTaskIntervalId = setInterval(backgroundTask, 60000);
     $(document).on('page:before-change', function() {
       clearInterval(backgroundTaskIntervalId);
@@ -669,13 +729,13 @@ var plannings_edit = function(params) {
           dashArray: '10, 10',
           fillPattern: stripes
         } : {
-          color: (zone.vehicle_id && vehicles_usages_map[zone.vehicle_id] ? vehicles_usages_map[zone.vehicle_id].color : '#707070'),
-          fillColor: null,
-          opacity: 0.5,
-          weight: 2,
-          dashArray: 'none',
-          fillPattern: null
-        });
+            color: (zone.vehicle_id && vehicles_usages_map[zone.vehicle_id] ? vehicles_usages_map[zone.vehicle_id].color : '#707070'),
+            fillColor: null,
+            opacity: 0.5,
+            weight: 2,
+            dashArray: 'none',
+            fillPattern: null
+          });
         geom.addTo(layer_zoning);
       }
     });
@@ -900,7 +960,7 @@ var plannings_edit = function(params) {
         $('.color_small', $('.vehicle_select', $(this).parent()).next()).hide();
       else
         $('.color_small', $('.vehicle_select', $(this).parent()).next()).show();
-      routes.forEach(function(route) {
+      $.each(routes, function(i, route) {
         if (route.route_id == id) {
           route.color = color;
           if (!color) {
@@ -909,8 +969,24 @@ var plannings_edit = function(params) {
                 color = vehicles_usages_map[vehicle_id].color;
             }
           }
+          setTooltipColor(route.vehicle_usage_id, color);
         }
       });
+
+      function setTooltipColor(vehicleUsageId, color) {
+        var tooltip;
+        if (vehicleMarkers.length
+          && vehicleMarkers[vehicleUsageId]
+          && (tooltip = vehicleMarkers[vehicleUsageId].getTooltip())) {
+          var content = $(tooltip._content);
+          content.children(":first").css({
+            'border': '0.3em solid ' + color,
+          });
+          content.find('#vehicle-name').css('background-color', color)
+          vehicleMarkers[vehicleUsageId].setTooltipContent('<div>' + content.html() + '</div>');
+        }
+      }
+
       $.ajax({
         type: 'PUT',
         data: JSON.stringify({
@@ -1068,9 +1144,24 @@ var plannings_edit = function(params) {
             }),
             contentType: 'application/json',
             url: '/api/0.1/plannings/' + planning_id + '/routes/' + id + '.json',
+            success: function (response) {
+              setTooltipRef(response.vehicle_usage_id, ref);
+            },
             error: ajaxError
           });
         });
+
+        function setTooltipRef(vehicleUsageId, ref) {
+          var tooltip;
+          if (vehicleMarkers.length
+            && vehicleMarkers[vehicleUsageId]
+            && (tooltip = vehicleMarkers[vehicleUsageId].getTooltip())) {
+            var content = $(tooltip._content);
+            var name = vehicles_usages_map[vehicleUsageId].name;
+            content.find('#vehicle-name').html(ref + ' ' + name);
+            vehicleMarkers[vehicleUsageId].setTooltipContent('<div>' + content.html() + '</div>');
+          }
+        }
 
       /** move_stops */
       $('#planning-move-stops-modal').on('show.bs.modal', function(ev) {
@@ -1181,7 +1272,7 @@ var plannings_edit = function(params) {
       var getVehicleQuantities = function(vehicleUsageId) {
         var quantities;
         try {
-          Object.keys(vehicles_usages_map).forEach(function(index) {
+          $.each(Object.keys(vehicles_usages_map), function(i, index) {
             if (vehicles_usages_map[index].vehicle_usage_id === parseInt(vehicleUsageId)) {
               quantities = vehicles_usages_map[index].vehicle_quantities;
               throw {};
@@ -1411,6 +1502,7 @@ var plannings_edit = function(params) {
             }
           }
         });
+        requestUpdatedTemperature();
       }
       else {
         routesLayer.showAllRoutes();
@@ -1443,6 +1535,8 @@ var plannings_edit = function(params) {
         route.i18n = mustache_i18n;
         route.planning_id = data.id;
         route.routes = routes;
+        route.devices = routes_devices.find(function(r) { return route.vehicle_id == r.vehicle_id }).devices;
+
         $.extend(route, params.manage_planning);
 
         $(".route[data-route_id='" + route.route_id + "']").html(SMT['routes/edit'](route));
@@ -1470,6 +1564,9 @@ var plannings_edit = function(params) {
       });
 
       routesLayer.refreshRoutes(routeIds, routes);
+      if (needUpdateTemperature) {
+        requestUpdatedTemperature();
+      }
     }
     // 3rd case: only stops needs to be refreshed, for instance after moving stop
     else if (typeof options === 'object' && options.partial === 'stops') {
@@ -1477,12 +1574,13 @@ var plannings_edit = function(params) {
         route.i18n = mustache_i18n;
         route.planning_id = data.id;
         route.routes = routes;
+
         $.extend(route, params.manage_planning);
 
         $(".route[data-route_id='" + route.route_id + "'] .route-details").html(SMT['stops/list'](route));
 
         if (!options || !options.skipMap) {
-          routesLayer.refreshRoutes([route.route_id], routes);
+          routesLayer.refreshRoutes([route.route_id], routes)
         }
       });
 
@@ -1700,9 +1798,35 @@ var plannings_edit = function(params) {
   });
 
   var displayPlanningFirstTime = function(data) {
+    routes_devices = cacheDevices(data.routes);
+    $.each(routes_devices, function(i, d) {
+      vehicleMarkers[d.vehicle_id].bindTooltip(SMT['devices/tooltip']({
+        vehicle_id: d.vehicle_id,
+        name: d.vehicle_name,
+        devices: d.devices,
+        text: d.text,
+        color: d.color,
+        i18n: mustache_i18n
+      }), { className: 'marker-tooltip', opacity: 1 });
+    });
+    backgroundTask();
     displayPlanning(data, {
       firstTime: true
     });
+
+    function cacheDevices(routes) {
+      return routes.reduce(function (prev, current) {
+        if (current.devices) {
+          prev.push({
+            vehicle_name: current.name,
+            vehicle_id: current.vehicle_id,
+            devices: current.devices,
+            color: current.color
+          });
+        }
+        return prev;
+      }, []);
+    }
   };
 
   var checkForDisplayPlanningFirstTime = function(data) {

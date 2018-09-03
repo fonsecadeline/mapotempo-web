@@ -157,6 +157,7 @@ class V01::Api < Grape::API
   mount V01::Devices::SuiviDeFlotte
   mount V01::Devices::Notico
   mount V01::Devices::Praxedo
+  mount V01::Devices::Sopac
 
   # Tools
   mount V01::Geocoder

@@ -1411,6 +1411,10 @@ en:
       over_max_limit: "You have reached the plans number limit for your account (Account Limit: %{limit})"
       routes_by_vehicles: 'Show all routes from'
     edit:
+      sopac_title: Temperature statement
+      device_name_label: 'Device Name :'
+      last_temperature_statement_label: 'Last statement :'
+      temperature_label: 'Temperature :'
       vehicles: Vehicles
       marker_clusters: Switch clusters of stops
       current_position: 'Vehicle position:'

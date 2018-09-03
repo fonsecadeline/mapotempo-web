@@ -62,7 +62,11 @@ module RoutesHelper
 
     devices_route.each do |key, value|
       if devices && devices.has_key?(key)
-        match_device = devices[key].select{ |dv| dv[:id] == value }.first
+        match_device = if value.is_a?(Array)
+          { items: devices[key].select{ |dv| value.include? dv[:id] } }
+        else
+          devices[key].find{ |dv| dv[:id] == value }
+        end
         route_devices_hash[key] = match_device unless match_device.nil? || match_device.empty?
       else
         route_devices_hash[key] = value
