@@ -131,7 +131,6 @@
         </ul>
       {{/route_error}}
     </div>
-
     {{#store_start}}
     <ul class="stops list-group" {{#hidden}}style="display: none;"{{/hidden}}>
       <li data-store_id="{{id}}" class="{{type}}{{#error}} ui-state-error{{/error}} list-group-item">
@@ -174,6 +173,7 @@
         </ul>
       {{/start_with_service}}
     {{/store_start}}
+
 
     <ul class="stops sortable list-group" {{#hidden}}style="display: none;"{{/hidden}}>
     {{#stops}}
@@ -259,7 +259,6 @@
       <div class="load-stops" title="{{#i18n}}plannings.edit.without_stops_title{{/i18n}}"><i class="fa fa-list fa-fw"></i> {{#i18n}}plannings.edit.load_stops{{/i18n}}</div>
     {{/size}}{{/with_stops}}
     </ul>
-
     {{#store_stop}}
     <ul class="stops list-group" {{#hidden}}style="display: none;"{{/hidden}}>
       <li data-store_id="{{id}}" class="{{type}}{{#error}} ui-state-error{{/error}} list-group-item">
@@ -311,6 +310,5 @@
         </ul>
       {{/end_without_service}}
     {{/store_stop}}
-
   {{/vehicle}}
 </div>

@@ -128,8 +128,8 @@ class VehicleUsagesController < ApplicationController
           :snap,
           :strict_restriction
         ],
-         devices: permit_devices,
-         tag_ids: []
+        devices: permit_devices,
+        tag_ids: []
       ])
     if parameters.key?(:vehicle)
       parameters[:vehicle_attributes] = parameters[:vehicle]
@@ -143,16 +143,21 @@ class VehicleUsagesController < ApplicationController
 
   def permit_devices
     permit = []
+    permit_multiples = []
     Mapotempo::Application.config.devices.to_h.each{ |_device_name, device_object|
       if device_object.respond_to?('definition')
         device_definition = device_object.definition
         if device_definition.key?(:forms) && device_definition[:forms].key?(:vehicle)
           device_definition[:forms][:vehicle].keys.each{ |key|
-            permit << key
+            if key.to_s[-1] == 's'
+              permit_multiples << {key => []}
+            else
+              permit << key
+            end
           }
         end
       end
     }
-    permit
+    permit + permit_multiples
   end
 end

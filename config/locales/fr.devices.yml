@@ -67,6 +67,9 @@ fr:
             code_inter_stop: "Code d'intervention pour l'arrivé"
             code_mat: "Code du matériel à livrer"
             code_route: "Code de la tournée"
+          sopac:
+            username: "Utilisateur"
+            password: "Mot de passe"
       vehicle:
         devices:
           fleet_demo:

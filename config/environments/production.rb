@@ -154,6 +154,8 @@ Rails.application.configure do
   config.devices.trimble.api_url = 'https://soap.box.trimbletl.com/fleet-service/'
   config.devices.suivi_de_flotte.api_url = 'https://webservice.suivideflotte.net/service/'
   config.devices.praxedo.api_url = 'https://ww2.praxedo.com/eTech/services/'
+  config.devices.sopac.api_url = "https://restservice1.bluconsole.com/bluconsolerest/1.0/resources/devices"
+
   config.devices.cache_object = cache_factory('devices', 30)
 
   config.delayed_job_use = true

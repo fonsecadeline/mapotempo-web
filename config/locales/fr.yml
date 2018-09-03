@@ -1518,6 +1518,10 @@
         le support si vous avez besoin de plus de plans.'
       'routes_by_vehicles': 'Afficher toutes les tournées de'
     'edit':
+      'sopac_title': 'Relevé de température'
+      'device_name_label': 'Nom de l''appareil :'
+      'last_temperature_statement_label': 'Dernier relevé :'
+      'temperature_label': 'Température :'
       'vehicles': 'Véhicules'
       'marker_clusters': 'Activer/Désactiver les groupes de points'
       'current_position': 'Position véhicule :'

@@ -240,9 +240,35 @@
       </div>
     {{/vehicle}}
   </div>
-  <div class="route-details">
+  <div>
+    {{#devices}}
+      {{#sopac_ids}}
+      <div class="temperature-info">
+        <h6>{{#i18n}}plannings.edit.sopac_title{{/i18n}}</h6>
+        {{#items}}
+        <hr>
+          <div>
+            <span id="label-{{vehicle_id}}-{{id}}">
+              <i class="fa fa-wifi fa-fw"></i><span>{{#i18n}}plannings.edit.device_name_label{{/i18n}} {{text}}</span>
+            </span>
+          </div>
+          <div>
+            <span id="temperature-{{vehicle_id}}-{{id}}">
+              <i class="fa fa-thermometer-half fa-fw"></i><span>{{#i18n}}plannings.edit.temperature_label{{/i18n}}</span>
+            </span>
+          </div>
+          <div>
+            <span id="last-date-{{vehicle_id}}-{{id}}">
+              <i class="fa fa-clock-o fa-fw"></i><span>{{#i18n}}plannings.edit.last_temperature_statement_label{{/i18n}}</span>
+            </span>
+          </div>
+          {{/items}}
+      </div>
+      {{/sopac_ids}}
+    {{/devices}}
+    <div class="route-details">
     {{> stops/list}}
+    </div>
   </div>
-
 </div>
 
