@@ -528,8 +528,10 @@ var plannings_edit = function(params) {
           var dateStatementTxt = i18nStatement + ' ' + device.time_formatted
           $(dateStatement).find('span').html(dateStatementTxt)
 
-          var t = vehicleMarkers[v.vehicle_id].getTooltip();
-          if (addToTooltip && t) {
+          var t;
+          if (addToTooltip
+            && vehicleMarkers[v.vehicle_id]
+            && (t = vehicleMarkers[v.vehicle_id].getTooltip())) {
             var content = $(t._content);
             content.find(temp + ' span').html(tempTxt);
             content.find(dateStatement + ' span').html(dateStatementTxt);
@@ -1800,14 +1802,16 @@ var plannings_edit = function(params) {
   var displayPlanningFirstTime = function(data) {
     routes_devices = cacheDevices(data.routes);
     $.each(routes_devices, function(i, d) {
-      vehicleMarkers[d.vehicle_id].bindTooltip(SMT['devices/tooltip']({
-        vehicle_id: d.vehicle_id,
-        name: d.vehicle_name,
-        devices: d.devices,
-        text: d.text,
-        color: d.color,
-        i18n: mustache_i18n
-      }), { className: 'marker-tooltip', opacity: 1 });
+      if (vehicleMarkers[d.vehicle_id]) {
+        vehicleMarkers[d.vehicle_id].bindTooltip(SMT['devices/tooltip']({
+          vehicle_id: d.vehicle_id,
+          name: d.vehicle_name,
+          devices: d.devices,
+          text: d.text,
+          color: d.color,
+          i18n: mustache_i18n
+        }), { className: 'marker-tooltip', opacity: 1 });
+      }
     });
     backgroundTask();
     displayPlanning(data, {
