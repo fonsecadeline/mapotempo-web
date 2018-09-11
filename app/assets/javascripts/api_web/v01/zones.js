@@ -121,8 +121,6 @@ const api_web_v01_zones_index = function(params) {
   };
 
   const displayZoning = function(data) {
-    api_web_v01_display_destinations_('destinations', map, data);
-
     map.storesLayers.clearLayers();
     $.each(data.stores, function(i, store) {
       store.store = true;
@@ -151,6 +149,9 @@ const api_web_v01_zones_index = function(params) {
       addZone(zone, geom);
     });
 
+    if (markersGroup) {
+      markersGroup.showAllDestinations(destinationsParams);
+    }
     var bounds = featureGroup.getBounds();
     if (bounds && bounds.isValid() && fitBounds) {
       map.fitBounds(bounds, {
@@ -162,11 +163,29 @@ const api_web_v01_zones_index = function(params) {
 
   progressBar && progressBar.advanceTo(50);
   var ajaxParams = {};
+  var destinationsParams = {};
+  var markersGroup;
+
   if (params.zone_ids) ajaxParams.ids = params.zone_ids.join(',');
-  if (params.destinations) ajaxParams.destinations = params.destinations;
-  if (params.destination_ids && !params.destinations) ajaxParams.destination_ids = params.destination_ids.join(',');
+  if (params.destination_ids && !params.destinations) destinationsParams.destination_ids = params.destination_ids.join(',');
   if (params.vehicle_usage_set_id) ajaxParams.vehicle_usage_set_id = params.vehicle_usage_set_id;
   if (params.store_ids) ajaxParams.store_ids = params.store_ids.join(',');
+
+  if (destinationsParams.destination_ids || params.destinations) {
+
+    markersGroup = new RoutesLayer(null, {
+      routes: params.routes_array,
+      colorsByRoute: params.colors_by_route,
+      appBaseUrl: '/api-web/0.1/',
+      withPolylines: false,
+      popupOptions: {
+        isoline: false,
+      },
+      disableClusters: true,
+    }).addTo(map);
+    L.disableClustersControl(map, markersGroup);
+  }
+
   $.ajax({
     url: '/api-web/0.1/zonings/' + params.zoning_id + '/zones.json',
     method: params.method,

@@ -48,6 +48,13 @@ class DestinationsController < ApplicationController
   end
 
   def show
+    # Not for save/update
+    # => Allow using different graph
+    @customer = current_user.customer
+    @destination = Destination.find params[:id] || params[:destination_id]
+    respond_to do |format|
+      format.json
+    end
   end
 
   def new

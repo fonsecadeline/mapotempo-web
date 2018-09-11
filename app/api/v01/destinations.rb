@@ -49,6 +49,50 @@ class V01::Destinations < Grape::API
 
       p.permit(:ref, :name, :street, :detail, :postalcode, :city, :state, :country, :lat, :lng, :comment, :phone_number, :geocoding_accuracy, :geocoding_level, tag_ids: [], visits_attributes: [:id, :ref, :take_over, :open1, :close1, :open2, :close2, :priority, tag_ids: [], quantities: current_customer.deliverable_units.map{ |du| du.id.to_s }])
     end
+
+    def present_geojson_destinations(params)
+      destinations = if params.key?(:ids)
+        ids = params[:ids].split(',')
+        current_customer.destinations.includes_visits.select{ |destination|
+          params[:ids].any?{ |s| ParseIdsRefs.match(s, destination) }
+        }
+      else
+        current_customer.destinations.includes_visits
+      end
+      '{"type":"FeatureCollection","features":[' + destinations.map { |d|
+          feat = {
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [d.lng.round(5), d.lat.round(5)]
+            },
+            properties: {
+              destination_id: d.id,
+              color: d.visits_color,
+              icon: d.visits_icon,
+              icon_size: d.visits_icon_size
+            }
+          }
+          feat[:properties][:quantities] = d.visits.map { |v|
+            with_quantities(v)
+          }.flatten if params[:quantities]
+        feat[:properties][:nb_visit] = d.visits.length
+        feat.to_json
+      }.compact.join(',') + ']}'
+    end
+
+    def with_quantities(visit)
+      quantities = visit.default_quantities.map { |k, value|
+        if value
+          {
+            deliverable_unit_id: k,
+            quantity: value
+          }
+        end
+      }.compact
+    end
+
+    ID_DESC = 'Id or the ref field value, then use "ref:[value]".'.freeze
   end
 
   resource :destinations do
@@ -58,16 +102,21 @@ class V01::Destinations < Grape::API
       success: V01::Entities::Destination
     params do
       optional :ids, type: Array[String], desc: 'Select returned destinations by id separated with comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
+      optional :quantities, type: Boolean, default: false, desc: 'Include the quantities when using geojson output.'
     end
     get do
-      destinations = if params.key?(:ids)
-        current_customer.destinations.includes_visits.select{ |destination|
-          params[:ids].any?{ |s| ParseIdsRefs.match(s, destination) }
-        }
+      if env['api.format'] == :geojson
+        present_geojson_destinations params
       else
-        current_customer.destinations.includes_visits.load
+        destinations = if params.key?(:ids)
+          current_customer.destinations.includes_visits.select{ |destination|
+            params[:ids].any?{ |s| ParseIdsRefs.match(s, destination) }
+          }
+        else
+          current_customer.destinations.includes_visits.load
+        end
+        present destinations, with: V01::Entities::Destination
       end
-      present destinations, with: V01::Entities::Destination
     end
 
     desc 'Fetch destination.',

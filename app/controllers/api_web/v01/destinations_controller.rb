@@ -65,6 +65,16 @@ class ApiWeb::V01::DestinationsController < ApiWeb::V01::ApiWebController
     @method = request.method_symbol
   end
 
+  def show
+    # Not for save/update
+    # => Allow using different graph
+    @customer = current_user.customer
+    @destination = Destination.find params[:id] || params[:destination_id]
+    respond_to do |format|
+      format.json
+    end
+  end
+
   def edit_position
   end
 

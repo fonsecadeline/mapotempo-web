@@ -74,6 +74,9 @@ const popupModule = (function() {
           url += 'visits/' + marker.properties.visit_id + '.json';
         else if (marker.properties.route_id)
           url += 'routes/' + marker.properties.route_id + '/stops/by_index/' + marker.properties.index + '.json';
+        else if (marker.properties.destination_id) {
+          url += `destinations/${marker.properties.destination_id}.json`
+        }
 
         getPopupContent(url, marker, map);
 
@@ -281,7 +284,8 @@ export const RoutesLayer = L.FeatureGroup.extend({
     withPolylines: true,
     withQuantities: false,
     disableClusters: false,
-    showPopupOnHover: true
+    showPopupOnHover: true,
+    showStore: false,
   },
 
   // Clusters for each route
@@ -368,7 +372,7 @@ export const RoutesLayer = L.FeatureGroup.extend({
       this.markerOptions.disableClusteringAtZoom = this.options.disableClusters ? 0 : 19;
     }
 
-    if (!planningId) {
+    if (!planningId && options.showStore) {
       this._loadAllStores(); // if no planning id: load all stores for zoning view
     }
 
@@ -545,6 +549,11 @@ export const RoutesLayer = L.FeatureGroup.extend({
     }
   },
 
+  showAllDestinations: function(options, callback) {
+    this.hideAllRoutes();
+    this._loadAllDestinations(options, callback);
+  },
+
   hideAllRoutes: function() {
     if (!this.planningId) {
       for (var routeByClusterId in this.clustersByRoute) {
@@ -686,6 +695,23 @@ export const RoutesLayer = L.FeatureGroup.extend({
       beforeSend: beforeSendWaiting,
       success: function(data) {
         this._addRoutes(data);
+      }.bind(this),
+      complete: completeAjaxMap,
+      error: ajaxError
+    });
+  },
+
+  _loadAllDestinations: function(options, callback) {
+    const requestData = options || {}
+    $.ajax({
+      url: '/api/0.1/destinations.geojson',
+      data: requestData,
+      beforeSend: beforeSendWaiting,
+      success: function(data) {
+        this._addRoutes(data);
+        if (callback) {
+          callback(data);
+        }
       }.bind(this),
       complete: completeAjaxMap,
       error: ajaxError

@@ -93,7 +93,8 @@ export const zonings_edit = function(params) {
     popupOptions: {
       isoline: false
     },
-    disableClusters: params.disable_clusters
+    disableClusters: params.disable_clusters,
+    showStore: true
   }).addTo(map);
 
   var zonesMap = {};
@@ -204,12 +205,16 @@ export const zonings_edit = function(params) {
         quantities = {};
       markers.forEach(function(marker) {
         if (leafletPip.pointInLayer(marker.getLatLng(), layer, true).length > 0) {
-          n += 1;
           if (marker.properties) {
-            $.each(marker.properties.quantities, function(i, q) {
-              var quantity = quantities[q.deliverable_unit_id] ? (parseFloat(quantities[q.deliverable_unit_id]) + parseFloat((q.quantity))) : parseFloat(q.quantity);
-              quantities[q.deliverable_unit_id] = quantity && Math.round(quantity * 100) / 100;
-            });
+            const nb_visits = marker.properties.nb_visit;
+            n += nb_visits ? nb_visits : 1;
+
+            if (marker.properties.quantities) {
+              marker.properties.quantities.forEach((q) => {
+                var quantity = quantities[q.deliverable_unit_id] ? (parseFloat(quantities[q.deliverable_unit_id]) + parseFloat((q.quantity))) : parseFloat(q.quantity);
+                quantities[q.deliverable_unit_id] = quantity && Math.round(quantity * 100) / 100;
+              });
+            }
           }
         }
       });
@@ -474,17 +479,9 @@ export const zonings_edit = function(params) {
       }
     });
 
-    if (fitBounds) {
-      var bounds = (featureGroup.getLayers().length ? featureGroup : markersGroup).getBounds();
-      if (bounds && bounds.isValid()) {
-        map.invalidateSize();
-        map.fitBounds(bounds, {
-          maxZoom: 15,
-          animate: false,
-          padding: [20, 20]
-        });
-      }
-    }
+    var group = (featureGroup.getLayers().length ? featureGroup : markersGroup)
+
+    resetBounds(group);
   };
 
   var displayZoningFirstTime = function(data) {
@@ -494,17 +491,7 @@ export const zonings_edit = function(params) {
         $.each(featureGroup.getLayers(), function(idx, zone) {
           countPointInPolygon(zonesMap[zone._leaflet_id].layer, zonesMap[zone._leaflet_id].ele);
         });
-        if (fitBounds && featureGroup.getLayers().length == 0) {
-          var bounds = markersGroup.getBounds();
-          if (bounds && bounds.isValid()) {
-            map.invalidateSize();
-            map.fitBounds(bounds, {
-              maxZoom: 15,
-              animate: false,
-              padding: [20, 20]
-            });
-          }
-        }
+        resetBounds(markersGroup);
       });
     }
   };
@@ -535,11 +522,13 @@ export const zonings_edit = function(params) {
   $('[name=all-destinations]').change(function() {
     if ($(this).is(':checked')) {
       if (!destLoaded) {
-        markersGroup.showAllRoutes({}, function() {
-          destLoaded = true;
-          $.each(featureGroup.getLayers(), function(idx, zone) {
-            countPointInPolygon(zonesMap[zone._leaflet_id].layer, zonesMap[zone._leaflet_id].ele);
-          });
+        markersGroup.showAllDestinations({ quantities: true }, function() {
+            destLoaded = true;
+            $.each(featureGroup.getLayers(), function(idx, zone) {
+              countPointInPolygon(zonesMap[zone._leaflet_id].layer, zonesMap[zone._leaflet_id].ele);
+            });
+            fitBounds = true;
+            resetBounds(markersGroup);
         });
       } else {
         markersGroup.showClusters();
@@ -705,6 +694,20 @@ export const zonings_edit = function(params) {
     complete: completeWaiting,
     error: ajaxError
   });
+
+  function resetBounds(group) {
+    if (fitBounds) {
+      var bounds = group.getBounds();
+      if (bounds && bounds.isValid()) {
+        map.invalidateSize();
+        map.fitBounds(bounds, {
+          maxZoom: 15,
+          animate: false,
+          padding: [20, 20]
+        });
+      }
+    }
+  }
 };
 
 Paloma.controller('Zonings', {
