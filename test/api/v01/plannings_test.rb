@@ -339,7 +339,7 @@ class V01::PlanningsTest < V01::PlanningsBaseTest
         after_initialize :after_init
 
         def after_init
-          raise
+          raise 'Stop should not be loaded'
         end
       end
 

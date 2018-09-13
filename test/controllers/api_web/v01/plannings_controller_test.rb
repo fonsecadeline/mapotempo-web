@@ -32,7 +32,7 @@ class ApiWeb::V01::PlanningsControllerTest < ActionController::TestCase
       Stop.class_eval do
         after_initialize :after_init
         def after_init
-          raise
+          raise 'Stop should not be loaded'
         end
       end
       get :edit, id: @planning

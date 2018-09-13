@@ -168,7 +168,7 @@ class PlanningsControllerTest < ActionController::TestCase
       Stop.class_eval do
         after_initialize :after_init
         def after_init
-          raise
+          raise 'Stop should not be loaded'
         end
       end
       get :show, format: :json, id: @planning, with_stops: false
@@ -298,7 +298,7 @@ class PlanningsControllerTest < ActionController::TestCase
       Stop.class_eval do
         after_initialize :after_init
         def after_init
-          raise
+          raise 'Stop should not be loaded'
         end
       end
       get :edit, id: @planning
@@ -349,7 +349,7 @@ class PlanningsControllerTest < ActionController::TestCase
       Stop.class_eval do
         after_initialize :after_init
         def after_init
-          raise if self.route_id != $origin_route_id && self.route_id != $destination_route_id
+          raise 'Stop should not be loaded' if self.route_id != $origin_route_id && self.route_id != $destination_route_id
         end
       end
 
@@ -473,7 +473,7 @@ class PlanningsControllerTest < ActionController::TestCase
       Stop.class_eval do
         after_initialize :after_init
         def after_init
-          raise if self.route_id != $origin_route_id && self.route_id != $destination_route_id
+          raise 'Stop should not be loaded' if self.route_id != $origin_route_id && self.route_id != $destination_route_id
         end
       end
 
@@ -514,7 +514,7 @@ class PlanningsControllerTest < ActionController::TestCase
       Stop.class_eval do
         after_initialize :after_init
         def after_init
-          raise if self.route_id != $route_id
+          raise 'Stop should not be loaded' if self.route_id != $route_id
         end
       end
 
@@ -549,7 +549,7 @@ class PlanningsControllerTest < ActionController::TestCase
       Stop.class_eval do
         after_initialize :after_init
         def after_init
-          raise if self.route_id != $route_id
+          raise 'Stop should not be loaded' if self.route_id != $route_id
         end
       end
 
@@ -701,7 +701,7 @@ class PlanningsControllerTest < ActionController::TestCase
       Stop.class_eval do
         after_initialize :after_init
         def after_init
-          raise if self.route_id != $route_id
+          raise 'Stop should not be loaded' if self.route_id != $route_id
         end
       end
 
@@ -724,7 +724,7 @@ class PlanningsControllerTest < ActionController::TestCase
         after_initialize :after_init
 
         def after_init
-          raise if self.route_id != $route_id
+          raise 'Stop should not be loaded' if self.route_id != $route_id
         end
       end
 
@@ -803,7 +803,7 @@ class PlanningsControllerTest < ActionController::TestCase
       Stop.class_eval do
         after_initialize :after_init
         def after_init
-          raise if self.route_id != $origin_route_id && self.route_id != $destination_route_id
+          raise 'Stop should not be loaded' if self.route_id != $origin_route_id && self.route_id != $destination_route_id
         end
       end
 
@@ -853,7 +853,7 @@ class PlanningsControllerTest < ActionController::TestCase
       Stop.class_eval do
         after_initialize :after_init
         def after_init
-          raise if self.route_id != $route_id
+          raise 'Stop should not be loaded' if self.route_id != $route_id
         end
       end
 
@@ -910,7 +910,7 @@ class PlanningsControllerTest < ActionController::TestCase
       Stop.class_eval do
         after_initialize :after_init
         def after_init
-          raise if self.route_id != $origin_route_id && self.route_id != $destination_route_id
+          raise 'Stop should not be loaded' if self.route_id != $origin_route_id && self.route_id != $destination_route_id
         end
       end
 
@@ -946,7 +946,7 @@ class PlanningsControllerTest < ActionController::TestCase
       Stop.class_eval do
         after_initialize :after_init
         def after_init
-          raise if self.route_id != $route_id
+          raise 'Stop should not be loaded' if self.route_id != $route_id
         end
       end
 
@@ -974,7 +974,7 @@ class PlanningsControllerTest < ActionController::TestCase
       Stop.class_eval do
         after_initialize :after_init
         def after_init
-          raise if self.route_id != $route_id
+          raise 'Stop should not be loaded' if self.route_id != $route_id
         end
       end
 
@@ -998,7 +998,7 @@ class PlanningsControllerTest < ActionController::TestCase
         after_initialize :after_init
 
         def after_init
-          raise if self.route_id != $route_id
+          raise 'Stop should not be loaded' if self.route_id != $route_id
         end
       end
 

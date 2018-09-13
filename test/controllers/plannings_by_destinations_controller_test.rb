@@ -28,7 +28,7 @@ class PlanningsByDestinationsControllerTest < ActionController::TestCase
       Stop.class_eval do
         after_initialize :after_init
         def after_init
-          raise unless $stop_ids.include? self.id
+          raise 'Stop should not be loaded' unless $stop_ids.include? self.id
         end
       end
       get :show, destination_id: @destination.id

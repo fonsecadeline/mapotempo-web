@@ -442,7 +442,7 @@ class CustomerTest < ActiveSupport::TestCase
         after_initialize :after_init_enable_multi_visits
 
         def after_init_enable_multi_visits
-          raise
+          raise 'Planning should not be loaded'
         end
       end
 
