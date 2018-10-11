@@ -401,6 +401,8 @@ var plannings_edit = function(params) {
       var hadStatus = !($elt.css('display') == 'none');
 
       if (el.status) { $elt.show(); } else { $elt.hide(); }
+      if (el.eta_formated) { content.find('.toggle-status-eta').show()} else { content.find('.toggle-status-eta').hide() }
+
       $elt = content.find('.' + klass);
 
       $.each($elt, function(i, elt) {
@@ -413,9 +415,14 @@ var plannings_edit = function(params) {
         }
       });
       var name = content.find('.title .name');
-      name.attr('title') && (!el.status || name.attr('title').search(el.status) == -1) && name.attr({
-        title: name.attr('title').substr(0, hadStatus ? name.attr('title').lastIndexOf(' - ') : name.attr('title').length) + (el.status ? ' - ' + el.status : '')
-      });
+      if (name.attr('title')
+        && (!el.status || name.attr('title').search(el.status) == -1)) {
+        var title = name.attr('title').substr(0, hadStatus ? name.attr('title').lastIndexOf(' - ') : name.attr('title').length) + (el.status ? ' - ' + el.status : '')
+        title += (el.eta_formated ? ' - ' + I18n.t('plannings.edit.popup.eta') + ' ' + el.eta_formated : '');
+        name.attr({
+          title: title
+        });
+      }
       name = content.find('.status');
       if (name.text() != el.status) name.text(el.status);
       name = content.find('.eta');
