@@ -83,7 +83,7 @@ var planningsShow = function(params) {
     if (!vehicleId) return [];
     var capacities = vehiclesUsagesByPlanning[planningId][vehicleId];
     return Object.keys(capacities.default_capacities).map(function(id) {
-      var quantity = planningQuantities[planningId].find(function(qua) { return qua.id === parseInt(id); });
+      var quantity = $.grep(planningQuantities[planningId], function(obj){return obj.id === parseInt(id);})[0]
       if (quantity) return {id: id, capacity: capacities.default_capacities[id], label: quantity.label, unitIcon: quantity.unit_icon};
     }).filter(function(element) { return element; });
   };
@@ -139,7 +139,7 @@ var planningsShow = function(params) {
         ajaxError(request, status, error);
         completeWaiting();
       },
-      success: function(data) { 
+      success: function(data) {
         planningQuantities[planningId] = data;
         completeWaiting();
         fnct();
@@ -283,7 +283,7 @@ var planningsShow = function(params) {
     templateSelection: templateVehicle,
     templateResult: templateVehicle
   }).change(function() { calculateCapacities(); });
-  $('#visits_filter').on('table.filtered', function() { 
+  $('#visits_filter').on('table.filtered', function() {
     calculateCapacities();
   });
   $('#visits .stop-id').change(function() { calculateCapacities(); });
