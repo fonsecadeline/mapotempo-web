@@ -227,7 +227,16 @@ controller.js(
   planning_id: @planning.id,
   planning_ref: @planning.ref,
   user_api_key: current_user.api_key,
-  routes_array: @planning.routes.map{ |r| { route_id: r.id, color: r.default_color, vehicle_usage_id: r.vehicle_usage_id, ref: r.ref, outdated: r.outdated } },
+  routes_array: @planning.routes.map{ |r|
+    {
+      route_id: r.id,
+      color: r.default_color,
+      vehicle_usage_id: r.vehicle_usage_id,
+      ref: r.ref,
+      outdated: r.outdated,
+      fleet_user: r.vehicle_usage ? r.vehicle_usage.vehicle.devices[:fleet_user] : ''
+    }
+  },
   zoning_ids: @planning.zonings.collect(&:id),
   map_layers: Hash[layers.map{ |l| l[:name] }.zip(layers)],
   map_lat: @planning.vehicle_usage_set.vehicle_usages.active.collect(&:default_store_start).compact.find{ |s| s.lat }.try(:lat) || @planning.customer.default_position[:lat],

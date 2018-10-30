@@ -1368,11 +1368,11 @@ var plannings_edit = function(params) {
             vehicle_usage_id: route.vehicle_usage_id,
             ref: route.ref,
             name: (route.ref ? (route.ref + ' ') : '') + vehicle_usage.name,
+            fleet_user: route.fleet_user === undefined ? rv.fleet_user : route.fleet_user,
             outdated: route.outdated,
             devices: route.devices
           };
       });
-
       updateColorsForRoutesAndStops(i, route);
     });
 
@@ -1935,7 +1935,11 @@ var plannings_edit = function(params) {
       var container = $("[data-route_id='" + route.id + "'] .last-sent-at", _context);
       route.i18n = mustache_i18n;
       container.html(SMT['routes/last_sent_at'](route));
-      route.last_sent_at ? container.show() : container.hide();
+      if (route.last_sent_at) {
+        _showLastSentAt(route);
+      } else {
+        _clearLastSentAt(route);
+      }
     };
 
     var _setPlanningRoutesLastSentAt = function(routes) {
@@ -1948,6 +1952,10 @@ var plannings_edit = function(params) {
       $("[data-route_id='" + route.id + "'] .last-sent-at", _context).hide();
     };
 
+    var _showLastSentAt = function(route) {
+      $("[data-route_id='" + route.id + "'] .last-sent-at", _context).show();
+    };
+
     var _clearPlanningRoutesLastSentAt = function(routes) {
       $.each(routes, function(i, route) {
         _clearLastSentAt(route);
@@ -1958,10 +1966,16 @@ var plannings_edit = function(params) {
     var _fetchFleetRoutes = function(vehicleRoutesArray) {
       for (var index = 0; index < vehicleRoutesArray.length; index++) {
         var obj = vehicleRoutesArray[index];
-        for (var rbv = 0; rbv < obj.routes_by_vehicle.length; rbv++) {
-          var route = $.grep(routes, function(route){return route.ref === obj.routes_by_vehicle[rbv].vehicle_name;})[0]
-          route.devices.fleet_user.color = route.color;
-          obj.routes_by_vehicle[rbv].devices = route.devices;
+        for (var rbv = 0; rbv < obj.routes_by_fleet_user.length; rbv++) {
+          var route = $.grep(routes, function(route) {
+            return route.fleet_user === obj.routes_by_fleet_user[rbv].fleet_user;
+          })[0];
+          if (route) {
+            if (route.devices) {
+              route.devices.fleet_user.color = route.color;
+              obj.routes_by_fleet_user[rbv].devices = route.devices;
+            }
+          }
         }
       }
 
@@ -2007,6 +2021,7 @@ var plannings_edit = function(params) {
           },
           success: function(data) {
             if (data && data.error) { stickyError(data.error); return; }
+            _setPlanningRoutesLastSentAt(data);
             notice(I18n.t('plannings.edit.fleet_clear.success'));
           },
           complete: function() {
@@ -2042,12 +2057,13 @@ var plannings_edit = function(params) {
           return;
         }
 
-        var service_translation = 'plannings.edit.dialog.' + service + '.in_progress';
+        var serviceInProgress = 'plannings.edit.dialog.' + service + '.in_progress';
+        var serviceTitle = 'plannings.edit.dialog.' + service + '.title';
         var dialog = bootstrap_dialog({
           icon: 'fa-bars',
-          title: service && service.substr(0, 1).toUpperCase() + service.substr(1),
+          title: I18n.t(serviceTitle),
           message: SMT['modals/default_with_spinner']({
-            msg: I18n.t(service_translation)
+            msg: I18n.t(serviceInProgress)
           }),
           dataDismiss: true
         });
