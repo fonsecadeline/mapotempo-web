@@ -103,13 +103,19 @@ class V01::Devices::FleetTest < ActiveSupport::TestCase
       route = routes(:route_one_one)
       service = FleetService.new(customer: @customer).service
       ref = service.send(:generate_route_id, route, service.p_time(route, route.start))
+      route.update(last_sent_at: Time.now, last_sent_to: 'Mapo.Live')
 
-      post api('devices/fleet/clear_multiple', { customer_id: @customer.id}), external_refs: [{fleet_user: 'fake_user@example.com', external_ref: ref}]
+      post api('devices/fleet/clear_multiple', customer_id: @customer.id), external_refs: [{fleet_user: 'fake_user@example.com', external_ref: ref}]
+      assert_equal 201, last_response.status
 
-      assert_equal 204, last_response.status, last_response.body
+      assert_equal([route.id, nil, nil, nil],
+        JSON.parse(last_response.body).flat_map{ |rt|
+          [rt['id'], rt['last_sent_to'], rt['last_sent_at'], rt['last_sent_at_formatted']]
+        })
+
       routes = planning.routes.select(&:vehicle_usage_id)
       routes.each(&:reload)
-      routes.each { |route| assert !route.last_sent_at }
+      routes.each { |rt| assert !rt.last_sent_at }
     end
   end
 
@@ -117,7 +123,7 @@ class V01::Devices::FleetTest < ActiveSupport::TestCase
     Time.use_zone(users(:user_one).time_zone) do
       less12_hours = (Time.zone.now - 12.hour).to_date.to_s
       vehicle_1_name = vehicles(:vehicle_one).name
-      stub_request(:get, %r{.*/api/0.1/routes\?from=#{less12_hours}%20\d{2}:\d{2}:\d{2}%20-\d{4}$})
+      stub_request(:get, %r{.*/api/0.1/routes\?from=#{less12_hours}.*$})
         .to_return(status: 200, body: "{
           \"routes\": [
             {
@@ -132,7 +138,7 @@ class V01::Devices::FleetTest < ActiveSupport::TestCase
         }")
 
       get api('devices/fleet/fetch_routes', planning_id: plannings(:planning_one).id)
-      assert_equal vehicle_1_name, JSON.parse(last_response.body).first['routes_by_vehicle'][0]['vehicle_name']
+      assert JSON.parse(last_response.body).first['routes_by_fleet_user'][0]['fleet_user'].is_a? String
     end
   end
 

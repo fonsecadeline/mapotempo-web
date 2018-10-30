@@ -70,8 +70,14 @@ class V01::Devices::Fleet < Grape::API
         end
       end
       post '/clear_multiple' do
-        service.clear_routes_by_external_ref(params[:external_refs])
-        status 204
+        routes = service.clear_routes_by_external_ref(params[:external_refs])
+
+        routes.each { |route|
+          route.clear_sent_to
+          route.save!
+        }
+
+        present routes, with: V01::Entities::DeviceRouteLastSentAt
       end
 
       desc 'Get Fleet routes',
@@ -84,6 +90,7 @@ class V01::Devices::Fleet < Grape::API
       get '/fetch_routes' do
         routes = service.fetch_routes_by_date(params[:from], params[:to], params[:sync_user])
         hash = {}
+
         routes.each do |route|
           route[:date] = I18n.l(Time.parse(route[:date]), format: :long)
           planning = Route.find_by(id: route[:route_id]).try(:planning)
@@ -95,12 +102,13 @@ class V01::Devices::Fleet < Grape::API
             hash[route[:fleet_user]] = [route]
           end
         end
-        hash.map { |k, v|
-          { fleet_user: k,
-            routes_by_vehicle: v.group_by{ |route|
-              route[:name]
+
+        hash.map { |_, v|
+          {
+            routes_by_fleet_user: v.group_by{ |route|
+              route[:fleet_user]
             }.map{ |key, val|
-              { vehicle_name: key, routes: val }
+              { fleet_user: key, routes: val }
             }
           }
         }

@@ -258,7 +258,7 @@ class Fleet < DeviceBase
       {
         mission_type: mission['mission_type'],
         order_id: order_id,
-        route_id: decode_route_id(mission['external_ref']),
+        route_id: decode_route_id_from_mission_ref(mission['external_ref']),
         status: @@order_status[mission['status_type_reference']],
         color: mission['status_type_color'],
         eta: mission['eta']
@@ -267,21 +267,21 @@ class Fleet < DeviceBase
   end
 
   def fetch_routes_by_date(customer, from, to, sync_user)
-    params = {from: from ? from : (Time.zone.now - 12.hour), to: to, user_id: sync_user}
-    url = URI.encode("#{api_url}/api/0.1/routes?" + params.compact.map{ |k, v| "#{k}=#{v}" }.join('&'))
+    params = {from: from || (Time.zone.now - 12.hour), to: to, user_id: sync_user}
+    url = URI.encode("#{api_url}/api/0.1/routes?" + URI.encode_www_form(params.compact))
 
     begin
       response = JSON.parse rest_client_get(url, customer.devices[:fleet][:api_key], nil), symbolize_names: true
     rescue RestClient::Unauthorized, RestClient::InternalServerError, RestClient::ResourceNotFound, RestClient::UnprocessableEntity
-      raise DeviceServiceError.new("Fleet: #{I18n.t('errors.fleet.fetch_routes')}")
+      raise DeviceServiceError, "Fleet: #{I18n.t('errors.fleet.fetch_routes')}"
     end
 
     response[:routes].map do |r|
       {
         name: r[:name],
-        fleet_user: r[:email],
+        fleet_user: r[:sync_user],
         external_ref: r[:external_ref],
-        route_id: decode_route_route_id(r[:external_ref]),
+        route_id: decode_route_id_from_route_ref(r[:external_ref]),
         date: r[:date]
       }
     end
@@ -329,6 +329,10 @@ class Fleet < DeviceBase
     clear_fleet_route(route.vehicle_usage.vehicle.devices[:fleet_user], customer.devices[:fleet][:api_key], fleet_route, delete_missions)
   rescue RestClient::Unauthorized, RestClient::InternalServerError, RestClient::ResourceNotFound, RestClient::UnprocessableEntity
     raise DeviceServiceError.new("Fleet: #{I18n.t('errors.fleet.clear_missions')}")
+  end
+
+  def decode_route_id_from_route_ref(external_ref)
+    external_ref.split('-')[1]
   end
 
   private
@@ -451,12 +455,8 @@ class Fleet < DeviceBase
   end
 
   # Return the route_id only if the current external ref isn't obsolete
-  def decode_route_id(mission_ref)
+  def decode_route_id_from_mission_ref(mission_ref)
     parts = mission_ref.split('-')
     mission_ref.split('-').last if parts.length > 3
-  end
-
-  def decode_route_route_id(route_ref)
-    route_ref.split('-')[1]
   end
 end
