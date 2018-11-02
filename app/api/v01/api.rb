@@ -143,6 +143,7 @@ class V01::Api < Grape::API
   mount V01::Visits
   mount V01::VisitsGet
   mount V01::Zonings
+  mount V01::VisitsByTags
 
   # Devices
   mount V01::Devices::DevicesApi
