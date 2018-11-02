@@ -459,6 +459,7 @@ GEM
     pry-rails (0.3.6)
       pry (>= 0.10.4)
     public_suffix (2.0.5)
+    puma (3.9.1)
     rack (1.6.8)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -762,6 +763,7 @@ DEPENDENCIES
   polylines
   premailer-rails
   pry-rails
+  puma
   rack-cors
   rails (~> 4.2)
   rails-i18n

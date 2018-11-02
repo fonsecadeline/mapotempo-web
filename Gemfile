@@ -50,6 +50,8 @@ group :development do
 end
 
 group :development, :test do
+  gem 'puma'
+
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 
