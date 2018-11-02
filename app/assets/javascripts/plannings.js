@@ -1158,6 +1158,25 @@ var plannings_edit = function(params) {
             },
             error: ajaxError
           });
+        })
+        .on('click', '.lock', function() {
+          var id = $(this).closest("[data-route_id]").attr("data-route_id");
+          var i = $("i", this);
+          i.toggleClass("fa-lock");
+          i.toggleClass("fa-unlock");
+          $(this).toggleClass("btn-default");
+          $(this).toggleClass("btn-warning");
+          var locked = i.hasClass("fa-lock");
+          checkLockAndActive();
+          $.ajax({
+            type: 'PUT',
+            data: JSON.stringify({
+              locked: locked
+            }),
+            contentType: 'application/json',
+            url: '/api/0.1/plannings/' + planning_id + '/routes/' + id + '.json',
+            error: ajaxError
+          });
         });
 
         function setTooltipRef(vehicleUsageId, ref) {
@@ -1329,26 +1348,6 @@ var plannings_edit = function(params) {
         });
       });
       /** End move_stops */
-
-      $(".lock", context).click(function() {
-        var id = $(this).closest("[data-route_id]").attr("data-route_id");
-        var i = $("i", this);
-        i.toggleClass("fa-lock");
-        i.toggleClass("fa-unlock");
-        $(this).toggleClass("btn-default");
-        $(this).toggleClass("btn-warning");
-        var locked = i.hasClass("fa-lock");
-        checkLockAndActive();
-        $.ajax({
-          type: 'PUT',
-          data: JSON.stringify({
-            locked: locked
-          }),
-          contentType: 'application/json',
-          url: '/api/0.1/plannings/' + planning_id + '/routes/' + id + '.json',
-          error: ajaxError
-        });
-      });
 
       $('.load-stops', context).click(function(event) {
         var routeId = $(event.target).closest('[data-route_id]').attr('data-route_id');
