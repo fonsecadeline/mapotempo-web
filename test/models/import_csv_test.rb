@@ -62,4 +62,16 @@ class ImportCsvTest < ActiveSupport::TestCase
     assert_not import_csv.import
     assert_equal I18n.t('errors.planning.import_too_many_routes'), import_csv.errors.messages[:base].first
   end
+
+  test 'should upload plan when vehicle number is equal to maximum allowed and destinations are not affected' do
+    stub_request(:post, %r{/0.1/routes.json}).to_return(status: 200)
+    file = ActionDispatch::Http::UploadedFile.new(tempfile: File.new(Rails.root.join('test/fixtures/files/import_enough_route_for_vehicle_and_destination_not_affected.csv')))
+    file.original_filename = 'import_enough_route_for_vehicle_and_destination_not_affected.csv'
+    customer = customers(:customer_one_other)
+    customer.update(max_vehicles: 1)
+    @importer = ImporterDestinations.new(customer)
+    import_csv = ImportCsv.new(importer: @importer, replace: true, file: file)
+
+    assert import_csv.import
+  end
 end
