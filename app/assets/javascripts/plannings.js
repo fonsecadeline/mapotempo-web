@@ -1454,17 +1454,21 @@ var plannings_edit = function(params) {
         if (v.vehicle_usage_id == route.vehicle_usage_id) vehicle_usage = v;
       });
       $.each(routes, function(i, rv) {
-        if (rv.route_id == route.route_id)
+        if (rv.route_id == route.route_id) {
+          var fleet_user = route.fleet_user || rv.fleet_user;
           routes[i] = {
             route_id: route.route_id,
             color: route.color || vehicle_usage.color,
             vehicle_usage_id: route.vehicle_usage_id,
             ref: route.ref,
             name: (route.ref ? (route.ref + ' ') : '') + vehicle_usage.name,
-            fleet_user: route.fleet_user === undefined ? rv.fleet_user : route.fleet_user,
+            fleet_user: fleet_user,
             outdated: route.outdated,
-            devices: route.devices
+            devices: route.devices || { fleet_user: $.grep(params.devices.fleet_user, function(obj){
+              return obj.id === fleet_user
+            })[0] }
           };
+        }
       });
       updateColorsForRoutesAndStops(i, route);
     });
