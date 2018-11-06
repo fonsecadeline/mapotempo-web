@@ -404,7 +404,7 @@ class ImporterDestinations < ImporterBase
     @plannings.each{ |planning|
       planning.assign_attributes({tags: (@common_tags[planning.ref] || @common_tags[nil] || [])})
       unless planning.set_routes @routes, false, true
-        raise ImportTooManyRoutes.new(I18n.t('errors.planning.import_too_many_routes')) if @routes.keys.size > planning.routes.size || @routes.keys.size > @customer.max_vehicles
+        raise ImportTooManyRoutes.new(I18n.t('errors.planning.import_too_many_routes')) if @routes.keys.size > planning.routes.size || @routes.keys.compact.size > @customer.max_vehicles
       end
       planning.split_by_zones(nil) if @planning_hash.key?(:zonings) || @planning_hash.key?(:zoning_ids)
     }
