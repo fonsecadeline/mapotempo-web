@@ -40,8 +40,8 @@ module PlanningsHelper
     devices = {}
     device_confs = customer.device.configured_definitions || []
 
-    device_confs.each { |key, definition|
-      service_class = ("#{definition[:device].camelize}Service").constantize
+    device_confs.each { |_key, definition|
+      service_class = "#{definition[:device].camelize}Service".constantize
       device = service_class.new(customer: customer)
 
       next unless device.respond_to?(:list_devices)
@@ -49,17 +49,17 @@ module PlanningsHelper
       begin
         list = device.list_devices
         devices[device.service_name_id] = list unless list.empty?
-      rescue Exception => e
+      rescue StandardError => e
         Rails.logger.info(e)
-        raise e if  ENV['RAILS_ENV'] == 'test'
+        raise e if ENV['RAILS_ENV'] == 'test'
       end
     }
     devices
   end
 
   def available_temperature?
-    device_list = current_user.customer.vehicles.select { |e|
-      e.devices[:sopac_ids] != nil
+    device_list = current_user.customer.vehicles.reject { |e|
+      e.devices[:sopac_ids].nil?
     }
     !device_list.empty?
   end

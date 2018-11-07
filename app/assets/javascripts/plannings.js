@@ -1455,18 +1455,15 @@ var plannings_edit = function(params) {
       });
       $.each(routes, function(i, rv) {
         if (rv.route_id == route.route_id) {
-          var fleet_user = route.fleet_user || rv.fleet_user;
           routes[i] = {
             route_id: route.route_id,
             color: route.color || vehicle_usage.color,
             vehicle_usage_id: route.vehicle_usage_id,
             ref: route.ref,
             name: (route.ref ? (route.ref + ' ') : '') + vehicle_usage.name,
-            fleet_user: fleet_user,
+            fleet_user: route.fleet_user || rv.fleet_user,
             outdated: route.outdated,
-            devices: route.devices || { fleet_user: $.grep(params.devices.fleet_user, function(obj){
-              return obj.id === fleet_user
-            })[0] }
+            devices: route.devices || params.devices
           };
         }
       });
@@ -2099,14 +2096,21 @@ var plannings_edit = function(params) {
       for (var index = 0; index < vehicleRoutesArray.length; index++) {
         var obj = vehicleRoutesArray[index];
         for (var rbv = 0; rbv < obj.routes_by_fleet_user.length; rbv++) {
+          var fleetUserId = obj.routes_by_fleet_user[rbv].fleet_user;
           var route = $.grep(routes, function(route) {
-            return route.fleet_user === obj.routes_by_fleet_user[rbv].fleet_user;
+            return route.fleet_user === fleetUserId;
           })[0];
           if (route) {
             if (route.devices) {
               route.devices.fleet_user.color = route.color;
-              obj.routes_by_fleet_user[rbv].devices = route.devices;
+            } else {
+              if (params.devices.fleet_user) {
+                route.devices = $.grep(params.devices.fleet_user, function(obj) {
+                  return obj.id === fleetUserId;
+                })[0];
+              }
             }
+            obj.routes_by_fleet_user[rbv].devices = route.devices;
           }
         }
       }
