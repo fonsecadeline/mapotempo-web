@@ -35,11 +35,11 @@ To know the last version, check with this command tools
 
 First, install Ruby :
 
-    sudo apt-get install ruby2.3 ruby2.3-dev
+    sudo apt install ruby2.1.8 ruby2.1.8-dev
 
 Next, install Postgrsql environement :
 
-     postgresql postgresql-client-9.5 postgresql-server-dev-9.5
+     postgresql postgresql-client-9.6 postgresql-server-dev-9.6
 
 You need some others libs :
 
@@ -54,7 +54,7 @@ For more informations see [Bundler website](http://bundler.io).
 
 To install Bundler Ruby Gem:
 
-    export GEM_HOME=~/.gem/ruby/2.3
+    export GEM_HOME=~/.gem/ruby/2.1.8
     gem install bundler
 
 The GEM_HOME variable is the place who are stored Ruby gems.
@@ -63,7 +63,7 @@ The GEM_HOME variable is the place who are stored Ruby gems.
 
 Now add gem bin directory to path with :
 
-    export PATH=$PATH:~/.gem/ruby/2.3/bin
+    export PATH=$PATH:~/.gem/ruby/2.1.8/bin
 
 Add Environement Variables into the end of your .bashrc file :
 
@@ -72,8 +72,8 @@ Add Environement Variables into the end of your .bashrc file :
 Add following code :
 
     # RUBY GEM CONFIG
-    export GEM_HOME=~/.gem/ruby/2.3
-    export PATH=$PATH:~/.gem/ruby/2.3/bin
+    export GEM_HOME=~/.gem/ruby/2.1.8
+    export PATH=$PATH:~/.gem/ruby/2.1.8/bin
 
 Save changes and Quit
 
@@ -92,6 +92,10 @@ Clone the project :
 Go to project directory :
 
     cd mapotempo-web
+
+Add the ruby version :
+
+    echo '2.1.8' >> .ruby-version
 
 And finally install gem project dependencies with :
 
