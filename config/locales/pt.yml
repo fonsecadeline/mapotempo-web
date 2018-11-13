@@ -94,6 +94,10 @@
       'stops':
         'one': 'paragem'
         'other': 'paragens'
+        'type':
+          'store': 'depósito'
+          'visit': 'visita'
+          'rest': 'pausa'
       'store': 'Base'
       'stores':
         'one': 'base'
@@ -1102,6 +1106,7 @@
       'missing_name': '"nome" da configuração por defeito em falta'
       'missing_open_close': 'Falta hora de início ou fim na configuração por defeito'
       'invalid_numeric_value': 'Valor numérico inválido "%{value}".'
+      'invalid_stop': 'O tipo de parada é inválido'
       'check_custom_columns': 'Verifique a definição das colunas a importar.'
     'default':
       'name': 'Defeito'

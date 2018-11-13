@@ -239,11 +239,29 @@ class ImporterDestinations < ImporterBase
     end
   end
 
-  def import_row(_name, row, _options)
-    if row.key? :stop_type
-      row[:stop_type] = I18n.t('destinations.import_file.stop_type_visit') unless row[:stop_type] && !row[:stop_type].empty?
-      return if row[:stop_type] != I18n.t('destinations.import_file.stop_type_visit')
+  def valid_stop_type(stop_type)
+    type = nil
+    %w(store visit rest).each do |t|
+      type ||= t if stop_type == I18n.t("activerecord.models.stops.type.#{t}")
     end
+    if type
+      I18n.t("activerecord.models.stops.type.#{type}")
+    else
+      raise ImportInvalidRow.new(I18n.t('destinations.import_file.invalid_stop'))
+    end
+  end
+
+  def is_visit(type)
+    type == I18n.t('destinations.import_file.stop_type_visit')
+  end
+
+  def import_row(_name, row, _options)
+    row[:stop_type] = if row[:stop_type].present?
+      valid_stop_type(row[:stop_type])
+    else
+      I18n.t('destinations.import_file.stop_type_visit')
+    end
+    return unless is_visit(row[:stop_type])
 
     # Deals with deprecated open and close
     row[:open1] = row.delete(:open) if !row.key?(:open1) && row.key?(:open)

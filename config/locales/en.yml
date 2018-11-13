@@ -97,6 +97,10 @@ en:
       stops:
         one: stop
         other: stops
+        type:
+          store: store
+          visit: visit
+          rest: rest
       store: Store
       stores:
         one: Store
@@ -1168,6 +1172,7 @@ en:
       missing_name: '"name" missing.'
       missing_location: '"city / postalcode" or "lat / lng" missing.'
       invalid_numeric_value: Invalid numeric value "%{value}".
+      invalid_stop: The stop type is invalid
       check_custom_columns: Check your columns definition.
     reverse_geocoding:
       apply: Apply new address

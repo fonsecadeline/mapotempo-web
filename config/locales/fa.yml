@@ -94,6 +94,10 @@ fa:
       stops:
         one: ''
         other: ''
+        type':
+          store: ''
+          visit: ''
+          rest: ''
       store: ''
       stores:
         one: ''
@@ -1390,6 +1394,7 @@ fa:
       missing_name: ''
       missing_location: ''
       invalid_numeric_value: ''
+      invalid_stop: ''
       format:
         string: ''
         integer: ''

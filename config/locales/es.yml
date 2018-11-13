@@ -94,6 +94,10 @@ es:
       stops:
         one: parada
         other: paradas
+        type:
+          store: depósito
+          visit: visita
+          rest: pausa
       store: Deposito
       stores:
         one: deposito
@@ -985,6 +989,7 @@ es:
       too_many_lines: 'Importe parado, demasiadas líneas (max: %{n}).'
       missing_name: « nombre » que falta.
       invalid_numeric_value: valor numérico  « %{value} » invalido.
+      invalid_stop: El tipo de parada no es válido
       check_custom_columns: Compruebe su definición de las columnas a importar.
     reverse_geocoding:
       apply: Aplique la nueva dirección

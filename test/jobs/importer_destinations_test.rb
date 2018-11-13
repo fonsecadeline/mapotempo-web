@@ -516,6 +516,17 @@ class ImporterDestinationsTest < ActionController::TestCase
     assert @customer.plannings.last.routes.first.outdated?
   end
 
+  test 'should fail with error if stop type is incorrect' do
+    import = ImportCsv.new(
+      importer: ImporterDestinations.new(@customer, {}),
+      replace: true,
+      file: tempfile('test/fixtures/files/import_destinations_incorrect_stop_type.csv', 'text.csv')
+    )
+
+    refute import.import
+    assert import.errors[:base][0] =~ /Le type d'arrêt n'est pas valide/
+  end
+
   test 'should import several plans from one file' do
     Planning.all.each(&:destroy)
     @customer.destinations.destroy_all

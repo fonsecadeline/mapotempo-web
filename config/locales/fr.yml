@@ -97,6 +97,10 @@
       'stops':
         'one': 'arrêt'
         'other': 'arrêts'
+        'type':
+          'store': 'dépôt'
+          'visit': 'visite'
+          'rest': 'pause'
       'store': 'Dépôt'
       'stores':
         'one': 'dépôt'
@@ -1229,6 +1233,7 @@
       'missing_name': '« nom » manquant.'
       'missing_location': '« ville / code postal » ou « lat / lng » manquant.'
       'invalid_numeric_value': 'valeur numérique « %{value} » invalide.'
+      'invalid_stop': 'Le type d''arrêt n''est pas valide'
       'check_custom_columns': 'Vérifiez votre définition des colonnes à importer.'
     'reverse_geocoding':
       'apply': 'Appliquer la nouvelle adresse'

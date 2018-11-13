@@ -92,6 +92,10 @@ he:
       stops:
         one: עצירה
         other: עצירות
+        type:
+          store: פיקדון
+          visit: ביקור
+          rest: הפסקה
       store: מחסן
       stores:
         one: מחסן
@@ -952,6 +956,7 @@ he:
       missing_name: '% {קו} "שם" חסר.'
       missing_location: '% {קו} "עיר / מיקוד" או "קווי רוחב / LNG" חסרה.'
       invalid_numeric_value: '%{line}: Invalid numeric value "%{value}".'
+      invalid_stop: סוג העצירה אינו חוקי
       check_custom_columns: בדוק את הגדרת העמודות שלך.
     reverse_geocoding:
       apply: עדכן כתובת חדשה
