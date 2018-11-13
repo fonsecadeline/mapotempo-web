@@ -266,7 +266,7 @@ var plannings_edit = function(params) {
       return vehicle.id;
     }),
     quantities = params.quantities,
-    routes_devices;
+    routes_devices = [];
   colorCodes.unshift('');
 
   function getZonings() {
@@ -1424,6 +1424,17 @@ var plannings_edit = function(params) {
       return;
     }
 
+    var cacheDevices = function(route) {
+      if (route) {
+        return {
+          vehicle_name: route.name,
+          vehicle_id: route.vehicle_id,
+          devices: route.devices,
+          color: route.color
+        }
+      }
+    }
+
     function setRouteVariables(i, route) {
       route.calendar_url = api_route_calendar_path(route);
       route.calendar_url_api_key = api_route_calendar_path(route) + '?api_key=' + user_api_key;
@@ -1442,13 +1453,7 @@ var plannings_edit = function(params) {
       }
     }
 
-    data.i18n = mustache_i18n;
-    data.planning_id = data.id;
-
-    $.each(data.routes, function(i, route) {
-      setRouteVariables(i, route);
-
-      // update global routes
+    var updateRouteModel = function(i, route) {
       var vehicle_usage = {};
       $.each(vehicles_usages_map, function(i, v) {
         if (v.vehicle_usage_id == route.vehicle_usage_id) vehicle_usage = v;
@@ -1468,6 +1473,21 @@ var plannings_edit = function(params) {
         }
       });
       updateColorsForRoutesAndStops(i, route);
+    }
+
+    data.i18n = mustache_i18n;
+    data.planning_id = data.id;
+
+    $.each(data.routes, function(i, route) {
+      setRouteVariables(i, route);
+      // update global routes
+      updateRouteModel(i, route);
+      var inArray = $.grep(routes_devices, function(d) {
+        return d.vehicle_id == route.vehicle_id
+      }).length;
+      if (route.devices && !inArray) {
+        routes_devices.push(cacheDevices(route));
+      }
     });
 
     var refreshBtn = $('button#refresh');
@@ -1481,6 +1501,19 @@ var plannings_edit = function(params) {
       }
       if (outdated) refreshBtn.hide();
     }
+
+    $.each(routes_devices, function(i, d) {
+      if (vehicleMarkers[d.vehicle_id]) {
+        vehicleMarkers[d.vehicle_id].bindTooltip(SMT['devices/tooltip']({
+          vehicle_id: d.vehicle_id,
+          name: d.vehicle_name,
+          devices: d.devices,
+          color: d.color,
+          i18n: data.i18n
+        }), { className: 'marker-tooltip', opacity: 1 });
+      }
+    });
+    backgroundTask();
 
     // 1st case: the whole planning needs to be initialized and displayed
     if (typeof options !== 'object' || !options.partial) {
@@ -1505,7 +1538,6 @@ var plannings_edit = function(params) {
             }
           }
         });
-        requestUpdatedTemperature();
       }
       else {
         routesLayer.showAllRoutes();
@@ -1538,7 +1570,7 @@ var plannings_edit = function(params) {
         route.i18n = mustache_i18n;
         route.planning_id = data.id;
         route.routes = routes;
-        route.devices = routes_devices.find(function(r) { return route.vehicle_id == r.vehicle_id }).devices;
+        route.devices = $.grep(routes_devices, function(r) { return route.vehicle_id == r.vehicle_id })[0].devices;
 
         $.extend(route, params.manage_planning);
 
@@ -1567,9 +1599,6 @@ var plannings_edit = function(params) {
       });
 
       routesLayer.refreshRoutes(routeIds, routes);
-      if (needUpdateTemperature) {
-        requestUpdatedTemperature();
-      }
     }
     // 3rd case: only stops needs to be refreshed, for instance after moving stop
     else if (typeof options === 'object' && options.partial === 'stops') {
@@ -1801,37 +1830,10 @@ var plannings_edit = function(params) {
   });
 
   var displayPlanningFirstTime = function(data) {
-    routes_devices = cacheDevices(data.routes);
-    $.each(routes_devices, function(i, d) {
-      if (vehicleMarkers[d.vehicle_id]) {
-        vehicleMarkers[d.vehicle_id].bindTooltip(SMT['devices/tooltip']({
-          vehicle_id: d.vehicle_id,
-          name: d.vehicle_name,
-          devices: d.devices,
-          text: d.text,
-          color: d.color,
-          i18n: mustache_i18n
-        }), { className: 'marker-tooltip', opacity: 1 });
-      }
-    });
-    backgroundTask();
+    // WARNING: data can be without routes here in case of optimization with delayed job
     displayPlanning(data, {
       firstTime: true
     });
-
-    function cacheDevices(routes) {
-      return routes.reduce(function (prev, current) {
-        if (current.devices) {
-          prev.push({
-            vehicle_name: current.name,
-            vehicle_id: current.vehicle_id,
-            devices: current.devices,
-            color: current.color
-          });
-        }
-        return prev;
-      }, []);
-    }
   };
 
   var checkForDisplayPlanningFirstTime = function(data) {
