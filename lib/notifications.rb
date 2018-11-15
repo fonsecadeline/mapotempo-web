@@ -71,6 +71,9 @@ class Notifications
       end
     end
     phone = Phonelib.parse(to, country_code)
+
+    return [] unless phone.type == :mobile
+
     if phone.country_code
       to = phone.country_code + phone.raw_national
 

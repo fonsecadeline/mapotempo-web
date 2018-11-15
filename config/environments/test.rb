@@ -151,3 +151,19 @@ end
 I18n.available_locales = [:fr]
 I18n.enforce_available_locales = false
 I18n.default_locale = :fr
+
+module Nexmo
+  class Client
+    def initialize(options); end
+    class SMS
+      def send(options)
+        puts 'local override Nexmo::Client...'
+        puts options
+        OpenStruct.new(messages: [OpenStruct.new(status: '0')])
+      end
+    end
+    def sms
+      SMS.new
+    end
+  end
+end

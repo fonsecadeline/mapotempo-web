@@ -504,6 +504,25 @@ class V01::PlanningsTest < V01::PlanningsBaseTest
     end
   end
 
+  test 'should send SMS to mobile only' do
+    @planning.customer.reseller.update sms_api_key: :sms_api_key, sms_api_secret: :sms_api_secret
+    @planning.customer.update enable_sms: true
+    @planning.customer.destinations.first(2).each {|d| d.update_attribute(:phone_number, '0612345678')}
+
+    get api("#{@planning.id}/send_sms")
+    assert last_response.ok?, 'Bad response: ' + last_response.body
+    assert_equal '2', last_response.body
+  end
+
+  test 'should return ok response even if no sms is sent' do
+    @planning.customer.reseller.update sms_api_key: :sms_api_key, sms_api_secret: :sms_api_secret
+    @planning.customer.update enable_sms: true
+
+    get api("#{@planning.id}/send_sms")
+    assert last_response.ok?, 'Bad response: ' + last_response.body
+    assert_equal '0', last_response.body
+  end
+
   test 'should get planning quantities' do
     get api("#{@planning.id}/quantities")
     assert last_response.ok?
