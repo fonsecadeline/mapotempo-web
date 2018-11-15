@@ -7,7 +7,9 @@
       <% end %>
     <% end %>
     <%= f.text_field :name, required: true %>
-    <%= f.text_field :street, {class: "form-control pointing", input_group: content_tag('button', content_tag('i', '', class: 'fa fa-crosshairs fa-fw'), class: 'btn btn-default', type: 'button', title: t('.locate_manually'))} %>
+    <%= f.text_field :street, {class: "form-control pointing", input_group: content_tag('button', content_tag('i', '', class: 'fa fa-crosshairs fa-fw'), class: 'btn btn-default', type: 'button', title: t('.locate_manually'))} do %>
+      <p class="help-block"><%= t 'web.form.helpers.street' %></p>
+    <% end %>
     <div id="store_city_input" class="form-group">
       <label class="sr-only" for="store_postalcode"><%= t 'activerecord.attributes.store.postalcode' %></label>
       <label class="sr-only" for="store_city"><%= t 'activerecord.attributes.store.city' %></label>

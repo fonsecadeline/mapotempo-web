@@ -2218,7 +2218,7 @@ en:
           decide itself quantities, if you specify a value it will be used as a minimum
           to fill / empty.
       take_over_default: default
-      take_over_help: If empty, use the default value
+      take_over_help: If empty, use the default value, format hh:mm:ss
       open_close1: Time window 1
       open_close2: Time window 2
       priority: Priority
@@ -2310,6 +2310,8 @@ en:
       from_time: from
       to_time: to
       days: D+
+      helpers:
+        street: Number and street name, ex. 42 Quality street
     select2:
       empty_result: No results matched
       new: New

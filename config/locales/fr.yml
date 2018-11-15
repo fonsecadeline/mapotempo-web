@@ -2372,7 +2372,7 @@
           l''optimisation déterminera elle-même la quantité, si vous précisez une
           valeur elle sera un minimum à remplir / vider.'
       'take_over_default': 'défaut'
-      'take_over_help': 'Si vide utilise la valeur par défaut'
+      'take_over_help': 'Si vide utilise la valeur par défaut, format hh:mm:ss'
       'open_close1': 'Plage horaire 1'
       'open_close2': 'Plage horaire 2'
       'priority': 'Priorité'
@@ -2472,6 +2472,8 @@
       'from_time': 'de'
       'to_time': 'à'
       'days': 'J+'
+      'helpers':
+        'street': 'Numéro et nom de voie, ex. 18 rue de la paix'
     'select2':
       'empty_result': 'Pas de résultat'
       'new': 'Nouveau'
