@@ -1878,6 +1878,7 @@ var plannings_edit = function(params) {
     }
   };
 
+  $(".routes").sortable({disabled: true}); // initialization needed before enable/disable use
   $('.btn.extend').click(function() {
     $('.sidebar').toggleClass('extended');
     if ($('.sidebar').hasClass('extended')) {
