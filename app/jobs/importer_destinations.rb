@@ -64,8 +64,6 @@ class ImporterDestinations < ImporterBase
       country: {title: I18n.t('destinations.import_file.country'), desc: I18n.t('destinations.import_file.country_desc'), format: I18n.t('destinations.import_file.format.string')},
       lat: {title: I18n.t('destinations.import_file.lat'), desc: I18n.t('destinations.import_file.lat_desc'), format: I18n.t('destinations.import_file.format.float')},
       lng: {title: I18n.t('destinations.import_file.lng'), desc: I18n.t('destinations.import_file.lng_desc'), format: I18n.t('destinations.import_file.format.float')},
-      geocoding_accuracy: {title: I18n.t('destinations.import_file.geocoding_accuracy'), desc: I18n.t('destinations.import_file.geocoding_accuracy_desc'), format: I18n.t('destinations.import_file.format.float')},
-      geocoding_level: {title: I18n.t('destinations.import_file.geocoding_level'), desc: I18n.t('destinations.import_file.geocoding_level_desc'), format: '[' + ::Destination::GEOCODING_LEVEL.keys.join(' | ') + ']'},
       phone_number: {title: I18n.t('destinations.import_file.phone_number'), desc: I18n.t('destinations.import_file.phone_number_desc'), format: I18n.t('destinations.import_file.format.integer')},
       comment: {title: I18n.t('destinations.import_file.comment'), desc: I18n.t('destinations.import_file.comment_desc'), format: I18n.t('destinations.import_file.format.string')},
       tags: {title: I18n.t('destinations.import_file.tags'), desc: I18n.t('destinations.import_file.tags_desc'), format: I18n.t('destinations.import_file.tags_format')}
@@ -168,7 +166,7 @@ class ImporterDestinations < ImporterBase
     @plannings_by_ref = nil
     @@col_dest_keys ||= columns_destination.keys
     @col_visit_keys = columns_visit.keys + [:quantities, :quantities_operations]
-    @@slice_attr ||= (@@col_dest_keys - [:customer_id, :lat, :lng, :geocoding_accuracy, :geocoding_level]).collect(&:to_s)
+    @@slice_attr ||= (@@col_dest_keys - [:customer_id, :lat, :lng]).collect(&:to_s)
     @destinations_by_attributes = Hash[@customer.destinations.collect{ |destination| [destination.attributes.slice(*@@slice_attr), destination] }]
     @plannings = []
   end
@@ -330,7 +328,7 @@ class ImporterDestinations < ImporterBase
       if !visit
         # Get destination from attributes for multiple visits
         destination = if @customer.enable_multi_visits
-            row_compare_attr = (@@dest_attr_nil ||= Hash[*columns_destination.keys.collect{ |v| [v, nil] }.flatten]).merge(destination_attributes).except(:lat, :lng, :geocoding_accuracy, :geocoding_level, :tags).stringify_keys
+            row_compare_attr = (@@dest_attr_nil ||= Hash[*columns_destination.keys.collect{ |v| [v, nil] }.flatten]).merge(destination_attributes).except(:lat, :lng, :tags).stringify_keys
             @destinations_by_attributes[row_compare_attr]
           else
             nil

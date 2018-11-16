@@ -39,8 +39,6 @@ class ImporterStores < ImporterBase
       country: {title: I18n.t('stores.import_file.country'), desc: I18n.t('stores.import_file.country_desc'), format: I18n.t('stores.import_file.format.string')},
       lat: {title: I18n.t('stores.import_file.lat'), desc: I18n.t('stores.import_file.lat_desc'), format: I18n.t('stores.import_file.format.float')},
       lng: {title: I18n.t('stores.import_file.lng'), desc: I18n.t('stores.import_file.lng_desc'), format: I18n.t('stores.import_file.format.float')},
-      geocoding_accuracy: {title: I18n.t('stores.import_file.geocoding_accuracy'), desc: I18n.t('stores.import_file.geocoding_accuracy_desc'), format: I18n.t('stores.import_file.format.float')},
-      geocoding_level: {title: I18n.t('stores.import_file.geocoding_level'), desc: I18n.t('stores.import_file.geocoding_level_desc'), format: '[' + ::Store::GEOCODING_LEVEL.keys.join(' | ') + ']'},
       color: {title: I18n.t('stores.import_file.color'), desc: I18n.t('stores.import_file.color_desc'), format: I18n.t('stores.import_file.color_format')},
       icon: {title: I18n.t('stores.import_file.icon'), desc: I18n.t('stores.import_file.icon_desc'), format: I18n.t('stores.import_file.format.string')},
       icon_size: {title: I18n.t('stores.import_file.icon_size'), desc: I18n.t('stores.import_file.icon_size_desc'), format: '[' + ::Store::ICON_SIZE.join(' | ') + ']'},
