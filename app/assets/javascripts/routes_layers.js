@@ -459,7 +459,9 @@ var RoutesLayer = L.FeatureGroup.extend({
             } else {
               driveTime = '';
             }
-            content = (driveTime ? '<div>' + I18n.t('plannings.edit.popup.stop_drive_time') + ' ' + driveTime + '</div>' : '') + '<div>' + I18n.t('plannings.edit.popup.stop_distance') + ' ' + distance + '</div>';
+            content = '<div><i class="fa fa-circle" style="color:' + route.color + ';"></i> ' +  route.name + '</div>' +
+            (driveTime ? '<div>' + I18n.t('plannings.edit.popup.stop_drive_time') + ' ' + driveTime + '</div>' : '')
+             + '<div>' + I18n.t('plannings.edit.popup.stop_distance') + ' ' + distance + '</div>';
           }
 
           L.responsivePopup({
