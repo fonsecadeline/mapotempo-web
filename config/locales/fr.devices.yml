@@ -204,6 +204,7 @@ fr:
           help: "Permet d'envoyer les tournées vers l'application Praxedo."
   plannings:
     edit:
+      all_plannings_related: Concerne toutes les tournées
       fleet_demo_send:
         action: Envoyer à Fleet (Demo)
         success: Envoyé à Fleet (Demo) avec succès
@@ -224,8 +225,8 @@ fr:
         button_empty: "Fermer"
         empty: "Aucune tournée trouvée sur Mapotempo Live"
         route:
-          name: Nom de route
-          number: Numéro de route
+          name: Nom de tournée
+          number: Numéro de tournée
       fleet_fetch_routes:
         action: "Vider l'app mobile Mapotempo Live"
         success: "Tournées Mapotempo Live obtenues"

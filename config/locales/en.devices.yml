@@ -202,6 +202,7 @@ en:
           help: "Allows sending routes to Praxedo application."
   plannings:
     edit:
+      all_plannings_related: Relates to all routes
       fleet_demo_send:
         action: Send to Fleet Demo
         success: Sent to Fleet Demo successfully

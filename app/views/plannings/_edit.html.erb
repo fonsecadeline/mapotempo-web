@@ -101,6 +101,8 @@
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu" role="menu">
+            <li class="dropdown-header"><h5><%= t("plannings.edit.all_plannings_related") %></h5></li>
+            <hr>
             <% if current_user.customer.enable_external_callback && current_user.customer.external_callback_url %>
               <li class="link customer_external_callback_url">
                 <i class="fa fa-desktop fa-fw"></i>
