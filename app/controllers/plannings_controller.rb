@@ -189,6 +189,7 @@ class PlanningsController < ApplicationController
     respond_to do |format|
       @planning.compute
       if @planning.save
+        @with_devices = true
         format.json { render action: 'show', location: @planning }
       else
         format.json { render json: @planning.errors, status: :unprocessable_entity }

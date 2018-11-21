@@ -2094,6 +2094,12 @@ var plannings_edit = function(params) {
     };
 
     /* global bootstrap_dialog */
+    var getDevicesFromFleetUsers = function(fleetUsers, fleetUserId) {
+      return $.grep(fleetUsers, function(obj) {
+        return obj.id === fleetUserId;
+      })[0];
+    };
+
     var _fetchFleetRoutes = function(vehicleRoutesArray) {
       for (var index = 0; index < vehicleRoutesArray.length; index++) {
         var obj = vehicleRoutesArray[index];
@@ -2104,12 +2110,15 @@ var plannings_edit = function(params) {
           })[0];
           if (route) {
             if (route.devices) {
-              route.devices.fleet_user.color = route.color;
+              if ($.isArray(route.devices.fleet_user)) {
+                route.devices = getDevicesFromFleetUsers(route.devices.fleet_user, fleetUserId);
+                route.devices.color = route.color;
+              } else {
+                route.devices.fleet_user.color = route.color;
+              }
             } else {
               if (params.devices.fleet_user) {
-                route.devices = $.grep(params.devices.fleet_user, function(obj) {
-                  return obj.id === fleetUserId;
-                })[0];
+                route.devices = getDevicesFromFleetUsers(params.devices.fleet_user, fleetUserId);
               }
             }
             obj.routes_by_fleet_user[rbv].devices = route.devices;
