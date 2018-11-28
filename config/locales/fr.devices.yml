@@ -229,7 +229,6 @@ fr:
           number: Numéro de tournée
       fleet_fetch_routes:
         action: "Vider l'app mobile Mapotempo Live"
-        success: "Tournées Mapotempo Live obtenues"
       teksat_send:
         action: Envoyer à Teksat
         success: Envoi vers Teksat terminé avec succès
