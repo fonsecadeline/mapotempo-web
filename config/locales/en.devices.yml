@@ -227,7 +227,6 @@ en:
           number: Route number
       fleet_fetch_routes:
         action: Clear Mapotempo Live mobile app
-        success: Mapotempo Live routes obtained
       teksat_send:
         action: Send to Teksat
         success: Sent to Teksat successfully
