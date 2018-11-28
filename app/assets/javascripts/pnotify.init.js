@@ -54,7 +54,7 @@ var isWindowVisible = (function() {
         text: message,
         type: status,
         animation: 'slide',
-        animate_speed: 'normal',
+        animate_speed: 'slow',
         shadow: true,
         hide: true,
         buttons: {
