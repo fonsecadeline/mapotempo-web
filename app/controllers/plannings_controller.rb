@@ -53,7 +53,9 @@ class PlanningsController < ApplicationController
     end
     respond_to do |format|
       format.html
-      format.json do @with_devices = true end
+      format.json do
+        @with_devices = true
+      end
       format.gpx do
         @gpx_track = !!params['track']
         response.headers['Content-Disposition'] = 'attachment; filename="' + filename + '.gpx"'

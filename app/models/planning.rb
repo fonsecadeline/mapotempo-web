@@ -103,7 +103,7 @@ class Planning < ApplicationRecord
   end
 
   def vehicle_usage_remove(vehicle_usage)
-    route = routes.find{ |route| route.vehicle_usage == vehicle_usage}
+    route = routes.find{ |route| route.vehicle_usage == vehicle_usage }
     # route no longer exists if vehicle is disabled
     if route
       out_of_route = routes.find{ |r| !r.vehicle_usage? }
@@ -371,7 +371,20 @@ class Planning < ApplicationRecord
           }
         end
 
-        {stop_id: stop_id, start1: open1, end1: close1, start2: open2, end2: close2, priority: priority, duration: duration, vehicle_usage_id: vehicle_usage_id, quantities: quantities, quantities_operations: quantities_operations, skills: skills, rest: rest}
+        {
+          stop_id: stop_id,
+          start1: open1,
+          end1: close1,
+          start2: open2,
+          end2: close2,
+          priority: priority,
+          duration: duration,
+          vehicle_usage_id: vehicle_usage_id,
+          quantities: quantities,
+          quantities_operations: quantities_operations,
+          skills: skills,
+          rest: rest
+        }
       }
 
       unnil_positions(positions, services_and_rests) { |positions, services, rests|
@@ -541,9 +554,7 @@ class Planning < ApplicationRecord
           end
         }
 
-        routes_quantities_changed.map do |route|
-          route.compute_quantities
-        end
+        routes_quantities_changed.each(&:compute_quantities)
 
         stops_status
       end
@@ -567,7 +578,7 @@ class Planning < ApplicationRecord
       self.reload
       self.tags, self.zonings = t, z
       # ActiveRecordImport doesn't call callbacks
-      self.routes.each { |route| route.complete_geojson }
+      self.routes.each(&:complete_geojson)
       save
     end
   end
@@ -584,13 +595,13 @@ class Planning < ApplicationRecord
     self.reload
     self.tags, self.zonings = t, z
     # ActiveRecordImport doesn't call callbacks
-    self.routes.each { |route| route.complete_geojson }
+    self.routes.each(&:complete_geojson)
     save!
   end
 
   def averages(metric)
     routes_distance = 0
-    converter = (metric == 'km') ? 3.6 : 2.237
+    converter = metric == 'km' ? 3.6 : 2.237
     result = {
       routes_visits_duration: 0,
       routes_speed_average: 0,
@@ -641,11 +652,11 @@ class Planning < ApplicationRecord
       self.routes.each do |route|
         vehicle = route.vehicle_usage.try(:vehicle)
 
-        route.quantities.select{ |_k, v | v > 0 }.each do |id, v|
+        route.quantities.select{ |_k, v| v > 0 }.each do |id, v|
           unit = route.planning.customer.deliverable_units.find{ |du| du.id == id }
           next unless unit
 
-          if hashy_map.has_key?(unit.id)
+          if hashy_map.key?(unit.id)
             hashy_map[unit.id][:quantity] += v
             hashy_map[unit.id][:capacity] += vehicle ? vehicle.default_capacities[id] || 0 : 0
           else
@@ -682,7 +693,20 @@ class Planning < ApplicationRecord
       # Can't reduce cause of time windows, quantities or multiple vehicles
       positions_uniq = stops.collect{ |stop|
         tags_label = stop.is_a?(StopVisit) ? (stop.visit.destination.tags | stop.visit.tags).map(&:label) & all_skills.map(&:label) : nil
-        [stop.lat, stop.lng, stop.id, stop.open1.try(:to_f), stop.close1.try(:to_f), stop.open2.try(:to_f), stop.close2.try(:to_f), stop.priority, stop.duration, (!global || stop.is_a?(StopRest)) ? stop.route.vehicle_usage_id : nil, stop.is_a?(StopVisit) ? stop.visit.default_quantities : nil, stop.is_a?(StopVisit) ? stop.visit.quantities_operations : nil, tags_label, stop.is_a?(StopRest)]
+        [stop.lat,
+         stop.lng,
+         stop.id,
+         stop.open1.try(:to_f),
+         stop.close1.try(:to_f),
+         stop.open2.try(:to_f),
+         stop.close2.try(:to_f),
+         stop.priority,
+         stop.duration,
+         !global || stop.is_a?(StopRest) ? stop.route.vehicle_usage_id : nil,
+         stop.is_a?(StopVisit) ? stop.visit.default_quantities : nil,
+         stop.is_a?(StopVisit) ? stop.visit.quantities_operations : nil,
+         tags_label,
+         stop.is_a?(StopRest)]
       }
 
       yield(positions_uniq)
@@ -697,7 +721,19 @@ class Planning < ApplicationRecord
       positions_uniq = Hash.new { [] }
       stock.each{ |k, v|
         tags_label = v[0][0].is_a?(StopVisit) ? (v[0][0].visit.destination.tags | v[0][0].visit.tags).map(&:label) & all_skills.map(&:label) : nil
-        positions_uniq[v[0][0].id] = k + [v[0][0].id, nil, nil, nil, nil, v[0][0].priority, v.sum{ |vs| vs[0].duration }, !global ? v[0][0].route.vehicle_usage_id : nil, v[0][0].is_a?(StopVisit) ? v[0][0].visit.default_quantities : nil, v[0][0].is_a?(StopVisit) ? v[0][0].visit.quantities_operations : nil, tags_label, v[0][0].is_a?(StopRest)]
+        positions_uniq[v[0][0].id] =
+          k + [v[0][0].id,
+               nil,
+               nil,
+               nil,
+               nil,
+               v[0][0].priority,
+               v.sum{ |vs| vs[0].duration },
+               !global ? v[0][0].route.vehicle_usage_id : nil,
+               v[0][0].is_a?(StopVisit) ? v[0][0].visit.default_quantities : nil,
+               v[0][0].is_a?(StopVisit) ? v[0][0].visit.quantities_operations : nil,
+               tags_label,
+               v[0][0].is_a?(StopRest)]
       }
 
       optim_uniq = yield(positions_uniq.collect{ |_k, v| v })
@@ -739,7 +775,7 @@ class Planning < ApplicationRecord
       stops = route.stops.select { |s| (options[:active_only] ? s.active? : true) && s.position? }
       stops.map { |s| [s.position, route, s.index] } +
         [stops.empty? ? [route.vehicle_usage.try(:default_store_start), route, 1] : nil,
-        ((stop.route_id != route.id) && route.vehicle_usage.try(:default_store_stop).try(:position?)) ? [route.vehicle_usage.default_store_stop, route, route.stops.size + 1] : nil]
+         (stop.route_id != route.id) && route.vehicle_usage.try(:default_store_stop).try(:position?) ? [route.vehicle_usage.default_store_stop, route, route.stops.size + 1] : nil]
     }.compact.sort_by{ |a|
       a[0] && a[0].position? ? a[0].distance(stop.position) : Float::INFINITY
     }
