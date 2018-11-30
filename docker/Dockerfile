@@ -11,6 +11,8 @@ ENV REDIS_HOST redis-cache
 
 ADD . /srv/app/
 
+ADD vendor/bundle vendor/bundle
+
 # Install dependencies
 RUN apt-get update && \
     apt-get install -y apt-transport-https curl && \
@@ -23,8 +25,9 @@ RUN apt-get update && \
     \
 # Install app
     cd /srv/app && \
+    mkdir ../watch && \
     rm -Rf docker && \
-    bundle install --full-index --without test development && \
+    bundle check --path vendor/bundle --without test development || bundle install --full-index --without test development --path vendor/bundle && \
     npm install && \
     bundle exec rake i18n:js:export && \
     bundle exec rake assets:precompile && \

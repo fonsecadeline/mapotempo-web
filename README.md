@@ -229,3 +229,11 @@ If you focus one test only or for any other good reasons, you don't want to chec
 Add new locale:
 * Update `config/application.rb`
 * Require the translation assets into `app/assets/javascripts/application.js`
+
+# CI
+Build is generated on each push to ce, beta or prod branch.
+To be able to generate the image, add the following variable to your CI settings.
+
+ - USER (registry user login name)
+ - PASSWORD (registry user login password)
+ - PRIVATE_TOKEN: user private token

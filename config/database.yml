@@ -2,21 +2,18 @@ default: &default
   adapter: postgresql
   pool: 5
   timeout: 5000
-  username: <%= ENV.key?('PG_USERNAME') ? ENV['PG_USERNAME'] : 'mapotempo' %>
-  password: <%= ENV.key?('PG_PASSWORD') ? ENV['PG_PASSWORD'] : 'mapotempo' %>
+  host: <%= ENV['POSTGRES_HOST'] %>
+  username: <%= ENV['POSTGRES_USER'] || ENV['PG_USERNAME'] || 'mapotempo' %>
+  password: <%= ENV['POSTGRES_PASSWORD'] || ENV['PG_PASSWORD'] || 'mapotempo' %>
 
 development:
   <<: *default
-  database: mapotempo-dev
+  database: <%= ENV['POSTGRES_DB'] || 'mapotempo-dev' %>
 
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run
-# "rake". Do not set this db to the same as development or
-# production.
 test:
   <<: *default
-  database: mapotempo-test
+  database: <%= ENV['POSTGRES_DB'] || 'mapotempo-test' %>
 
 production:
   <<: *default
-  database: mapotempo-prod
+  database: <%= ENV['POSTGRES_DB'] || 'mapotempo-prod' %>
