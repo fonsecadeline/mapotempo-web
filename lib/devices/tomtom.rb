@@ -182,7 +182,7 @@ class Tomtom < DeviceBase
     when :orders
       position = route.vehicle_usage.default_store_start
       if position && !position.lat.nil? && !position.lng.nil?
-        sendDestinationOrder customer, route, position, -2, route.vehicle_usage.default_store_start && route.vehicle_usage.default_store_start.name || "#{position.lat} #{position.lng}", route.start
+        send_destination_order customer, route, position, -2, route.vehicle_usage.default_store_start && route.vehicle_usage.default_store_start.name || "#{position.lat} #{position.lng}", route.start
       end
       route.stops.select(&:active).each{ |stop|
         position = stop if stop.position?
@@ -198,12 +198,12 @@ class Tomtom < DeviceBase
             stop.comment,
             stop.phone_number,
           ].compact.join(' ').strip
-          sendDestinationOrder customer, route, position, (stop.is_a?(StopVisit) ? "v#{stop.visit_id}" : "r#{stop.id}"), description, stop.time
+          send_destination_order customer, route, position, (stop.is_a?(StopVisit) ? "v#{stop.visit_id}" : "r#{stop.id}"), description, stop.time
         end
       }
       position = route.vehicle_usage.default_store_stop
       if position && !position.lat.nil? && !position.lng.nil?
-        sendDestinationOrder customer, route, position, -1, route.vehicle_usage.default_store_stop && route.vehicle_usage.default_store_stop.name || "#{position.lat} #{position.lng}", route.end
+        send_destination_order customer, route, position, -1, route.vehicle_usage.default_store_stop && route.vehicle_usage.default_store_stop.name || "#{position.lat} #{position.lng}", route.end
       end
 
     when :waypoints
@@ -240,7 +240,7 @@ class Tomtom < DeviceBase
       }
       position = route.vehicle_usage.default_store_stop if route.vehicle_usage.default_store_stop && route.vehicle_usage.default_store_stop.position?
       description = route.ref || (waypoints[-1] && waypoints[-1][:description]) || "#{waypoints[-1][:lat]} #{waypoints[-1][:lng]}"
-      sendDestinationOrder customer, route, position, route.vehicle_usage.id, description, route.start, waypoints
+      send_destination_order customer, route, position, route.vehicle_usage.id, description, route.start, waypoints
     end
   end
 
@@ -274,7 +274,7 @@ class Tomtom < DeviceBase
     orders = [orders] if orders.is_a?(Hash)
 
     orders && orders.collect{ |order| {
-      order_id: decode_order_id(order[:order_id]),
+      order_id: decode_uid(order[:order_id]),
       status: @@order_status[order[:order_state][:@state_code]] || order[:order_state][:@state_code],
       eta: order[:estimated_arrival_time]
     } } || []
@@ -368,7 +368,7 @@ class Tomtom < DeviceBase
     end
   end
 
-  def sendDestinationOrder(customer, route, position, order_id, description, time, waypoints = nil)
+  def send_destination_order(customer, route, position, order_id, description, time, waypoints = nil)
     objectuid = route.vehicle_usage.vehicle.devices[:tomtom_id]
     params = {
       dstOrderToSend: {
@@ -393,7 +393,7 @@ class Tomtom < DeviceBase
           objectUid: objectuid,
         },
         dstOrderToSend: {
-          orderNo: encode_order_id(description, order_id),
+          orderNo: encode_uid(description, order_id),
           orderType: 'DELIVERY_ORDER',
           scheduledCompletionDateAndTime: time
         }

@@ -28,8 +28,8 @@ class FleetDemoTest < ActionController::TestCase
 
   test 'should code and decode stop id' do
     id = 758944
-    code = @service.send(:encode_order_id, 'plop', id)
-    decode = @service.send(:decode_order_id, code)
+    code = @service.send(:encode_uid, 'plop', id)
+    decode = @service.send(:decode_uid, code)
     assert decode, id
   end
 
