@@ -181,12 +181,16 @@
             {{/notico}}
             {{#praxedo}}
               <div class="dropdown-spacing">
-                {{#i18n}}plannings.edit.dialog.orange.title{{/i18n}} :
+                {{#i18n}}plannings.edit.dialog.praxedo.title{{/i18n}} :
                 {{#devices.praxedo_agent_id}} {{devices.praxedo_agent_id.text}} {{/devices.praxedo_agent_id}}
               </div>
               <li class="link device-operation" data-service="praxedo" data-operation="send" data-route-id="{{route_id}}">
                   <i class="fa fa-mobile fa-rotate-90 fa-fw"></i>
                   {{#i18n}}plannings.edit.praxedo_send.action{{/i18n}}
+              </li>
+              <li class="link device-operation" data-service="praxedo" data-operation="clear" data-route-id="{{route_id}}">
+                  <i class="fa fa-mobile fa-rotate-90 fa-fw"></i>
+                  {{#i18n}}plannings.edit.praxedo_clear.action{{/i18n}}
               </li>
               <li role="separator" class="divider"></li>
             {{/praxedo}}

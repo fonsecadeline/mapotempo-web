@@ -58,6 +58,12 @@ module PraxedoBase
             url = Addressable::Template.new "#{api_url}cxf/v6/BusinessEventManager"
             stubs << stub_request(:post, url).with(body: /.*<firstResultIndex>0<\/firstResultIndex>.*/).to_return(File.read(Rails.root.join('test/web_mocks/praxedo/searchEvents-fetchStops.xml')))
             stubs << stub_request(:post, url).with(body: /.*<firstResultIndex>3<\/firstResultIndex>.*/).to_return(File.read(Rails.root.join('test/web_mocks/praxedo/searchEvents-fetchStops-empty.xml')))
+          when :delete_events_wsdl
+            url = Addressable::Template.new "#{api_url}cxf/v6/BusinessEventManager?wsdl"
+            stubs << stub_request(:get, url).to_return(File.read(Rails.root.join('test/web_mocks/praxedo/BusinessEventManager.wsdl.xml')))
+          when :delete_events
+            url = Addressable::Template.new "#{api_url}cxf/v6/BusinessEventManager"
+            stubs << stub_request(:post, url).to_return(File.read(Rails.root.join('test/web_mocks/praxedo/deleteEvents-clearRoute.xml')))
         end
       end
       yield

@@ -42,6 +42,27 @@ class V01::Devices::Praxedo < Grape::API
       post '/send_multiple' do
         device_send_routes device_id: :praxedo_agent_id
       end
+
+      desc 'Clear route from praxedo',
+          details: 'Unschedule routes on praxedo',
+          nickname: 'devicePraxedoClear'
+      params do
+        requires :route_id, type: Integer, desc: 'Planning ID'
+      end
+      delete '/clear' do
+        device_clear_route
+      end
+
+      desc 'Clear route from praxedo',
+          details: 'Unschedule routes on praxedo',
+          nickname: 'devicePraxedoClear'
+      params do
+        requires :planning_id, type: Integer, desc: 'Planning ID'
+      end
+      delete '/clear_multiple' do
+        device_clear_routes device_id: :praxedo_agent_id
+      end
+
     end
   end
 end

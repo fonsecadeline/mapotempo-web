@@ -74,15 +74,14 @@ class PraxedoTest < ActionController::TestCase
     end
   end
 
-  # FIXME: not used for now
-  # test 'clear route' do
-  #   with_stubs [:delete_events] do
-  #     set_route
-  #     assert_nothing_raised do
-  #       @service.clear_route @customer, @route
-  #     end
-  #   end
-  # end
+  test 'clear route' do
+    with_stubs [:delete_events_wsdl, :delete_events] do
+      set_route
+      assert_nothing_raised do
+        @service.clear_route @customer, @route
+      end
+    end
+  end
 
   # FIXME: not used for now
   # test 'get vehicles positions' do

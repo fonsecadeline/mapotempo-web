@@ -15,6 +15,9 @@
 # along with Mapotempo. If not, see:
 # <http://www.gnu.org/licenses/agpl.html>
 #
+
+require 'json'
+
 class Praxedo < DeviceBase
 
   def definition
@@ -22,7 +25,7 @@ class Praxedo < DeviceBase
       device: 'praxedo',
       label: 'Praxedo',
       label_small: 'Praxedo',
-      route_operations: [:send],
+      route_operations: [:send, :clear],
       has_sync: false,
       help: true,
       forms: {
@@ -94,7 +97,7 @@ class Praxedo < DeviceBase
           equipmentName: options[:equipment_name]
         }.compact
       },
-      id: encode_order_id(options[:description], order_id, planning_date(route.planning)),
+      id: encode_uid(options[:description], order_id, planning_date(route.planning)),
       qualificationData: {
         type: {
           id: options[:code_type_inter],
@@ -122,7 +125,7 @@ class Praxedo < DeviceBase
 
   def send_route(customer, route, _options = {})
     events = []
-    code_route_id = encode_order_id('', route.id, planning_date(route.planning))
+    code_route_id = encode_uid(route.ref.to_s, route.id, planning_date(route.planning))
 
     start = route.vehicle_usage.default_store_start
     if start && !start.lat.nil? && !start.lng.nil?
@@ -132,8 +135,9 @@ class Praxedo < DeviceBase
     end
 
     route.stops.select { |s| s.active && s.position? && !s.is_a?(StopRest) }.map do |stop|
-      order_id = stop.is_a?(StopVisit) ? "v#{stop.visit_id}#{route.id}" : "r#{stop.id}#{route.id}"
-      description = [
+      order_id = stop.is_a?(StopVisit) ? "v#{stop.visit_id}" : "r#{stop.id}#{route.id}"
+      description =
+      [
         stop.comment,
         stop.open1 || stop.close1 ? (stop.open1 ? stop.open1_time + number_of_days(stop.open1) : '') + (stop.open1 && stop.close1 ? '-' : '') + (stop.close1 ? (stop.close1_time + number_of_days(stop.close1) || '') : '') : nil,
         stop.open2 || stop.close2 ? (stop.open2 ? stop.open2_time + number_of_days(stop.open2) : '') + (stop.open2 && stop.close2 ? '-' : '') + (stop.close2 ? (stop.close2_time + number_of_days(stop.close2) || '') : '') : nil,
@@ -215,7 +219,7 @@ class Praxedo < DeviceBase
         end
 
         {
-          order_id: decode_order_id(intervention[:id]),
+          order_id: decode_uid(intervention[:id]),
           quantities: quantities
           # Status are not sync (using TomTom's statuses)
         }
@@ -236,18 +240,35 @@ class Praxedo < DeviceBase
   #   end if objects
   # end
 
-  # FIXME: not used for now
-  # def clear_route(customer, route)
-  #   events = route.stops.select { |s| s.active && s.position? && !s.is_a?(StopRest) }.map do |stop|
-  #     {
-  #         deleteEvents: {
-  #             eventsToDelete: encode_order_id(description, (stop.is_a?(StopVisit) ? "v#{stop.visit_id}" : "r#{stop.id}"))
-  #         }
-  #     }
-  #   end
-  #
-  #   get(savon_client_events(customer), :delete_events, events)
-  # end
+  def clear_route(customer, route)
+    events = {
+      eventsToDelete: []
+    }
+    start = route.vehicle_usage.default_store_start
+    if start && !start.lat.nil? && !start.lng.nil?
+      order_id = "-1#{route.id}"
+      description = I18n.transliterate(start.name) || "#{start.lat} #{start.lng}"
+      events[:eventsToDelete] << encode_uid(description, order_id, planning_date(route.planning))
+    end
+
+    route.stops.select { |s| s.active && s.position? && !s.is_a?(StopRest) }.map do |stop|
+      order_id = stop.is_a?(StopVisit) ? "v#{stop.visit_id}" : "r#{stop.id}#{route.id}"
+      description = [
+        stop.comment,
+        stop.open1 || stop.close1 ? (stop.open1 ? stop.open1_time + number_of_days(stop.open1) : '') + (stop.open1 && stop.close1 ? '-' : '') + (stop.close1 ? (stop.close1_time + number_of_days(stop.close1) || '') : '') : nil,
+        stop.open2 || stop.close2 ? (stop.open2 ? stop.open2_time + number_of_days(stop.open2) : '') + (stop.open2 && stop.close2 ? '-' : '') + (stop.close2 ? (stop.close2_time + number_of_days(stop.close2) || '') : '') : nil,
+      ].compact.join(' ').strip
+      events[:eventsToDelete] << encode_uid(description, order_id, planning_date(route.planning))
+    end
+
+    stop = route.vehicle_usage.default_store_stop
+    if stop && !stop.lat.nil? && !stop.lng.nil?
+      order_id = "-2#{route.id}"
+      description = I18n.transliterate(stop.name.to_s) || "#{start.lat} #{start.lng}"
+      events[:eventsToDelete] << encode_uid(description, order_id, planning_date(route.planning))
+    end
+    get(savon_client_events(customer), :delete_events, events).to_xml
+  end
 
   private
 
