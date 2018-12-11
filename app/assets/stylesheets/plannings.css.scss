@@ -684,3 +684,16 @@ $sidebar-margins: 10px;
     }
   }
 }
+
+.modal-optim-warning {
+  display: inline-flex;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-color: #F5ADAD;
+  border-radius: 5px;
+  margin: 5px 0px;
+
+  span {
+    margin-left: 5px;
+  }
+}

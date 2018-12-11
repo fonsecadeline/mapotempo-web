@@ -795,11 +795,34 @@ var plannings_edit = function(params) {
     }
   });
 
+  var toggleModalWarning = (function () {
+    var _modalWarning = $(".modal-optim-warning");
+
+    _modalWarning.find(".lock").on("click", function(e) {
+      e.preventDefault();
+
+      var unplannedRoute = $("ol.routes.ui-sortable > li:first");
+      unplannedRoute.find("button.lock").trigger("click");
+
+      toggleModalWarning();
+    });
+
+    return function toggleModalWarning() {
+      var unplannedRoute = $("ol.routes.ui-sortable > li:first");
+      var isLocked = unplannedRoute.find("button.lock > i").hasClass("fa-lock");
+      var keepVisit = $('[name=sticky_vehicle]:checked').val() === 'true';
+
+      !isLocked && keepVisit && unplannedRoute.find("li[data-stop_id]").length ? _modalWarning.show() : _modalWarning.hide();
+    };
+  })();
+
   $('#optimize_all').click(function() {
     $('#optimization-route_id').val('').trigger('change');
+    toggleModalWarning();
   });
 
   $('#optimization-route_id').change(function() {
+    $(".modal-optim-warning").hide();
     var routeId = $(this).val();
     if (routeId) {
       $('div#optimization-global').hide();
@@ -852,6 +875,7 @@ var plannings_edit = function(params) {
   };
   vehicleCostLate();
   $('[name=sticky_vehicle]').change(function() {
+    toggleModalWarning();
     vehicleCostLate();
   });
 
@@ -1430,7 +1454,7 @@ var plannings_edit = function(params) {
       return;
     }
 
-    var cacheDevices = function(route) {
+    var routeDevices = function(route) {
       if (route) {
         return {
           vehicle_name: route.name,
@@ -1492,7 +1516,7 @@ var plannings_edit = function(params) {
         return d.vehicle_id == route.vehicle_id
       }).length;
       if (route.devices && !inArray) {
-        routes_devices.push(cacheDevices(route));
+        routes_devices.push(routeDevices(route));
       }
     });
 

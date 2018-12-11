@@ -1733,6 +1733,7 @@
             'overload_multiplier_ignore_help': 'La capacité du véhicule est illimitée'
             'ignore': 'ignorer'
           'optimize': 'Optimiser'
+          'warning': 'Attention : le comportement de l''optimisation a changé. Les arrêts non planifés seront assignés à un véhicule durant l''optimisation. Si ce comportement n''est pas souhaité, veuillez les verrouiller.'
         'optimizer':
           'title': 'Optimisation'
           'in_progress': 'Processus en cours, merci de patienter.'

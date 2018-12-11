@@ -10,6 +10,14 @@
           <input type="hidden" id="optimization-route_id" name="route_id" value="">
           <div class="">
             <h5><i class="fa fa-map-marker fa-fw"></i> <%= t 'plannings.edit.dialog.optimization.visits.title' %></h5>
+            <div class="ui-state-error modal-optim-warning">
+                <span>
+                  <i class="fa fa-warning fa-fw" ></i>
+                </span>
+                <span><%= t('plannings.edit.dialog.optimization.warning').html_safe %>
+                  <button class="lock btn btn-default btn-xs"><i class="fa fa-lock"></i></button>
+                </span>
+            </div>
             <div id="optimization-global" class="row">
               <div class="col-xs-7">
                 <label><%= t 'plannings.edit.dialog.optimization.visits.sticky_vehicle' %></label>

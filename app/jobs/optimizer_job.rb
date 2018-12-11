@@ -37,6 +37,7 @@ class OptimizerJob < Job.new(:planning_id, :route_id, :global, :active_only, :ig
     routes = planning.routes.select { |r|
       (route_id && r.id == route_id) || (!route_id && !global && r.vehicle_usage_id && r.size_active > 1) || (!route_id && global)
     }.reject(&:locked)
+    routes.unshift(planning.routes.first) if !global && !planning.routes.first[:locked] && !route_id
     optimize_time = planning.customer.optimization_time || @@optimize_time
 
     bars = Array.new(2, 0)
