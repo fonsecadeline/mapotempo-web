@@ -177,6 +177,7 @@
         'print_barcode': 'Code barre'
         'speed_multiplier': 'Ajustement de la vitesse'
         'router': 'Calculateur d''itinéraire'
+        'router_warning': 'Ce calculateur d''itinéraire n''est pas autorisé dans ce profil'
         'router_id': 'Calculateur d''itinéraire'
         'router_dimension': 'Objectif du calculateur'
         'router_options_traffic': 'Tenir compte du traffic'
@@ -627,6 +628,8 @@
           'icon_size_invalid': 'n''est pas une taille valide'
         'optimization_time':
           'must_be_greater_than_minimal_time': 'doit être supérieur à la durée minimale'
+        'router':
+          'unauthorized': 'n''est pas autorisé dans ce Profil'
   'errors':
     'database':
       'default': 'Erreur avec la base de données.'
@@ -850,6 +853,8 @@
       'router_options_strict_restriction': 'Si non coché le calculateur essaiera de
         respecter les interdictions au plus près et passera outre l''interdiction
         uniquement s''il ne peut pas faire autrement.'
+      'vehicle_router_unauthorized': 'Au moins un véhicule a un calculateur d''itinéraire non autorisé pour ce profil : <strong>%{profile}</strong>'
+      'user_layer_unauthorized': 'Au moins un utilisateur a un calque non autorisé pour ce profil : <strong>%{profile}</strong>'
       'take_over_help': 'Durée de visite moyenne par client'
       'max_plannings_default': '%{n} (valeur par défaut)'
       'max_plannings_help': 'Nombre maximal de plans autorisés dans le compte.'

@@ -10,6 +10,7 @@ vehicle_one:
   customer: customer_one
   speed_multiplier:
   contact_email: 'toto@toto.toto'
+  router: router_one
   router_options:
     traffic: true
 
@@ -32,6 +33,7 @@ vehicle_three:
   color: "#00FF00"
   customer: customer_one
   speed_multiplier:
+  router: router_one
   tags: tag_one
 
 vehicle_four:

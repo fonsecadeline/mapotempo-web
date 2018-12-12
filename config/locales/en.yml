@@ -177,6 +177,7 @@ en:
         print_barcode: Barcode
         speed_multiplier: Speed multiplier
         router: Routing Engine
+        router_warning: This routing engine is unauthorized in this profile
         router_id: Routing Engine
         router_dimension: Router objective
         router_options_traffic: Take into account traffic
@@ -621,6 +622,8 @@ en:
           icon_size_invalid: is not a valid size
         optimization_time:
           must_be_greater_than_minimal_time: must be greater than minimal time
+        router:
+          unauthorized: unauthorized in this profile
   errors:
     database:
       default: Database error.
@@ -824,6 +827,8 @@ en:
         at the place of delivering
       router_options_strict_restriction: If not checked the router will try to strictly
         respect the limitations and override limitations only if it's the only way.
+      vehicle_router_unauthorized: "At least one vehicle have an unauthorized router for this profile : <strong>%{profile}</strong>"
+      user_layer_unauthorized: "At least one user have an unauthorized layer for this profile : <strong>%{profile}</strong>"
       take_over_help: Average time per account
       max_plannings_default: '%{n} (default value)'
       max_plannings_help: Maximum number of allowed plans into the account.

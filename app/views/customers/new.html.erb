@@ -8,6 +8,7 @@
 
   controller.js(
     admin: true,
-    routers_options: Hash[routers.collect { |r| [r.id, r.options] }]
+    routers_options: Hash[routers.collect { |r| [r.id, r.options] }],
+    routers_modes_by_profile: raw(routers_modes_by_profile.to_json)
   )
 %>

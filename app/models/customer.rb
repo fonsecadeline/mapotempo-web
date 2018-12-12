@@ -58,8 +58,6 @@ class Customer < ApplicationRecord
   attribute :take_over, ScheduleType.new
   time_attr :take_over
 
-  # We do not want to test if ref is uniq
-  #validates :ref, uniqueness: { scope: :reseller_id, case_sensitive: true }, allow_nil: true, allow_blank: true
   validates :profile, presence: true
   validates :router, presence: true
   validates :router_dimension, presence: true
@@ -85,6 +83,7 @@ class Customer < ApplicationRecord
   validates :optimization_minimal_time, numericality: true, allow_nil: true
   validates :optimization_time, numericality: true, allow_nil: true
   validate :validate_optimization_times
+  validate :router_belong_to_profile, if: :new_record?
 
   after_initialize :assign_defaults, :update_max_vehicles, if: :new_record?
   after_initialize :assign_device
@@ -517,5 +516,11 @@ class Customer < ApplicationRecord
       errors.add(:optimization_time, I18n.t('activerecord.errors.models.optimization_time.must_be_greater_than_minimal_time'))
       false
     end
+  end
+
+  def router_belong_to_profile
+    return true if profile && profile.routers.exists?(router_id)
+    errors.add(:router, I18n.t('activerecord.errors.models.router.unauthorized'))
+    false
   end
 end

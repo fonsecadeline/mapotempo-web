@@ -18,8 +18,8 @@ class CustomerTest < ActiveSupport::TestCase
 
   test 'should save' do
     reseller = resellers(:reseller_one)
-    customer = reseller.customers.build(name: 'test', max_vehicles: 5, with_state: true, 
-      optimization_time: 10, optimization_minimal_time: 3, default_country: 'France', 
+    customer = reseller.customers.build(name: 'test', max_vehicles: 5, with_state: true,
+      optimization_time: 10, optimization_minimal_time: 3, default_country: 'France',
       router: routers(:router_one), profile: profiles(:profile_one))
     assert_difference('Customer.count', 1) do
       assert_difference('Vehicle.count', 5) do
@@ -42,6 +42,16 @@ class CustomerTest < ActiveSupport::TestCase
     assert_raise(ActiveRecord::RecordInvalid) do
       customer.update!(optimization_minimal_time: 10, optimization_time: 2)
     end
+  end
+
+  test 'should validate router mode according to profil' do
+    profile = profiles(:profile_one)
+    profile.routers = Router.first(2)
+
+    customer = Customer.new({name: 'Zorglub', max_vehicles: 2, profile: profile, router: Router.last})
+
+    refute customer.valid?
+    assert_not_empty customer.errors.messages
   end
 
   test 'should stop job optimizer' do

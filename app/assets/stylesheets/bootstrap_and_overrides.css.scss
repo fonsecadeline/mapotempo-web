@@ -650,3 +650,11 @@ div.grid-container {
     background: inherit;
   }
 }
+
+.warning{
+  font-weight: bold;
+  color: #8a6d3b;
+}
+.has-warning .input-group-addon{
+  border-color: #8a6d3b !important; // otherwise it's overrided by scaffold css
+}
