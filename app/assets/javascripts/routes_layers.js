@@ -249,6 +249,16 @@ function markerClusterIcon(childCount, defaultColor, borderColors) {
   return new L.Icon.MarkerCluster();
 }
 
+var removeInactiveStops = function(data) {
+  Object.entries(data['features']).forEach(function(entry) {
+    var key = entry[0];
+    var value = entry[1];
+    if (value['properties']['active'] === false) {
+      data['features'].splice(key, 1);
+    }
+  });
+};
+
 var nbRoutes = 0;
 var RoutesLayer = L.FeatureGroup.extend({
   defaultOptions: {
@@ -260,6 +270,7 @@ var RoutesLayer = L.FeatureGroup.extend({
     url_click2call: undefined,
     unit: 'km',
     appBaseUrl: '/',
+    withInactiveStops: true,
     withPolylines: true,
     withQuantities: false,
     disableClusters: false,
@@ -367,43 +378,43 @@ var RoutesLayer = L.FeatureGroup.extend({
     // Warning: Leaflet always called popup close event after marker click
     this.off('mouseover').off('mouseout').off('click')
       .on('mouseover', function(e) {
-      if (this.options.showPopupOnHover) {
+        if (this.options.showPopupOnHover) {
+          if (e.layer instanceof L.Marker) {
+            if (this.clickPopupId) {
+              return;
+            }
+
+            if (popupModule.previousMarker && (popupModule.previousMarker._leaflet_id !== e.layer._leaflet_id)) {
+              popupModule.previousMarker.closePopup();
+            }
+
+            popupModule.createPopupForLayer(e.layer, this.map);
+          } else if (e.layer instanceof L.Path) {
+            e.layer.setStyle({
+              opacity: 0.9,
+              weight: 7
+            });
+          }
+        }
+      }.bind(this))
+      .on('mouseout', function(e) {
+        if (!this.options.showPopupOnHover) { return; }
+
         if (e.layer instanceof L.Marker) {
-          if (this.clickPopupId) {
-            return;
+          popupModule.previousMarker = e.layer;
+          if (!this.clickPopupId && e.layer.getPopup()) {
+            e.layer.closePopup();
           }
-
-          if (popupModule.previousMarker && (popupModule.previousMarker._leaflet_id !== e.layer._leaflet_id)) {
-            popupModule.previousMarker.closePopup();
+          if (!popupModule.isRequestDone) {
+            popupModule.closeCurrentRequest();
           }
-
-          popupModule.createPopupForLayer(e.layer, this.map);
         } else if (e.layer instanceof L.Path) {
           e.layer.setStyle({
-            opacity: 0.9,
-            weight: 7
+            opacity: 0.5,
+            weight: 5
           });
         }
-      }
-    }.bind(this))
-      .on('mouseout', function(e) {
-      if (!this.options.showPopupOnHover) { return; }
-
-      if (e.layer instanceof L.Marker) {
-        popupModule.previousMarker = e.layer;
-        if (!this.clickPopupId && e.layer.getPopup()) {
-          e.layer.closePopup();
-        }
-        if (!popupModule.isRequestDone) {
-          popupModule.closeCurrentRequest();
-        }
-      } else if (e.layer instanceof L.Path) {
-        e.layer.setStyle({
-          opacity: 0.5,
-          weight: 5
-        });
-      }
-    }.bind(this))
+      }.bind(this))
       .on('click', function(e) {
         // Open popup if only one is actually in a click statement.
         if (e.layer instanceof L.Marker) {
@@ -623,6 +634,7 @@ var RoutesLayer = L.FeatureGroup.extend({
         },
         beforeSend: beforeSendWaiting,
         success: function(data) {
+          if (this.options.withInactiveStops === false) removeInactiveStops(data);
           this._addRoutes(data);
           if (typeof callback === 'function') {
             callback();

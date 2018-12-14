@@ -35,6 +35,7 @@ controller.js(
   routes_array: @routes ? @routes.map{ |r| {route_id: r.id, outdated: r.outdated} } : [],
   colors_by_route: Hash[@routes.select(&:vehicle_usage).map{ |r| [r.id, r.default_color] }],
   disable_clusters: @disable_clusters || @routes.all?{ |r| (stops_count += r.stops.size) < 1000 },
+  print: params[:print],
   map_layers: Hash[layers.map{ |l| l[:name] }.zip(layers)],
   map_lat: @planning.vehicle_usage_set.vehicle_usages.collect(&:default_store_start).compact.find{ |s| s.lat }.try(:lat) || @planning.customer.default_position[:lat],
   map_lng: @planning.vehicle_usage_set.vehicle_usages.collect(&:default_store_start).compact.find{ |s| s.lng }.try(:lng) || @planning.customer.default_position[:lng],

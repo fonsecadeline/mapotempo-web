@@ -44,7 +44,8 @@ var api_web_v01_routes_index = function(params) {
     popupOptions: {
       isoline: false
     },
-    disableClusters: params.disable_clusters
+    disableClusters: params.disable_clusters,
+    withInactiveStops: !params.print
   }).addTo(map);
 
   var caption = L.DomUtil.get('routes-caption');
