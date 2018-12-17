@@ -1639,6 +1639,11 @@ en:
         move_stops:
           title: Moving stops
           move_to: Choose destination tour
+          index:
+            label: Choose the placement option
+            start: To the beginning
+            end: To the end
+            best_place: To the best place
         move_destinations:
           title: 'Moving stops'
           in_progress: 'Assignment of visits to the vehicle in progress, please wait'

@@ -1360,7 +1360,8 @@ var plannings_edit = function(params) {
           type: 'PATCH',
           url: '/plannings/' + params.planning_id + '/' + $("#move-route-id").val() + '/move.json',
           data: {
-            'stop_ids': stopIds
+            'stop_ids': stopIds,
+            'index': $('#move-index').val()
           },
           beforeSend: beforeSendWaiting,
           error: ajaxError,

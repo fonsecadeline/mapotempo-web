@@ -1755,6 +1755,11 @@
         'move_stops':
           'title': 'Déplacement des arrêts'
           'move_to': 'Choisir la tournée de destination'
+          'index':
+            'label': 'Choisir l''option de positionnement des arrêts'
+            'start': 'Au début'
+            'end': 'A la fin'
+            'best_place': 'Au meilleur endroit'
         'move_destinations':
           'title': 'Déplacement de vos arrêts'
           'in_progress': 'Affectation des visites au véhicule en cours, merci de patienter'

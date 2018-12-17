@@ -156,6 +156,7 @@ class PlanningsController < ApplicationController
               ro.stops.select{ |stop| params[:stop_ids].include? stop.id }
                 .collect{ |stop| {stop_id: stop.id, route_id: ro.id} }
             }
+            ids.reverse! if params[:index].to_i > 0
             ids.each{ |id| move_stop(id[:stop_id], route, id[:route_id]) }
           end
 
@@ -385,7 +386,7 @@ class PlanningsController < ApplicationController
   def move_stop(stop_id, route, previous_route_id)
     stop_id = Integer(stop_id) unless stop_id.is_a? Integer
     stop = @planning.routes.find{ |r| r.id == previous_route_id }.stops.find { |s| s.id == stop_id }
-    @planning.move_stop(route, stop, params[:index] ? Integer(params[:index]) : nil)
+    @planning.move_stop(route, stop, params[:index].blank? ? nil : Integer(params[:index]))
   end
 
   def ignore_overload_multipliers
