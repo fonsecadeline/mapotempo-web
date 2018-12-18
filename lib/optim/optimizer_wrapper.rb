@@ -145,7 +145,8 @@ class OptimizerWrapper
           preprocessing: {
             max_split_size: options[:max_split_size],
             cluster_threshold: options[:cluster_threshold],
-            prefer_short_segment: true
+            prefer_short_segment: true,
+            first_solution_strategy: :self_selection,
           },
           resolution: {
             duration: options[:optimize_time] ? options[:optimize_time] * vehicles.size : nil,
