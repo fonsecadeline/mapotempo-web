@@ -5,8 +5,6 @@ require 'benchmark'
 if ENV['BENCHMARK'] == 'true'
   class BrowserBenchmarkTest < ActionDispatch::IntegrationTest
     setup do
-      Mapotempo::Application.config.max_destinations = 30_000
-
       # Disable logs
       dev_null = Logger.new('/dev/null')
       Rails.logger = dev_null
@@ -14,6 +12,7 @@ if ENV['BENCHMARK'] == 'true'
 
       @customer = customers(:customer_one)
       @customer.max_vehicles = 80
+      @customer.max_destinations = 30_000
       @customer.job_optimizer_id = nil
       @customer.job_destination_geocoding_id = nil
       @customer.save!
@@ -23,10 +22,6 @@ if ENV['BENCHMARK'] == 'true'
       Delayed::Job.destroy_all
 
       @importer = ImporterDestinations.new(@customer)
-
-      def @importer.max_lines
-        30_000
-      end
 
       def Job.on_planning(_job, _planning_id)
         false
