@@ -104,7 +104,13 @@ class GeocodeAddokWrapper
   end
 
   def complete(street, postalcode, city, state, country, lat = nil, lng = nil)
-    []
+    begin
+      result = RestClient.patch(@url + '/geocode.json', {api_key: @api_key, street: street, postalcode: postalcode, city: city, state: state, country: country, lat: lat, lng: lng}.to_json, content_type: :json, accept: :json)
+    rescue RestClient::Exception => e
+      raise GeocodeError.new e.message
+    end
+    data = JSON.parse(result)
+    data['features'].collect { |address| address['properties']['geocoding'] }
   end
 
   def code_bulk(addresses)

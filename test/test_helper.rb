@@ -50,6 +50,9 @@ class ActiveSupport::TestCase
     @stub_GeocodeMapotempo = stub_request(:get, 'http://localhost:8558/0.1/geocode.json').with(:query => hash_including({})).
       to_return(File.new(File.expand_path('../', __FILE__) + '/fixtures/geocode.mapotempo.com/geocode.json').read)
 
+    @stub_GeocodeComplete = stub_request(:patch, 'http://localhost:8558/0.1/geocode.json').with(:query => hash_including({})).
+    to_return(File.new(File.expand_path('../', __FILE__) + '/fixtures/geocode.mapotempo.com/geocode_complete.json').read)
+
     def (Mapotempo::Application.config.geocoder).code_bulk(addresses)
       addresses.map{ |a| {lat: 1, lng: 1, quality: 'street', accuracy: 0.9} }
     end
@@ -59,6 +62,7 @@ class ActiveSupport::TestCase
     remove_request_stub(@stub_GeocodeRequest)
     remove_request_stub(@stub_LocationUtilityService)
     remove_request_stub(@stub_GeocodeMapotempo)
+    remove_request_stub(@stub_GeocodeComplete)
 
     # FIXME: remove this code when errors due to locales are resolved
     if I18n.locale != :fr

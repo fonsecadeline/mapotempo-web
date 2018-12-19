@@ -746,6 +746,7 @@ class V01::DestinationsTest < ActiveSupport::TestCase
   test 'should geocode complete' do
     patch api('geocode_complete'), format: :json, id: @destination.id, destination: { city: 'Montpellier', street: 'Rue de la Chaînerais' }
     assert last_response.ok?, last_response.body
+    assert_equal 10, JSON.parse(last_response.body).length
   end
 
   test 'Update Destination' do

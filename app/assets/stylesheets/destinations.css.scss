@@ -357,6 +357,29 @@
   display: none
 }
 
+.ui-autocomplete {
+  background-color: white;
+  color: black;
+  border: 1px solid #cccccc;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 150px;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  padding-left: 0px;
+  z-index: 10;
+
+  .ui-menu-item {
+    padding-left: 10px;
+    list-style: none;
+  }
+
+  .ui-menu-item:hover {
+    background-color: #d8d8d8;
+    cursor: pointer;
+   }
+ }
+
 @media (min-width: 768px) { .map-container { max-width: 750px; } }
 @media (min-width: 992px) { .map-container { max-width: 970px; } }
 @media (min-width: 1200px) { .map-container { max-width: 1170px; } }

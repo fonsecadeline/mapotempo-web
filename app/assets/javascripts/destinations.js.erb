@@ -83,33 +83,7 @@ var destinations_form = function(params, api) {
       id = $row.attr('data-destination_id');
 
     <% if Mapotempo::Application.config.geocode_complete %>
-    $row.one("focus", ":input[name$=\\[street\\]]", function() {
-      $(this).autocomplete({
-        delay: 500,
-        source: function(req, add) {
-          $.ajax({
-            type: "patch",
-            data: $(":input", $row).serialize(),
-            url: '/api/0.1/' + api + '/geocode_complete.json',
-            beforeSend: beforeSendWaiting,
-            success: function(data) {
-              add($.map(data, function(val) {
-                return {
-                  label: val.street + ' ' + val.postalcode + ' ' + val.city + ' ' + val.country,
-                  value: val.street
-                };
-              }));
-            },
-            complete: completeWaiting,
-            error: ajaxError
-          });
-        },
-        select: function(event, ui) {
-          event.target.value = ui.item.value;
-          $(event.target).trigger('change');
-        }
-      });
-    });
+      geocodeComplete(row, api);
     <% end %>
 
     $row.on("change", ":input", function(event, move) {
@@ -476,7 +450,6 @@ var destinations_form = function(params, api) {
   });
 };
 
-
 var destinations_import = function(params, api) {
   'use strict';
 
@@ -683,34 +656,9 @@ var destinations_index = function(params, api) {
     if (isEditable || editable) {
 
       <% if Mapotempo::Application.config.geocode_complete %>
-      $row.one("focus", ":input[name$=\\[street\\]]", function() {
-        $(this).autocomplete({
-          delay: 500,
-          source: function(req, add) {
-            $.ajax({
-              type: "patch",
-              data: $(":input", $row).serialize(),
-              url: '/api/0.1/' + api + '/geocode_complete.json',
-              beforeSend: beforeSendWaiting,
-              success: function(data) {
-                add($.map(data, function(val) {
-                  return {
-                    label: val.street + ' ' + val.postalcode + ' ' + val.city + ' ' + val.country,
-                    value: val.street
-                  };
-                }));
-              },
-              complete: completeWaiting,
-              error: ajaxError
-            });
-          },
-          select: function(event, ui) {
-            event.target.value = ui.item.value;
-            $(event.target).trigger('change');
-          }
-        });
-      });
+        geocodeComplete($row, api);
       <% end %>
+
       $row.on("change", ":input:not(:checkbox)", function(event, move) {
         if (move === undefined && event.currentTarget.name.match(/\[street\]|\[postalcode\]|\[city\]|\[country\]|\[lat\]|\[lng\]$/))
           move = true;
@@ -1295,8 +1243,44 @@ var destinations_index = function(params, api) {
 
 var destinations_new = function(params, api) {
   'use strict';
-
   destinations_form(params, api);
+}
+
+var geocodeComplete = function(field, api) {
+
+  var streetInput = field.find(":input[name$=\\[street\\]]");
+
+  streetInput.autocomplete({
+    minLength: 3,
+    source: function (req, dataContainer) { return autocompleteRequest(req, dataContainer) },
+    select: function (event, ui) { return onSelectAutocomplete(event, ui) }
+  });
+
+  var autocompleteRequest = function (req, dataContainer) {
+    var formData = {
+      street: req.term,
+      country: 'France'
+    }
+
+    $.ajax({
+      type: "patch",
+      data: formData,
+      url: '/api/0.1/' + api + '/geocode_complete.json',
+      beforeSend: beforeSendWaiting,
+      success: function(data) { return dataContainer(data) },
+      complete: completeWaiting,
+      error: ajaxError
+    });
+  }
+
+  var onSelectAutocomplete = function (event, ui) {
+    field.find(':input[name$=\\[country\\]]').val(ui.item.country);
+    field.find(':input[name$=\\[postalcode\\]]').val(ui.item.postcode)
+    field.find(':input[name$=\\[city\\]]').val(ui.item.city)
+    streetInput.val(ui.item.name);
+    ui.item.value = ui.item.name;
+    $(event.target).trigger('change');
+  }
 };
 
 var destinations_edit = function(params, api) {

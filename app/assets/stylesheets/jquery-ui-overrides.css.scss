@@ -1,0 +1,37 @@
+.list-group-item {
+  position: relative;
+  display: block;
+  padding: 10px 15px;
+  margin-bottom: -1px;
+  background-color: #fff;
+  border: 1px solid #ddd !important;
+}
+
+.ui-state-error {
+  border: 1px solid #cd0a0a;
+  background: #fef1ec url(ui-bg_glass_95_fef1ec_1x400) 50% 50% repeat-x;
+  color: #cd0a0a;
+ }
+
+ .ui-autocomplete {
+  background-color: white;
+  color: black;
+  border: 1px solid #cccccc;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 150px;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  padding-left: 0px;
+  z-index: 10;
+
+  .ui-menu-item {
+    padding-left: 10px;
+    list-style: none;
+  }
+
+  .ui-menu-item:hover {
+    background-color: #d8d8d8;
+    cursor: pointer;
+   }
+ }

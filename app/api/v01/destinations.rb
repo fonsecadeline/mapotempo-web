@@ -239,7 +239,7 @@ class V01::Destinations < Grape::API
       patch 'geocode_complete' do
         p = destination_params.except(:id, :visits_attributes)
         address_list = Mapotempo::Application.config.geocoder.complete(p[:street], p[:postalcode], p[:city], p[:state], p[:country] || current_customer.default_country, current_customer.stores[0].lat, current_customer.stores[0].lng)
-        address_list = address_list.collect{ |i| {street: i[0], postalcode: i[1], city: i[2]} }
+        address_list = address_list.collect(&:compact)
         address_list
       end
     end
