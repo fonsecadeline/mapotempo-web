@@ -24,7 +24,7 @@ import { mustache_i18n, beforeSendWaiting, completeAjaxMap, ajaxError, completeW
 import 'leaflet-draw';
 import './i18n/leaflet.draw.i18n';
 
-import leafletPip from '@mapbox/leaflet-pip';
+import leafletPip from 'leaflet-pip';
 
 export const zonings_edit = function(params) {
   /**********************************************
