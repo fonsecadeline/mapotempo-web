@@ -135,7 +135,7 @@ class V01::Devices::Fleet < Grape::API
            detail: 'Create driver by vehicle',
            nickname: 'deviceFleetCreateDrivers'
       get '/create_or_update_drivers' do
-        service.create_or_update_drivers(@current_user)
+        service.create_or_update_drivers(@current_user) if @current_customer.reseller.authorized_fleet_administration?
       end
     end
   end

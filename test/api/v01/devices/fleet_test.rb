@@ -175,4 +175,16 @@ class V01::Devices::FleetTest < ActiveSupport::TestCase
       assert_equal ['Planned', 'Finished'], status.collect(&:status)
     end
   end
+
+  test 'can create or update vehicles only if user is authorized fleet administration' do
+    @customer.reseller.update_attribute(:authorized_fleet_administration, true)
+
+    with_stubs [:create_or_update_vehicle] do
+      stub_request(:put, %r{^.*/api/0.1/users/.*$})
+
+      get api('devices/fleet/create_or_update_drivers', { customer_id: @customer.id })
+      assert JSON.parse(last_response.body).first['updated']
+    end
+
+  end
 end

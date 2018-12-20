@@ -142,6 +142,9 @@ module FleetBase
             stubs << stub_request(:get, url).to_return(status: 404, body: nil, headers: {})
             stubs << stub_request(:post, post).to_return(status: 200, body: nil, headers: {})
             stubs << stub_request(:any, put).to_return(status: 200, body: nil, headers: {})
+          when :create_or_update_drivers
+            url = FleetService.new(customer: @customer).service.send(:create_or_update_drivers)
+            stubs << stub_request(:get, url).to_return(status: 200, body: [{:email=>"toto@toto.toto", :updated=>true}])
         end
       end
       yield
