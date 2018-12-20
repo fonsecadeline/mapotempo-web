@@ -71,6 +71,7 @@ group :test do
   gem 'minitest-focus'
   gem 'minitest-around'
   gem 'minitest-stub_any_instance'
+  gem 'minitest-reporters'
   gem 'simplecov', require: false
   gem 'webmock'
   gem 'tidy-html5', github: 'moneyadviceservice/tidy-html5-gem'

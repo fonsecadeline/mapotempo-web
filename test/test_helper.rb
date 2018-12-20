@@ -17,6 +17,12 @@ WebMock.disable_net_connect!
 require 'html_validation'
 #PageValidations::HTMLValidation.show_warnings = false
 
+require "minitest/reporters"
+Minitest::Reporters.use! [
+  Minitest::Reporters::ProgressReporter.new,
+  #Minitest::Reporters::HtmlReporter.new # create html reporte with many more informations
+]
+
 class ActiveSupport::TestCase
   ActiveRecord::Migration.check_pending!
 
