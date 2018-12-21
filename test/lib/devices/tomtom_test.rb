@@ -103,4 +103,13 @@ class TomtomTest < ActionController::TestCase
       assert_equal 'Started', planning.routes.find{ |r| r.ref == 'route_one' }.stops.first.status
     end
   end
+
+  test 'should show explicit error on timeout' do
+    with_stubs [:orders_service_wsdl, :send_destination_order, :timeout] do
+      set_route
+      assert_raises DeviceServiceError do
+        @service.send_route @customer, @route, { type: :orders }
+      end
+    end
+  end
 end

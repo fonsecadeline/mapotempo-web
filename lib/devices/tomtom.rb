@@ -310,7 +310,7 @@ class Tomtom < DeviceBase
       end
     end
 
-  rescue SocketError => error
+  rescue SocketError, Net::OpenTimeout => error
     Rails.logger.info error
     raise DeviceServiceError.new("TomTom: #{I18n.t('errors.tomtom.unreachable')}")
   rescue Savon::SOAPFault => error

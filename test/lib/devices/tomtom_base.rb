@@ -55,6 +55,9 @@ module TomtomBase
           when :show_address_report
             url = Addressable::Template.new "#{api_url}/addressService"
             stubs << stub_request(:post, url).with(body: /.*showAddressReport.*/).to_return(File.read(Rails.root.join("test/web_mocks/tomtom/addressService-showAddressReport.xml")))
+          when :timeout
+            url = Addressable::Template.new "#{api_url}/ordersService"
+            stubs << stub_request(:post, url).with(body: /.*sendDestinationOrder.*/).to_timeout
         end
       end
       yield
