@@ -25,7 +25,7 @@ $destinations_str = "
     {
       \"open1\": \"08:00\",
       \"close1\": \"12:00\",
-      \"open2\": \"04:00\",
+      \"open2\": \"14:00\",
       \"close2\": \"18:00\",
       \"take_over\": \"00:10:00\"
     }
@@ -61,7 +61,7 @@ $destinations_str_with_route = "
       \"quantities\": [{\"deliverable_unit_id\": !!!one_of_your_deliverable_unit_id!!!, \"quantity\": 1.0}],
       \"open1\": \"08:00\",
       \"close1\": \"12:00\",
-      \"open2\": \"04:00\",
+      \"open2\": \"14:00\",
       \"close2\": \"18:00\",
       \"take_over\": \"00:10:00\",
       \"route\": \"string\",

@@ -72,7 +72,7 @@ class V01::Users < Grape::API
       end
     end
 
-    desc 'Create user.',
+    desc 'Create user (admin).',
       detail: 'Only available with an admin api_key.',
       nickname: 'createUser',
       success: V01::Entities::User
@@ -112,7 +112,7 @@ class V01::Users < Grape::API
       present user, with: V01::Entities::User
     end
 
-    desc 'Delete user.',
+    desc 'Delete user (admin).',
       detail: 'Only available with an admin api_key.',
       nickname: 'deleteUser'
     params do
@@ -129,7 +129,7 @@ class V01::Users < Grape::API
       end
     end
 
-    desc 'Delete multiple users.',
+    desc 'Delete multiple users (admin).',
       detail: 'Only available with an admin api_key.',
       nickname: 'deleteUsers'
     params do

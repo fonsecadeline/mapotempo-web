@@ -230,7 +230,7 @@ class V01::Vehicles < Grape::API
     if Mapotempo::Application.config.manage_vehicles_only_admin
       detailCreate = 'Only available with an admin api_key. ' + detailCreate
     end
-    desc 'Create vehicle.',
+    desc "Create vehicle#{Mapotempo::Application.config.manage_vehicles_only_admin ? ' (admin)' : ''}.",
       detail: detailCreate,
       nickname: 'createVehicle',
       success: V01::Entities::Vehicle
@@ -309,7 +309,7 @@ class V01::Vehicles < Grape::API
     end
 
     detailDelete = Mapotempo::Application.config.manage_vehicles_only_admin ? 'Only available with an admin api_key.' : nil
-    desc 'Delete vehicle.',
+    desc "Delete vehicle#{Mapotempo::Application.config.manage_vehicles_only_admin ? ' (admin)' : ''}.",
       detail: detailDelete,
       nickname: 'deleteVehicle'
     params do
@@ -331,7 +331,7 @@ class V01::Vehicles < Grape::API
       end
     end
 
-    desc 'Delete multiple vehicles.',
+    desc "Delete multiple vehicles#{Mapotempo::Application.config.manage_vehicles_only_admin ? ' (admin)' : ''}.",
       detail: detailDelete,
       nickname: 'deleteVehicles'
     params do

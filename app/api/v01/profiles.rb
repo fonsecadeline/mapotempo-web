@@ -17,7 +17,7 @@
 #
 class V01::Profiles < Grape::API
   resource :profiles do
-    desc 'Fetch profiles.',
+    desc 'Fetch profiles (admin).',
       detail: "Only available with an admin api_key.
         Get the available profiles which allow to select layers (maps) and routers (routes).",
       nickname: 'getProfiles',
@@ -31,9 +31,9 @@ class V01::Profiles < Grape::API
       end
     end
 
-    desc 'Fetch routers in the profile.',
+    desc 'Fetch routers in the profile (admin).',
       detail: "Only available with an admin api_key.
-        Get the list of available routers which can be used for finding route.",
+        Get the list of available routers which can be used for finding route between destinations.",
       nickname: 'getProfileRouters',
       is_array: true,
       success: V01::Entities::Router
@@ -49,7 +49,7 @@ class V01::Profiles < Grape::API
       end
     end
 
-    desc 'Fetch layers in the profile.',
+    desc 'Fetch layers in the profile (admin).',
       detail: "Only available with an admin api_key.
         Get the list of available layers which can be used for maps.",
       nickname: 'getProfileLayers',

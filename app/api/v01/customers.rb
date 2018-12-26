@@ -129,8 +129,8 @@ class V01::Customers < Grape::API
   end
 
   resource :customers do
-    desc 'Fetch customers.',
-      detail: 'Only available with an admin api_key.',
+    desc 'Fetch customer accounts (admin).',
+      detail: 'Retrieve all customer accounts. Only available with an admin api_key.',
       nickname: 'getCustomers',
       is_array: true,
       success: V01::Entities::Customer
@@ -142,7 +142,8 @@ class V01::Customers < Grape::API
       end
     end
 
-    desc 'Fetch customer.',
+    desc 'Fetch customer account.',
+      detail: 'Get informations and details, for example customer account associated to the current api_key.',
       nickname: 'getCustomer',
       is_array: true,
       success: V01::Entities::Customer
@@ -160,7 +161,7 @@ class V01::Customers < Grape::API
       end
     end
 
-    desc 'Fetch users for customer id',
+    desc 'Fetch users for customer account id',
       nickname: 'getCustomerUsers',
       is_array: true,
       success: V01::Entities::User
@@ -175,7 +176,8 @@ class V01::Customers < Grape::API
       end
     end
 
-    desc 'Update customer.',
+    desc 'Update customer account.',
+      detail: 'Update informations and details, for example customer account associated to the current api_key.',
       nickname: 'updateCustomer',
       success: V01::Entities::Customer
     params do
@@ -226,7 +228,7 @@ class V01::Customers < Grape::API
       end
     end
 
-    desc 'Create customer.',
+    desc 'Create customer account (admin).',
       detail: 'Only available with an admin api_key.',
       nickname: 'createCustomer',
       success: V01::Entities::Customer
@@ -275,7 +277,7 @@ class V01::Customers < Grape::API
       end
     end
 
-    desc 'Delete customer.',
+    desc 'Delete customer account (admin).',
       detail: 'Only available with an admin api_key.',
       nickname: 'deleteCustomer'
     params do
@@ -340,8 +342,8 @@ class V01::Customers < Grape::API
       end
     end
 
-    desc 'Duplicate customer.',
-      detail: 'Create a copy of customer. Only available with an admin api_key.',
+    desc 'Duplicate customer account (admin).',
+      detail: 'Create a copy of customer account. Only available with an admin api_key.',
       nickname: 'duplicateCustomer'
     params do
       requires :id, type: String, desc: ID_DESC

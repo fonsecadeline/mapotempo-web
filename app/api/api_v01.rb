@@ -58,12 +58,12 @@ class ApiV01 < Grape::API
 ## Model
 Model is structured around four majors concepts: the Customer account, Destinations, Vehicles and Plannings.
 * `Customers`: many of objects are linked to a customer account (relating to the user calling API).
-The customer has many users, each user has his own `api_key`.
-* `Destinations`: location points to visit with constraints. The same `Destination` can be visited several times : in this case several `Visit`s are associated to one `Destination`.
+The customer has many `Users`, each user has his own `api_key`. Be carefull not to confuse with following model `Destination`, `Customer`can only be created by a admin `User`.
+* `Destinations`: location points to visit with constraints. The same `Destination` can be visited several times : in this case several `Visits` are associated to one `Destination`.
 * `Vehicles`: vehicles definition are splited in two parts:
  * the structural definition named `Vehicle` (car, truck, bike, consumption, etc.)
  * and the vehicle usage `VehicleUsage`, a specific usage of a physical vehicle in a specific context. Vehicles can be used in many contexts called `VehicleUsageSet` (set of all vehicles usages under a context). Multiple values are only available if dedicated option for customer is active. For instance, if customer needs to use its vehicle 2 times per day (morning and evening), he needs 2 `VehicleUsageSet` called "Morning" and "Evening" : each can have different values defined for stores, rest, etc... `VehicleUsageSet` defines default values for vehicle usage.
-* `Plannings`: `Planning` is a set of `Route`s to `Visit` `Destination`s with `Vehicle` within a `VehicleUsageSet` context.
+* `Plannings`: `Planning` is a set of `Routes` to `Visit` `Destinations` with `Vehicle` within a `VehicleUsageSet` context.
 A route is a track between all destinations reached by a vehicle (a new route is created for each customer\'s vehicle and a route without vehicle is created for all out-of-route destinations). By default all customer\'s visites are used in a planning.
 
 ## Technical access
@@ -96,7 +96,7 @@ Several default profiles are available and can be listed with an admin `api_key`
 ### Tags
 `Tag` is a concept to filter visits and create planning only for a subset of visits. For instance, if some visits are tagged "Monday", it allows to create a new planning for "Monday" tag and use only dedicated visits.
 ### Zonings
-`Zoning` is a concept which allows to define multiple `Zone`s (areas) around destinatons. A `Zone` can be affected to a `Vehicle` and if it is used into a `Planning`, all `Destinations` inside areas will be affected to the zone\'s vehicle (or `Route`). A polygon defining a `Zone` can be created outside the application or can be automatically generated from a planning.
+`Zoning` is a concept which allows to define multiple `Zones` (areas) around destinatons. A `Zone` can be affected to a `Vehicle` and if it is used into a `Planning`, all `Destinations` inside areas will be affected to the zone\'s vehicle (or `Route`). A polygon defining a `Zone` can be created outside the application or can be automatically generated from a planning.
 
 ## Code samples
 * Create and display destinations or visits.
