@@ -168,7 +168,7 @@ gem 'auto_strip_attributes'
 gem 'amoeba'
 gem 'carrierwave'
 
-gem 'charlock_holmes'
+gem 'charlock_holmes', '> 0.7.3'
 gem 'savon'
 gem 'savon-multipart', '~> 2.0.2'
 gem 'rest-client'

@@ -210,7 +210,7 @@ GEM
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
-    charlock_holmes (0.7.3)
+    charlock_holmes (0.7.6)
     childprocess (0.8.0)
       ffi (~> 1.0, >= 1.0.11)
     chromedriver-helper (1.1.0)
@@ -695,7 +695,7 @@ DEPENDENCIES
   cancancan
   capybara
   carrierwave
-  charlock_holmes
+  charlock_holmes (> 0.7.3)
   chromedriver-helper
   chronic_duration
   coffee-rails

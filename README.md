@@ -23,6 +23,13 @@ Install ruby (>2.0 is needed), bundler and some dependencies from system package
 
     yum install ruby ruby-devel rubygem-bundler postgresql-devel libgeos++-dev
 
+#### On Mac OS
+
+Install ruby (>2.0 is needed), bundler and some dependencies from system package.
+
+    brew install icu4c
+    bundle config build.charlock_holmes --with-icu-dir=/usr/local/opt/icu4c
+
 #### On other systems
 
 Install Ruby (> 2.0 is needed) and other dependencies from system package.
