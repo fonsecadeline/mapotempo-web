@@ -20,7 +20,7 @@ stop_one_one:
   active: true
   distance: 1.1
   route: route_one_one # planning_one
-  visit_id: 1 # Refered by tomtom web mock as encoded string ":v1"
+  visit_id: 1 # Refered by tomtom web mock as encoded string ":v1" (visit_one)
   time: 00:00:30
   out_of_window: false
   out_of_capacity: false

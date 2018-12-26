@@ -87,7 +87,7 @@ class Visit < ApplicationRecord
   def destroy
     # Do not use local collection stop_visits
     destination.customer.plannings.each do |planning|
-      planning.visit_remove(self) if planning.visits.include?(self)
+      planning.visit_remove(self) if planning.visits_include?(self)
       planning.save! # To shift index
     end
     super
@@ -206,7 +206,7 @@ class Visit < ApplicationRecord
     if destination.customer && (@tag_ids_changed || new_record?)
       # Don't use local collection here, not set when save new record
       destination.customer.plannings.each do |planning|
-        if !new_record? && planning.visits.include?(self)
+        if !new_record? && planning.visits_include?(self)
           if planning.tag_operation == 'or'
             unless (planning.tags.to_a & (tags.to_a | destination.tags.to_a)).present?
               planning.visit_remove(self)

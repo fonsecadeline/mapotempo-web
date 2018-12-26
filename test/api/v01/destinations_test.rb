@@ -702,7 +702,7 @@ class V01::DestinationsTest < ActiveSupport::TestCase
       delete api(@destination.id)
       assert_equal 204, last_response.status, last_response.body
       routes.each do |route|
-        assert route.stops.collect(&:index).sum == (route.stops.length * (route.stops.length + 1)) / 2
+        assert_equal (route.stops.length * (route.stops.length + 1)) / 2, route.stops.collect(&:index).sum
       end
     end
   end

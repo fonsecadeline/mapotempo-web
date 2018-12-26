@@ -114,6 +114,15 @@ class Planning < ApplicationRecord
     end
   end
 
+  def visits_include?(visit)
+    if self.id
+      # Don't load all visits if it is not necessary
+      !(visit.stop_visits.map(&:route_id) & routes.map(&:id)).empty?
+    else
+      visits.include?(visit)
+    end
+  end
+
   def visit_add(visit)
     update_routes_changed
     routes.find{ |r| !r.vehicle_usage? }.add(visit)
@@ -122,7 +131,7 @@ class Planning < ApplicationRecord
   def visit_remove(visit)
     update_routes_changed
     routes.each{ |route|
-      route.remove_visit(visit)
+      (visit.stop_visits.loaded? ? visit.stop_visits.map(&:route_id).include?(route.id) : true) && route.remove_visit(visit)
     }
   end
 
