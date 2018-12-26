@@ -105,10 +105,18 @@ class RouteTest < ActiveSupport::TestCase
     assert_equal visits(:visit_two), route.stops.find{ |s| s.visit.destination.name == 'destination_two' }.visit
   end
 
-  test 'should remove' do
+  test 'should remove visit' do
     route = routes(:route_one_one)
     assert_difference('Stop.count', -1) do
-      route.remove_visit(visits(:visit_two))
+      assert route.remove_visit(visits(:visit_two)), 'Should return a value'
+      route.save!
+    end
+  end
+
+  test 'should not remove visit' do
+    route = routes(:route_one_one)
+    assert_difference('Stop.count', 0) do
+      assert_nil route.remove_visit(visits(:visit_unaffected_one))
       route.save!
     end
   end

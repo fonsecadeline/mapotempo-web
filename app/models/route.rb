@@ -372,17 +372,17 @@ class Route < ApplicationRecord
   end
 
   def remove_visit(visit)
-    stops.each{ |stop|
+    stops.find{ |stop|
       if stop.is_a?(StopVisit) && stop.visit == visit
         remove_stop(stop)
       end
     }
   end
 
-  def remove_stop(stop)
-    shift_index(stop.index + 1, -1)
-    self.outdated = true
-    stops.destroy(stop)
+  def remove_rests
+    stops.each{ |stop|
+      remove_stop(stop) if stop.is_a?(StopRest)
+    }
   end
 
   def move_stop(stop, index)
@@ -675,6 +675,12 @@ class Route < ApplicationRecord
   def assign_defaults
     self.hidden = false
     self.locked = false
+  end
+
+  def remove_stop(stop)
+    shift_index(stop.index + 1, -1)
+    self.outdated = true
+    stops.destroy(stop) # Must return a value
   end
 
   def shift_index(from, by = 1, to = nil)

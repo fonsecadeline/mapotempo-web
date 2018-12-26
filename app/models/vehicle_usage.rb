@@ -210,11 +210,7 @@ class VehicleUsage < ApplicationRecord
   def update_rest
     if default_rest_duration.nil?
       # No more rest
-      routes.each{ |route|
-        route.stops.select{ |stop| stop.is_a?(StopRest) }.each{ |stop|
-          route.remove_stop(stop)
-        }
-      }
+      routes.each(&:remove_rests)
     else
       # New or changed rest
       routes.each(&:add_or_update_rest)
