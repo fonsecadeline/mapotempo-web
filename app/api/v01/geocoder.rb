@@ -39,7 +39,7 @@ class V01::Geocoder < Grape::API
       optional :limit, type: Integer, desc: 'Max results numbers. (default and upper max 10)'
     end
     get 'search' do
-      json = Mapotempo::Application.config.geocode_geocoder.code_free(params[:q], current_customer.default_country, params[:limit] || 10, params[:lat], params[:lng]).collect{ |result|
+      json = Mapotempo::Application.config.geocoder.code_free(params[:q], current_customer.default_country, params[:limit] || 10, params[:lat], params[:lng]).collect{ |result|
         {
           address: {
             city: result[:free]

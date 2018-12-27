@@ -58,7 +58,7 @@ class V01::DestinationsTest < ActiveSupport::TestCase
   end
 
   test 'should create with geocode error' do
-    Mapotempo::Application.config.geocode_geocoder.class.stub_any_instance(:code, lambda{ |*a| raise GeocodeError.new }) do
+    Mapotempo::Application.config.geocoder.class.stub_any_instance(:code, lambda{ |*a| raise GeocodeError.new }) do
       assert_difference('Destination.count', 1) do
         assert_difference('Stop.count', 0) do
           @destination.name = 'new dest'
@@ -737,7 +737,7 @@ class V01::DestinationsTest < ActiveSupport::TestCase
   end
 
   test 'should geocode with error' do
-    Mapotempo::Application.config.geocode_geocoder.class.stub_any_instance(:code, lambda{ |*a| raise GeocodeError.new }) do
+    Mapotempo::Application.config.geocoder.class.stub_any_instance(:code, lambda{ |*a| raise GeocodeError.new }) do
       patch api('geocode'), format: :json, destination: { city: @destination.city, name: @destination.name, postalcode: @destination.postalcode, street: @destination.street, state: @destination.state }
       assert last_response.ok?, last_response.body
     end

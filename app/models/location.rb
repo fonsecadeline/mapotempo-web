@@ -52,14 +52,14 @@ class Location < ApplicationRecord
   end
 
   def geocode
-    geocode_result(Mapotempo::Application.config.geocode_geocoder.code(*geocode_args))
+    geocode_result(Mapotempo::Application.config.geocoder.code(*geocode_args))
   rescue GeocodeError => e # avoid stop save
     @warnings = [I18n.t('errors.location.geocoding_fail') + ' ' + e.message]
     Rails.logger.info "Destination Geocode Failed: ID=#{self.id}"
   end
 
   def reverse_geocoding(lat, lng)
-    json = ActiveSupport::JSON.decode(Mapotempo::Application.config.geocode_geocoder.reverse(lat, lng))
+    json = ActiveSupport::JSON.decode(Mapotempo::Application.config.geocoder.reverse(lat, lng))
     if json['features'].present?
       {
         success: true,

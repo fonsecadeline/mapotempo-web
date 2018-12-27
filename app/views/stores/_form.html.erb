@@ -42,7 +42,7 @@
         <div id="geocoding_accuracy"<% if ! @store.geocoding_accuracy %> style="display: none"<% end %>>
           <input type="hidden" name="store[geocoding_accuracy]" value="<%= @store.geocoding_accuracy %>">
           <div id="geocoding-progress" class="progress">
-            <div class="progress-bar<% if @store.geocoding_accuracy %> progress-bar-<%= @store.geocoding_accuracy > Mapotempo::Application.config.geocode_geocoder.accuracy_success ? 'success' : @store.geocoding_accuracy > Mapotempo::Application.config.geocode_geocoder.accuracy_warning ? 'warning' : 'danger' %><% end %>" style="width: <%= @store.geocoding_accuracy ? (@store.geocoding_accuracy * 100).round : 0 %>%;">
+            <div class="progress-bar<% if @store.geocoding_accuracy %> progress-bar-<%= @store.geocoding_accuracy > Mapotempo::Application.config.geocoder.accuracy_success ? 'success' : @store.geocoding_accuracy > Mapotempo::Application.config.geocoder.accuracy_warning ? 'warning' : 'danger' %><% end %>" style="width: <%= @store.geocoding_accuracy ? (@store.geocoding_accuracy * 100).round : 0 %>%;">
               <span><%= @store.geocoding_accuracy ? (@store.geocoding_accuracy * 100).round.to_s + '%' : '' %></span>
             </div>
           </div>

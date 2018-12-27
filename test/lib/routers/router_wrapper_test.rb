@@ -4,7 +4,7 @@ require 'routers/router_wrapper'
 
 class Routers::RouterWrapperTest < ActionController::TestCase
   setup do
-    @router_wrapper = Mapotempo::Application.config.router_wrapper
+    @router_wrapper = Mapotempo::Application.config.router
     @customer = customers(:customer_one)
   end
 

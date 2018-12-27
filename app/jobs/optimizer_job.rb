@@ -43,7 +43,7 @@ class OptimizerJob < Job.new(:planning_id, :route_id, :global, :active_only, :ig
     optimum = unless routes.select(&:vehicle_usage_id).empty?
       begin
         planning.optimize(routes, global: global, active_only: active_only, ignore_overload_multipliers: ignore_overload_multipliers) do |positions, services, vehicles|
-          optimum = Mapotempo::Application.config.optimize.optimize(
+          optimum = Mapotempo::Application.config.optimizer.optimize(
             positions, services, vehicles,
             name: "c#{planning.customer_id} " + planning.name,
             optimize_time: @@optimize_time_force || (optimize_time ? optimize_time * 1000 : nil),

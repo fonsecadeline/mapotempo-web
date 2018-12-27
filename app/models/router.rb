@@ -26,7 +26,7 @@ class Router < ApplicationRecord
   hash_bool_attr :options, :time, :distance, :avoid_zones, :isochrone, :isodistance, :traffic, :track, :motorway, :toll, :trailers, :weight, :weight_per_axle, :height, :width, :length, :hazardous_goods, :max_walk_distance, :approach, :snap, :strict_restriction
 
   nilify_blanks
-  auto_strip_attributes :name, :url_time, :url_distance, :mode
+  auto_strip_attributes :name, :url, :mode
   validates :name, presence: true
   validates :mode, presence: true
 
@@ -50,6 +50,14 @@ class Router < ApplicationRecord
     else
       self.name
     end
+  end
+
+  def url_time
+    url
+  end
+
+  def url_distance
+    url
   end
 
   private

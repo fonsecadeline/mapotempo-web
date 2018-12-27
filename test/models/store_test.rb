@@ -69,7 +69,7 @@ class StoreTest < ActiveSupport::TestCase
   end
 
   test 'should geocode with error' do
-    Mapotempo::Application.config.geocode_geocoder.class.stub_any_instance(:code, lambda{ |*a| raise GeocodeError.new }) do
+    Mapotempo::Application.config.geocoder.class.stub_any_instance(:code, lambda{ |*a| raise GeocodeError.new }) do
       store = stores(:store_one)
       assert store.geocode
       assert 1, store.warnings.size
@@ -90,7 +90,7 @@ class StoreTest < ActiveSupport::TestCase
   end
 
   test 'should update_geocode with error' do
-    Mapotempo::Application.config.geocode_geocoder.class.stub_any_instance(:code, lambda{ |*a| raise GeocodeError.new }) do
+    Mapotempo::Application.config.geocoder.class.stub_any_instance(:code, lambda{ |*a| raise GeocodeError.new }) do
       store = stores(:store_one)
       store.city = 'Toulouse'
       store.state = 'Midi-Pyrénées'

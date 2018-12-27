@@ -26,7 +26,7 @@ class GeocoderStoresJob < Job.new(:customer_id)
         stores = customer.stores.find store_ids # IMPORTANT: Lower Delayed Job Memory Usage
         geocode_args = stores.collect(&:geocode_args)
         begin
-          results = Mapotempo::Application.config.geocode_geocoder.code_bulk(geocode_args)
+          results = Mapotempo::Application.config.geocoder.code_bulk(geocode_args)
           stores.zip(results).each { |store, result|
             store.geocode_result(result) if result
             store.save!

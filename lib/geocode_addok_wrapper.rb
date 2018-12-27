@@ -30,18 +30,17 @@ class GeocodeAddokWrapper
     0.5
   end
 
-  attr_accessor :cache_code, :url, :api_key
+  attr_accessor :cache, :url, :api_key
 
-  def initialize(url, api_key)
+  def initialize(cache, url, api_key)
+    @cache = cache
     @url = url
     @api_key = api_key
-
-    @cache_code = Mapotempo::Application.config.geocode_code_cache
   end
 
   def code(street, postalcode, city, state, country)
     key = ['addok_wrapper', street, postalcode, city, state, country]
-    result = @cache_code.read(key)
+    result = @cache.read(key)
     if !result
       begin
         result = RestClient.get(@url + '/geocode.json', params: {
@@ -54,7 +53,7 @@ class GeocodeAddokWrapper
           country: country
         })
 
-        @cache_code.write(key, result && result.body)
+        @cache.write(key, result && result.body)
       rescue RestClient::Exception => e
         raise GeocodeError.new e.message
       end
@@ -68,7 +67,7 @@ class GeocodeAddokWrapper
 
   def code_free(q, country, limit = 10, lat = nil, lng = nil)
     key = ['addok_wrapper', q]
-    result = @cache_code.read(key)
+    result = @cache.read(key)
     if !result
       begin
         result = RestClient.get(@url + '/geocode.json', params: {
@@ -78,7 +77,7 @@ class GeocodeAddokWrapper
           country: country
         })
 
-        @cache_code.write(key, result && result.body)
+        @cache.write(key, result && result.body)
       rescue
         raise
       end
@@ -120,11 +119,11 @@ class GeocodeAddokWrapper
     }
 
     key = ['addok_wrapper', json]
-    result = @cache_code.read(key)
+    result = @cache.read(key)
     if !result
       begin
         result = RestClient.post(@url + '/geocode.json', {api_key: @api_key, geocodes: json}.to_json, content_type: :json, accept: :json)
-        @cache_code.write(key, result && result.body)
+        @cache.write(key, result && result.body)
       rescue RestClient::Exception => e
         raise GeocodeError.new e.message
       end

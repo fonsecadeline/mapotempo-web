@@ -125,7 +125,7 @@ class ImporterStores < ImporterBase
       @stores_to_geocode.each_slice(50){ |stores|
         geocode_args = stores.collect(&:geocode_args)
         begin
-          results = Mapotempo::Application.config.geocode_geocoder.code_bulk(geocode_args)
+          results = Mapotempo::Application.config.geocoder.code_bulk(geocode_args)
           stores.zip(results).each { |store, result|
             store.geocode_result(result) if result
           }

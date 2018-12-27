@@ -26,7 +26,7 @@ class GeocoderDestinationsJob < Job.new(:customer_id, :planning_ids)
         destinations = customer.destinations.find destination_ids # IMPORTANT: Lower Delayed Job Memory Usage
         geocode_args = destinations.collect(&:geocode_args)
         begin
-          results = Mapotempo::Application.config.geocode_geocoder.code_bulk(geocode_args)
+          results = Mapotempo::Application.config.geocoder.code_bulk(geocode_args)
           destinations.zip(results).each { |destination, result|
             destination.geocode_result(result) if result
             destination.save!

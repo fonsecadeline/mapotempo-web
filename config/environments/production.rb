@@ -97,9 +97,9 @@ Rails.application.configure do
 #    cache_factory('optimizer', 60*60*24*10),
 #    'http://localhost:4567/0.1/optimize_tsptw'
 #  )
-  config.optimize = OptimizerWrapper.new(
+  config.optimizer = OptimizerWrapper.new(
     cache_factory('optimizer_wrapper', 60*60*24*10),
-    ENV['OPTIMIZER_HOST'] || 'http://optim.mapotempo.com:1791/0.1',
+    ENV['OPTIMIZER_URL'] || 'http://localhost:1791/0.1',
     ENV['OPTIMIZER_API_KEY']
   )
   config.optimize_time = 300
@@ -113,36 +113,38 @@ Rails.application.configure do
   config.optimize_cost_waiting_time = 1
   config.optimize_force_start = false
 
-  config.geocode_code_cache = cache_factory('geocode', 60*60*24*10)
-  config.geocode_reverse_cache = cache_factory('geocode_reverse', 60*60*24*10)
-  config.geocode_complete_cache = cache_factory('geocode_complete', 60*60*24*10)
   config.geocode_complete = false # Build time setting
 
   require 'geocode_addok_wrapper'
-  config.geocode_geocoder = GeocodeAddokWrapper.new(ENV['GEOCODER_HOST'] || 'https://geocode.mapotempo.com/0.1', ENV['GEOCODER_API_KEY'])
+  config.geocoder = GeocodeAddokWrapper.new(
+    cache_factory('geocoder_wrapper', 60*60*24*10),
+    ENV['GEOCODER_URL'] || 'http://localhost:8558/0.1',
+    ENV['GEOCODER_API_KEY'] || 'demo'
+  )
 
-  config.router_osrm = Routers::Osrm.new(
-    cache_factory('osrm_request', 60*60*24*1),
-    cache_factory('osrm_result', 60*60*24*1)
-  )
-  config.router_otp = Routers::Otp.new(
-    cache_factory('otp_request', 60*60*24*1),
-    cache_factory('otp_result', 60*60*24*1)
-  )
-  config.router_here = Routers::Here.new(
-    cache_factory('here_request', 60*60*24*1),
-    cache_factory('here_result', 60*60*24*1),
-    'https://route.api.here.com/routing',
-    'https://matrix.route.api.here.com/routing',
-    'https://isoline.route.api.here.com/routing',
-    nil,
-    nil
-  )
-  config.router_wrapper = Routers::RouterWrapper.new(
+  # config.router_osrm = Routers::Osrm.new(
+  #   cache_factory('osrm_request', 60*60*24*1),
+  #   cache_factory('osrm_result', 60*60*24*1)
+  # )
+  # config.router_otp = Routers::Otp.new(
+  #   cache_factory('otp_request', 60*60*24*1),
+  #   cache_factory('otp_result', 60*60*24*1)
+  # )
+  # config.router_here = Routers::Here.new(
+  #   cache_factory('here_request', 60*60*24*1),
+  #   cache_factory('here_result', 60*60*24*1),
+  #   'https://route.api.here.com/routing',
+  #   'https://matrix.route.api.here.com/routing',
+  #   'https://isoline.route.api.here.com/routing',
+  #   nil,
+  #   nil
+  # )
+  config.router = Routers::RouterWrapper.new(
     cache_factory('router_wrapper_request', 60*60*24*1),
     cache_factory('router_wrapper_result', 60*60*24*1),
     ENV['ROUTER_API_KEY']
   )
+  config.router.url = ENV['ROUTER_URL'] || 'http://localhost:4899/0.1'
 
   config.devices.fleet.api_url = 'https://fleet.mapotempo.com'
   config.devices.fleet.admin_api_key = ENV['DEVICE_FLEET_ADMIN_API_KEY']
@@ -160,9 +162,9 @@ Rails.application.configure do
 
   config.delayed_job_use = true
 
-  config.self_care = true # Allow subscription and resiliation by the user himself
+  config.self_care = true # If true, allow subscription and resiliation by the user himself
 
-  config.manage_vehicles_only_admin = false
+  config.manage_vehicles_only_admin = false # If true, only admin can add/remove vehicles
 
   config.enable_references = true
   config.enable_multi_visits = false

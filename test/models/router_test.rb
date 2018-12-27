@@ -71,7 +71,6 @@ class RouterTest < ActiveSupport::TestCase
     end
   end
 
-
   test 'should set hash options' do
     router = routers(:router_one)
     router.options = {

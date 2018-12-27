@@ -7,10 +7,7 @@ router_one:
   name_locale:
     fr: Router fr
     en: Router en
-  url_time: http://localhost:5000
-  url_distance: http://localhost:5000
-  url_isochrone: http://localhost:1723
-  url_isodistance: http://localhost:1723
+  url: http://localhost:5000/0.1
   options:
     time: true
     distance: true
@@ -38,7 +35,7 @@ router_two:
   name: MyString
   name_locale:
     en: Router en
-  url_time: http://localhost:5000
+  url: http://localhost:5000/0.1
   options:
     time: true
     distance: false
@@ -49,8 +46,7 @@ router_osrm:
   mode: car
   type: RouterOsrm
   name: OSRM
-  url_time: http://localhost:5000
-  url_distance: http://localhost:5000
+  url: http://localhost:5000/0.1
   options:
     time: true
     distance: true
@@ -67,7 +63,7 @@ router_wrapper_public_transport:
   mode: public_transport
   type: RouterWrapper
   name: RouterWrapperPublicTransport
-  url_time: http://localhost:4899
+  url: http://localhost:4899/0.1
   options:
     time: true
     distance: false

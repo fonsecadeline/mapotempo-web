@@ -123,12 +123,16 @@ External resources can be configured trough environment variables:
 * POSTGRES_PASSWORD, default: 'mapotempo'
 * POSTGRES_DATABASE', default: 'mapotempo-test', 'mapotempo-dev' or 'mapotempo-prod'
 * REDIS_HOST', default: 'localhost', production environment only
-* OPTIMIZER_HOST, default: 'http://optim.mapotempo.com:1791/0.1'
-* OPTIMIZER_API_KEY
-* GEOCODER_HOST, default: 'https://geocode.mapotempo.com/0.1'
-* GEOCODER_API_KEY
-* ROUTER_API_KEY
+* OPTIMIZER_URL, default: 'http://localhost:1791/0.1'
+* OPTIMIZER_API_KEY, default: 'demo'
+* GEOCODER_URL, default: 'http://localhost:8558/0.1'
+* GEOCODER_API_KEY, default: 'demo'
+* ROUTER_URL, default: 'http://localhost:4899/0.1'
+* ROUTER_API_KEY, default: 'demo'
+* HERE_APP_ID
+* HERE_APP_CODE
 * DEVICE_TOMTOM_API_KEY
+* DEVICE_FLEET_ADMIN_API_KEY
 
 ### Background Tasks
 Delayed job (background task) can be activated by setting `Mapotempo::Application.config.delayed_job_use = true` it's allow asynchronous running of import geocoder and optimization computation.

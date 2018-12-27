@@ -66,9 +66,9 @@ var destinations_form = function(params, api) {
 
   var prepare_display_destination = function(destination) {
     if (destination.geocoding_accuracy) {
-      if (destination.geocoding_accuracy > <%= Mapotempo::Application.config.geocode_geocoder.accuracy_success %>) {
+      if (destination.geocoding_accuracy > <%= Mapotempo::Application.config.geocoder.accuracy_success %>) {
         destination.geocoding_status = 'success';
-      } else if (destination.geocoding_accuracy > <%= Mapotempo::Application.config.geocode_geocoder.accuracy_warning %>) {
+      } else if (destination.geocoding_accuracy > <%= Mapotempo::Application.config.geocoder.accuracy_warning %>) {
         destination.geocoding_status = 'warning';
       } else {
         destination.geocoding_status = 'danger';
@@ -608,9 +608,9 @@ var destinations_index = function(params, api) {
     destination.enable_orders = enable_orders;
     destination.i18n = mustache_i18n;
     if (destination.geocoding_accuracy) {
-      if (destination.geocoding_accuracy > <%= Mapotempo::Application.config.geocode_geocoder.accuracy_success %>) {
+      if (destination.geocoding_accuracy > <%= Mapotempo::Application.config.geocoder.accuracy_success %>) {
         destination.geocoding_status = 'success';
-      } else if (destination.geocoding_accuracy > <%= Mapotempo::Application.config.geocode_geocoder.accuracy_warning %>) {
+      } else if (destination.geocoding_accuracy > <%= Mapotempo::Application.config.geocoder.accuracy_warning %>) {
         destination.geocoding_status = 'warning';
       } else {
         destination.geocoding_status = 'danger';
@@ -1235,7 +1235,7 @@ var destinations_index = function(params, api) {
 
   var checkForDisplayDestinations = function(data) {
     var isAccuracyDanger = data.destinations && $.grep(data.destinations, function(dest) {
-      return dest.geocoding_accuracy && dest.geocoding_accuracy < <%= Mapotempo::Application.config.geocode_geocoder.accuracy_warning %>;
+      return dest.geocoding_accuracy && dest.geocoding_accuracy < <%= Mapotempo::Application.config.geocoder.accuracy_warning %>;
     }).length > 0;
 
     if (isAccuracyDanger) {

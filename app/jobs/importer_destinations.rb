@@ -373,7 +373,7 @@ class ImporterDestinations < ImporterBase
       @destinations_to_geocode.each_slice(50){ |destinations|
         geocode_args = destinations.collect(&:geocode_args)
         begin
-          results = Mapotempo::Application.config.geocode_geocoder.code_bulk(geocode_args)
+          results = Mapotempo::Application.config.geocoder.code_bulk(geocode_args)
           destinations.zip(results).each { |destination, result|
             destination.geocode_result(result) if result
           }

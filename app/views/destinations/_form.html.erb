@@ -45,7 +45,7 @@
         <div id="geocoding_accuracy"<% unless @destination.geocoding_accuracy %> style="display: none"<% end %>>
           <div id="geocoding-progress" class="progress">
             <input type="hidden" name="destination[geocoding_accuracy]" value="<%= @destination.geocoding_accuracy %>">
-            <div class="progress-bar<% if @destination.geocoding_accuracy %> progress-bar-<%= @destination.geocoding_accuracy > Mapotempo::Application.config.geocode_geocoder.accuracy_success ? 'success' : @destination.geocoding_accuracy > Mapotempo::Application.config.geocode_geocoder.accuracy_warning ? 'warning' : 'danger' %><% end %>" style="width: <%= @destination.geocoding_accuracy ? (@destination.geocoding_accuracy * 100).round : 0 %>%;">
+            <div class="progress-bar<% if @destination.geocoding_accuracy %> progress-bar-<%= @destination.geocoding_accuracy > Mapotempo::Application.config.geocoder.accuracy_success ? 'success' : @destination.geocoding_accuracy > Mapotempo::Application.config.geocoder.accuracy_warning ? 'warning' : 'danger' %><% end %>" style="width: <%= @destination.geocoding_accuracy ? (@destination.geocoding_accuracy * 100).round : 0 %>%;">
               <span><%= @destination.geocoding_accuracy ? (@destination.geocoding_accuracy * 100).round.to_s + '%' : '' %></span>
             </div>
           </div>

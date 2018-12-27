@@ -50,7 +50,7 @@ class Optimizer
       }.reject(&:locked)
       optimum = unless routes.select(&:vehicle_usage_id).empty?
         planning.optimize(routes, options) do |positions, services, vehicles|
-          Mapotempo::Application.config.optimize.optimize(
+          Mapotempo::Application.config.optimizer.optimize(
             positions, services, vehicles,
             name: "c#{planning.customer_id} " + planning.name,
             optimize_time: @@optimize_time_force || (optimize_time ? optimize_time * 1000 : nil),

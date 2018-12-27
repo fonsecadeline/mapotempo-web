@@ -68,7 +68,7 @@ class StoresControllerTest < ActionController::TestCase
   end
 
   test 'should update store with geocode error' do
-    Mapotempo::Application.config.geocode_geocoder.class.stub_any_instance(:code, lambda{ |*a| raise GeocodeError.new }) do
+    Mapotempo::Application.config.geocoder.class.stub_any_instance(:code, lambda{ |*a| raise GeocodeError.new }) do
       patch :update, id: @store, store: { city: 'Nantes', lat: nil, lng: nil }
       assert_redirected_to edit_store_path(assigns(:store))
       assert_not_nil flash[:warning]

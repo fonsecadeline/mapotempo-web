@@ -41,10 +41,10 @@ class ActiveSupport::TestCase
       request.body.include?("methodName='LocationUtilityService'")
     }.to_return(File.new(File.expand_path('../', __FILE__) + '/fixtures/gpp3-wxs.ign.fr/LocationUtilityService.xml').read)
 
-    @stub_GeocodeMapotempo = stub_request(:get, 'https://geocode.mapotempo.com/0.1/geocode.json').with(:query => hash_including({})).
+    @stub_GeocodeMapotempo = stub_request(:get, 'http://localhost:8558/0.1/geocode.json').with(:query => hash_including({})).
       to_return(File.new(File.expand_path('../', __FILE__) + '/fixtures/geocode.mapotempo.com/geocode.json').read)
 
-    def (Mapotempo::Application.config.geocode_geocoder).code_bulk(addresses)
+    def (Mapotempo::Application.config.geocoder).code_bulk(addresses)
       addresses.map{ |a| {lat: 1, lng: 1, quality: 'street', accuracy: 0.9} }
     end
   end
