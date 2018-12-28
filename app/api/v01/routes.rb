@@ -71,9 +71,12 @@ class V01::Routes < Grape::API
         end
         patch ':id/active/:active' do
           raise Exceptions::JobInProgressError if Job.on_planning(current_customer.job_optimizer, get_route.planning.id)
-          get_route.active(params[:active].to_s.to_sym) && get_route.compute
-          get_route.save!
-          present(get_route, with: V01::Entities::Route, geojson: params[:geojson])
+
+          Stop.includes_destinations.scoping do
+            get_route.active(params[:active].to_s.to_sym) && get_route.compute
+            get_route.save!
+            present(get_route, with: V01::Entities::Route, geojson: params[:geojson])
+          end
         end
 
         desc 'Move visit(s) to route. Append in order at end if automatic_insert is false.',
@@ -86,8 +89,9 @@ class V01::Routes < Grape::API
         end
         patch ':id/visits/moves' do
           raise Exceptions::JobInProgressError if Job.on_planning(current_customer.job_optimizer, get_route.planning.id)
-          Stop.includes_destinations.scoping do
-            visits = current_customer.visits.select{ |visit| params[:visit_ids].any?{ |s| ParseIdsRefs.match(s, visit) } }
+
+          Route.includes_destinations.scoping do
+            visits = get_route.planning.routes.flat_map{ |r| r.stops.select{ |s| s.is_a?(StopVisit) }.map(&:visit) }
             visits_ordered = []
             params[:visit_ids].each{ |s| visits_ordered << visits.find{ |visit| ParseIdsRefs.match(s, visit) } }
             unless visits_ordered.empty?
@@ -144,7 +148,8 @@ class V01::Routes < Grape::API
         patch ':id/reverse_order' do
           Stop.includes_destinations.scoping do
             raise Exceptions::JobInProgressError if Job.on_planning(current_customer.job_optimizer, get_route.planning.id)
-            get_route and get_route.reverse_order && get_route.compute!
+
+            get_route && get_route.reverse_order && get_route.compute!
             get_route.save!
             present get_route, with: V01::Entities::Route
           end

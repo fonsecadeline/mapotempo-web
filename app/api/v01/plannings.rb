@@ -112,6 +112,7 @@ class V01::Plannings < Grape::API
       Route.includes_destinations.scoping do
         planning = current_customer.plannings.where(ParseIdsRefs.read(params[:id])).first!
         raise Exceptions::JobInProgressError if Job.on_planning(planning.customer.job_optimizer, planning.id)
+
         planning.compute
         planning.save!
         present planning, with: V01::Entities::Planning, geojson: params[:geojson]
@@ -132,9 +133,9 @@ class V01::Plannings < Grape::API
       Stop.includes_destinations.scoping do
         planning = current_customer.plannings.where(ParseIdsRefs.read(params[:id])).first!
         raise Exceptions::JobInProgressError if Job.on_planning(planning.customer.job_optimizer, planning.id)
+
         route = planning.routes.find{ |route| route.id == Integer(params[:route_id]) }
         vehicle_usage = planning.vehicle_usage_set.vehicle_usages.find(params[:vehicle_usage_id])
-
         Planning.transaction do
           if route && vehicle_usage && planning.switch(route, vehicle_usage) && planning.save! && planning.compute && planning.save!
             if params[:details]
@@ -164,8 +165,8 @@ class V01::Plannings < Grape::API
       Route.includes_destinations.scoping do
         planning = current_customer.plannings.where(ParseIdsRefs.read(params[:id])).first!
         raise Exceptions::JobInProgressError if Job.on_planning(planning.customer.job_optimizer, planning.id)
-        stops = planning.routes.flat_map{ |r| r.stops }.select{ |stop| params[:stop_ids].include?(stop.id) }
 
+        stops = planning.routes.flat_map{ |r| r.stops }.select{ |stop| params[:stop_ids].include?(stop.id) }
         begin
           Planning.transaction do
             stops.each do |stop|
@@ -197,6 +198,7 @@ class V01::Plannings < Grape::API
       Route.includes_destinations.scoping do
         planning = current_customer.plannings.where(ParseIdsRefs.read(params[:id])).first!
         raise Exceptions::JobInProgressError if Job.on_planning(planning.customer.job_optimizer, planning.id)
+
         planning.zoning_outdated = true
         planning.split_by_zones(nil)
         planning.compute
@@ -226,12 +228,12 @@ class V01::Plannings < Grape::API
       Route.includes_destinations.scoping do
         planning = current_customer.plannings.where(ParseIdsRefs.read(params[:id])).first!
         raise Exceptions::JobInProgressError if planning.customer.job_optimizer
+
         begin
           Optimizer.optimize(planning, nil, { global: params[:global], synchronous: params[:synchronous], active_only: params[:all_stops].nil? ? params[:active_only] : !params[:all_stops], ignore_overload_multipliers: params[:ignore_overload_multipliers] })
         rescue NoSolutionFoundError
           status 304
         end
-
         if params[:details]
           present planning, with: V01::Entities::Planning, geojson: params[:geojson]
         else
@@ -270,6 +272,7 @@ class V01::Plannings < Grape::API
       Route.includes_destinations.scoping do
         planning = current_customer.plannings.where(ParseIdsRefs.read(params[:id])).first!
         raise Exceptions::JobInProgressError if Job.on_planning(planning.customer.job_optimizer, planning.id)
+
         order_array = current_customer.order_arrays.find(params[:order_array_id])
         shift = Integer(params[:shift])
         planning.apply_orders(order_array, shift)
@@ -288,6 +291,8 @@ class V01::Plannings < Grape::API
     end
     patch ':id/update_routes' do
       planning = current_customer.plannings.where(ParseIdsRefs.read(params[:id])).first!
+      raise Exceptions::JobInProgressError if Job.on_planning(planning.customer.job_optimizer, planning.id)
+
       routes = planning.routes
       routes = routes.select{ |r| params[:route_ids].include? r.id } unless !params[:route_ids] || params[:route_ids].empty?
       routes.each do |route|
@@ -358,28 +363,22 @@ class V01::Plannings < Grape::API
       end
     end
 
+    # For internal usage
     params do
       requires :id, type: Integer, desc: 'The planning id'
     end
     get ':id/vehicle_usages' do
-      planning = current_customer.plannings.find(params[:id])
-      if planning
-        present PlanningConcern.vehicles_usages_map(planning)
-      else
-        error! 'Vehicle_usages of planning not found', 404
-      end
+      planning = current_customer.plannings.where(id: params[:id]).first!
+      present PlanningConcern.vehicles_usages_map(planning)
     end
 
+    # For internal usage
     params do
       requires :id, type: Integer, desc: 'The planning id'
     end
     get ':id/quantities' do
-      planning = current_customer.plannings.find(params[:id])
-      if planning
-        present planning.quantities
-      else
-        error! 'Quantities of planning not found', 404
-      end
+      planning = current_customer.plannings.where(id: params[:id]).first!
+      present planning.quantities
     end
   end
 end

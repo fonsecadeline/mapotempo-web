@@ -334,6 +334,7 @@ class V01::PlanningsTest < V01::PlanningsBaseTest
   end
 
   test 'should update routes' do
+    customers(:customer_one).update job_optimizer_id: nil
     begin
       Stop.class_eval do
         after_initialize :after_init
