@@ -1756,7 +1756,7 @@
           'title': 'Déplacement des arrêts'
           'move_to': 'Choisir la tournée de destination'
           'index':
-            'label': 'Choisir l''option de positionnement des arrêts'
+            'label': 'Choisir la position des arrêts'
             'start': 'Au début'
             'end': 'A la fin'
             'best_place': 'Au meilleur endroit'
@@ -1853,10 +1853,10 @@
       'print': 'Imprimer'
   'plannings_by_destinations':
     'show':
-      'affect_destinations': 'Affecter'
-      'auto_insert': 'Insertion automatique'
+      'affect_destinations': 'Déplacer les visites'
+      'auto_insert': 'Choisir le meilleur véhicule'
       'modify_planning': 'Modifier le plan'
-      'select_vehicle': 'Affecter les destinations au véhicule'
+      'select_vehicle': 'Choisir le véhicule'
       'title': 'Tournées du client'
       'visit_quantities': 'Quantités'
   'routes':

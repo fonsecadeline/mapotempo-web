@@ -1638,9 +1638,9 @@ en:
           in_progress: Please wait, applying new zoning
         move_stops:
           title: Moving stops
-          move_to: Choose destination tour
+          move_to: Choose target route
           index:
-            label: Choose the placement option
+            label: Choose position of the stops
             start: To the beginning
             end: To the end
             best_place: To the best place
@@ -1733,9 +1733,9 @@ en:
       print: Print
   plannings_by_destinations:
     show:
-      affect_destinations: Affect
-      auto_insert: Automatic insertion
-      modify_planning: Show planning
+      affect_destinations: Move visits
+      auto_insert: Find best vehicle
+      modify_planning: Edit plan
       select_vehicle: Assign to vehicle
       title: Plannings by destination
       visit_quantities: Quantities

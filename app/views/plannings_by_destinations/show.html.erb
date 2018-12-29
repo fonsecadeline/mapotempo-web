@@ -52,12 +52,12 @@
               </a>
             </td>
             <td>
-              <% stop_visit.visit.default_quantities.select{ |_k, value| value }.each do |id, value| 
+              <% stop_visit.visit.default_quantities.select{ |_k, value| value }.each do |id, value|
                   unit = @customer.deliverable_units.find{ |du| du.id == id }
                   next unless unit
               %>
               <div >
-                <span class="route-info" title="<%= I18n.t('plannings.edit.route_visits_duration_help') %>" data-toggle="tooltip">
+                <span class="route-info" data-toggle="tooltip">
                   <i class="fa <%= unit.default_icon %> fa-fw"></i>
                   <span class="quantity-<%= stop_visit.id %>"
                     data-deliverable-unit-id="<%= id %>"
