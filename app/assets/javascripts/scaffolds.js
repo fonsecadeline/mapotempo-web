@@ -87,7 +87,7 @@ $(document).on('ready page:load', function() {
       }).toArray().filter(function(elt, i, self) {
         return self.indexOf(elt) === i;
       }).forEach(function(id) {
-        $(id).tooltip({placement: 'left', title: I18n.t('all.multiple-actions.none_selected_element')});
+        $(id).tooltip({placement: 'top', title: I18n.t('all.multiple-actions.none_selected_element')});
         onObjectSelected(id);
       });
     }
