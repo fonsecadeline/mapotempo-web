@@ -27,7 +27,7 @@ pedestrian = RouterWrapper.create!(
     name_locale: {fr: 'Calculateur pour piéton', en: 'Pedestrian router'},
     options: {time: true, distance: true, avoid_zones: false, isochrone: true, isodistance: true})
 here_car = RouterWrapper.create!(
-    mode: 'car_unreduced',
+    mode: 'car_here',
     name: 'RouterWrapper-HereCar',
     name_locale: {fr: 'Calculateur pour voiture monde avec trafic', en: 'Car worldwide with traffic router'},
     options: {time: true, distance: true, avoid_zones: true, isochrone: true, isodistance: true, motorway: true, toll: true, trailers: false, weight: false, weight_per_axle: false, height: false, width: false, length: false, hazardous_goods: false, strict_restriction: false, traffic: true})
