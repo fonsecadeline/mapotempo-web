@@ -1,0 +1,324 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+# I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+# <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+# I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# To learn more, please read the Rails Internationalization guide
+# available at http://guides.rubyonrails.org/i18n.html.
+de:
+  activerecord:
+    attributes:
+      customer:
+        devices:
+          fleet:
+            user: "Benutzername"
+            api_key: "API-Schlüssel"
+          tomtom:
+            account: "Name des Benuterkontos"
+            user: "Benutzer"
+            password: "Passwort"
+          masternaut:
+            username: "Benutzername"
+            password: "Passwort"
+          orange:
+            user: "Benutzername"
+            password: "Passwort"
+          alyacom:
+            association: "Kennung"
+            alyacom_api_key: "API-Schlüssel"
+          teksat:
+            teksat_customer_id: "Kunden-ID"
+            username: "Benutzername"
+            password: "Passwort"
+            url: "URL"
+          trimble:
+            customer: "Kunde"
+            username: "Benutzername"
+            password: "Passwort"
+          locster:
+            username: "Benutzername"
+            password: "Passwort"
+          suivi_de_flotte:
+            username: "Benutzername"
+            password: "Passwort"
+          notico:
+            ftp_url: "FTP-Serveradresse"
+            ftp_path: "Pfad auf FTP-Server"
+            username: "Benutzername"
+            password: "Passwort"
+          praxedo:
+            login: "Login"
+            password: "Passwort"
+            code_inter_start: "Eínsatz-Code für Startpunkt"
+            code_inter_stop: "Eínsatz-Code für Haltepunkt"
+            code_mat: "Code für das zu liefernde Material"
+            code_route: "Code für die Strecke"
+          sopac:
+            username: "Benutzername"
+            password: "Passwort"
+      vehicle:
+        devices:
+          fleet_demo:
+            title: Fleet (Demo)
+          fleet:
+            title: Mapotempo Live
+            fleet_user: "Mapotempo Live Benutzername"
+          locster:
+            title: Locster
+            locster_ref: "Locster-Fahrzeugnummer."
+          masternaut:
+            title: Masternaut
+            masternaut_ref: "Masternaut-Fahrzeugnummer."
+          orange:
+            title: Orange Fleet Performance
+            orange_id: "Orange Fahrzeug-ID"
+          suivi_de_flotte:
+            title: Suivi de flotte
+            suivi_de_flotte_id: "Suivi de flotte Fahrzeug-ID"
+          teksat:
+            title: Teksat
+            teksat_id: "Teksat Fahrzeug-ID"
+          tomtom:
+            title: TomTom Webfleet
+            tomtom_id: "TomTom Fahrzeug-ID"
+          trimble:
+            title: Trimble
+            trimble_ref: "Trimble Fahrzeug-Nr."
+          notico:
+            title: Hinweis
+            agent_id: "Notico Deliv Auslieferungsfahrer-ID"
+          praxedo:
+            title: Praxedo
+            praxedo_agent_id: "Praxedo Vertreter-ID"
+  errors:
+    fleet:
+      invalid_account: Benutzer ungültig (ist nicht vorhanden)
+      list: Geräte können nicht aufgelistet werden
+      create_company:
+        no_admin_api_key: Kein Mapotempo Live Admin-API-Schlüssel vorhanden
+        already_created: Unternehmen bereits erstellt
+        error: Unternehmen kann nicht erstellt werden
+      create_drivers:
+        no_api_key: Es wurde kein Mapotempo Live API-Schlüssel für diesen Kunden angegeben
+        already_created: Bereits angelegte Benutzer
+      update_drivers:
+        update_failed: Benutzer konnte nicht aktualisiert werden
+      get_vehicles_pos: Fahrzeugposition kann nicht ermittelt werden
+      fetch_stops: Missionsliste kann nicht abgerufen werden
+      fetch_routes: Streckenliste kann nicht abgerufen werden
+      no_missions: Keine Missionen zu versenden
+      past_missions: Plandatum muss hinter oder gleich dem heutigen Datum sein
+      set_missions: Erstellen der Missionen fehlgeschlagen
+      clear_missions: Zerstören der Missionen fehlgeschlagen
+      unauthorized: Unbefugt
+      timeout: Timeout bei Anfrage
+    tomtom:
+      access_denied: Zugriff verweigert. 'Full Access Orders' (Aufträge mit vollem Zugriff) sind in der WEBFLEET-Benutzeroberfläche nicht aktiviert. Sie haben keine ausreichenden Zugriffsrechte, um diese Funktion auszuführen.
+      invalid_account: Benutzer ungültig (ist nicht vorhanden)
+      external_requests_not_allowed: Zugriff verweigert. 'Zugriff auf die Schnittstelle WEBFLEET.connect' ist in der WEBFLEET-Benutzeroberfläche nicht aktiviert. Externe Anfragen sind für dieses Benutzerkonto / Benutzer nicht zugelassen.
+      hostname_not_allowed: Hostname nicht erlaubt
+      request_quota_reached: Anfragenquote erreicht
+      addresses_empty_result: Keine Adressen gefunden
+      could_not_process_last_request: Anfrage konnte nicht bearbeitet werden
+      unsupported_export_type: Das angeschlossene GPS unterstützt keinen Export als Wegpunkt
+      duplicate_order: Doppelte Auftragsnummer
+      busy_processing: Benutzerkonto / Benutzername beschäftigt mit Bearbeitung einer anderen Anfrage
+      gps_unreachable: GPS derzeit nicht erreichbar
+      last_action_failed: Ihre letzte Aktion konnte nicht bearbeitet werden
+      service_failed: Dienst nach mehreren Versuchen besetzt
+      unreachable: TomTom Webfleet-Server nicht erreichbar
+    teksat:
+      bad_url: Fehlerhafte URL
+      get_ticket: Authentifizierung nicht möglich. Bitte prüfen Sie Ihre Zugangsdaten
+      list: Geräte können nicht aufgelistet werden
+      get_vehicles_pos: Kein Abruf der Fahrzeugpositionen möglich
+      set_mission: Erstellen der Mission fehlgeschlagen
+      unauthorized: Unbefugt
+    orange:
+      no_equipment: 'Fahrzeug: Keine Geräte gefunden'
+      unauthorized: Unbefugt
+      list: Geräte können nicht aufgelistet werden
+      get_vehicles_pos: Kein Abruf der Fahrzeugpositionen möglich
+      timeout: Timeout bei Anfrage
+    alyacom:
+      unauthorized: Unbefugt
+      timeout: Timeout bei Anfrage
+    masternaut:
+      invalid_account: Benutzer ungültig (ist nicht vorhanden)
+    suivi_de_flotte:
+      invalid_account: Benutzer ungültig (ist nicht vorhanden)
+    trimble:
+      invalid_account: Benutzer ungültig (ist nicht vorhanden)
+    notico:
+      invalid_server: Serveradresse ungültig (existiert nicht)
+    praxedo:
+      invalid_account: Benutzer ungültig (ist nicht vorhanden)
+  customers:
+    form:
+      devices:
+        sync:
+          complete: "Synchronisation abgeschlossen"
+          confirm: "Fahrzeuge synchronisieren?"
+          action: "Fahrzeuge synchronisieren"
+          no_credentials: "Es wurden keine Anmeldedaten für das Gerät angegeben"
+        fleet_demo:
+          help: "(NUR DEMO) Simulieren der Position der Fahrzeuge und den Besuchsstatus (wenn diese Optionen aktiviert sind) für den zuletzt aktualisierten Plan."
+        fleet:
+          help: "Ermöglicht das Senden von Strecken an die mobile Mapotempo Live App."
+          company_created: "Mapotempo Live Unternehmen erstellt:"
+          drivers_created: "Mapotempo Live Fahrer erstellt:"
+          drivers_updated: "Mapotempo Live Fahrer aktualisiert:"
+        alyacom:
+          help: "Ermöglicht das Senden von Strecken an die AlyaCom-Anwendung."
+        tomtom:
+          help: "Ermöglicht das Senden von Strecken an TomTom Pro mit WEBFLEET."
+        teksat:
+          help: "Ermöglicht das Senden von Strecken an Teksat-Geräte."
+        orange:
+          help: "Ermöglicht das Senden von Strecken an Orange Fleet Performance-Geräte."
+        masternaut:
+          help: "Ermöglicht das Senden von Strecken an Masternaut-Geräte."
+        notico:
+          help: "Ermöglicht das Senden von Strecken an die Notico Deliv-Anwendung."
+        praxedo:
+          help: "Ermöglicht das Senden von Strecken an die Praxedo-Anwendung."
+  plannings:
+    edit:
+      all_plannings_related: Bezieht sich auf alle Strecken
+      fleet_demo_send:
+        action: Senden an Fleet Demo
+        success: Senden an Fleet Demo erfolgreich
+        fail: Senden an Fleet Demo fehlgeschlagen
+      fleet_demo_clear:
+        action: Fleet (Demo) löschen
+        success: Fleet (Demo)-Interventionen wurden erfolgreich gelöscht
+        fail: Löschen der Fleet (Demo)-Interventionen fehlgeschlagen
+      fleet_send:
+        action: An mobile Mapotempo Live App senden
+        success: Wurde erfolgreich an die mobile Mapotempo Live App gesendet
+        fail: Senden an die mobile Mapotempo Live App ist fehlgeschlagen
+      fleet_clear:
+        action: Mobile App Mapotempo Live löschen
+        success: Fahrt in der mobilen Mapotempo Live App wurde erfolgreich gelöscht
+        fail: Löschen der mobilen Mapotempo Live App ist fehlgeschlagen
+        button: Auswahl aufheben
+        button_empty: Schließen
+        empty: Keine Strecken auf Mapotempo Live gefunden
+        route:
+          name: Name der Strecke
+          number: Streckennummer
+      fleet_fetch_routes:
+        action: Mobile App Mapotempo Live löschen
+      teksat_send:
+        action: An Teksat senden
+        success: Erfolgreich an Teksat gesendet
+        fail: Senden an Teksat fehlgeschlagen
+      teksat_clear:
+        action: Teksat löschen
+        success: Teksat-Befehle wurden erfolgreich gelöscht
+        fail: Löschen der Teksat-Befehle fehlgeschlagen
+      tomtom_send_orders:
+        action: Als Aufträge an TomTom senden
+        success: Erfolgreich an TomTom gesendet
+        fail: Senden an TomTom fehlgeschlagen
+      tomtom_send_waypoints:
+        action: Als Wegpunkte an TomTom senden
+        success: Erfolgreich an TomTom gesendet
+        fail: Senden an TomTom fehlgeschlagen
+        title: 'Achtung: Diese Methode wird nicht von allen Geräten verwendet'
+      tomtom_clear:
+        action: TomTom löschen
+        success: TomTom-Befehle wurden erfolgreich gelöscht
+        fail: Löschen der TomTom-Befehle fehlgeschlagen
+      orange_send:
+        action: Senden an Orange Fleet Performance
+        success: Erfolgreich an Orange Fleet Performance gesendet
+        fail: Senden an Orange Fleet Performance fehlgeschlagen
+      orange_clear:
+        action: Orange Fleet Performance löschen
+        success: Orange Fleet Performance Befehle wurden erfolgreich gelöscht
+        fail: Löschen der Orange Fleet Performance-Befehle fehlgeschlagen
+      alyacom_send:
+        action: Senden an Alyacom
+        success: Erfolgreich an Alyacom gesendet
+        fail: Senden an Alyacom fehlgeschlagen
+      masternaut_send:
+        action: Senden an Masternaut
+        success: Erfolgreich an Masternaut gesendet
+        fail: Senden an Masternaut fehlgeschlagen
+      trimble_send:
+        action: Senden an Trimble
+        success: Erfolgreich an Trimble gesendet
+        fail: Senden an Trimble fehlgeschlagen
+      trimble_clear:
+        action: Trimble löschen
+        success: Trimble-Fahrt wurde erfolgreich gelöscht
+        fail: Löschen von Trimble fehlgeschlagen
+      locster_send:
+        action: Senden an Locster
+        success: Erfolgreich an Locster gesendet
+        fail: Senden an Locster fehlgeschlagen
+      suivi_de_flote_send:
+        action: Senden an SuiviDeFlote
+        success: Erfolgreich an SuiviDeFlote gesendet
+        fail: Senden an SuiviDeFlote fehlgeschlagen
+      notico_send:
+        action: Senden an Notico Deliv
+        success: Erfolgreich an Notico Deliv gesendet
+        fail: Senden an Notico Deliv fehlgeschlagen
+      notico_clear:
+        action: Notico Deliv löschen
+        success: Notico Deliv Fahrt wurde erfolgreich gelöscht
+        fail: Löschen von Notico Deliv fehlgeschlagen
+      praxedo_send:
+        action: Senden an Praxedo
+        success: Erfolgreich an Praxedo gesendet
+        fail: Senden an Praxedo fehlgeschlagen
+      praxedo_clear:
+        action: Praxedo löschen
+        success: Praxedo-Interventionen wurden erfolgreich gelöscht
+        fail: Löschen der Praxedo-Interventionen fehlgeschlagen
+      dialog:
+        fleet_demo:
+          title: Fleet (Demo)
+          in_progress: Bitte warten
+        fleet:
+          title: Mobile Mapotempo Live App
+          in_progress: Bitte warten
+        orange:
+          title: Orange Fleet Performance
+          in_progress: Bitte warten
+        teksat:
+          title: Teksat
+          in_progress: Bitte warten
+        tomtom:
+          title: TomTom
+          in_progress: Bitte warten
+        masternaut:
+          title: Masternaut
+          in_progress: Bitte warten
+        alyacom:
+          title: AlyaCom
+          in_progress: Bitte warten
+        trimble:
+          title: Trimble
+          in_progress: Bitte warten
+        notico:
+          title: Notico Deliv
+          in_progress: Bitte warten
+        praxedo:
+          title: Praxedo
+          in_progress: Bitte warten
