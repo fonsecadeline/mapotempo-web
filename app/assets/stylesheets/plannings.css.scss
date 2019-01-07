@@ -80,6 +80,19 @@ $sidebar-margins: 10px;
       }
     }
   }
+
+  #multiple_plannings_actions > .form-inline {
+    .form-group {
+      margin-right: 5px;
+    }
+  }
+
+  #routes-by-vehicle, #deliverables-by-vehicle {
+    width: 155px;
+    white-space: normal;
+    height: 35px;
+    line-height: 1.2;
+  }
 }
 
 [data-controller='plannings'] {
@@ -700,3 +713,4 @@ $sidebar-margins: 10px;
     margin-left: 5px;
   }
 }
+

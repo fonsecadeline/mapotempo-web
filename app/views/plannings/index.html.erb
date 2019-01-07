@@ -94,8 +94,9 @@
         </li>
       </ul>
     </div>
-    <%= t('.routes_by_vehicles') %>
     <%= select_tag 'vehicle_id', options_from_collection_for_select(@customer.vehicles, 'id', 'name'), include_blank: true, class: 'form-control' %>
+    <button id="routes-by-vehicle" class="btn btn-primary btn-sm"><%= t('.routes_by_vehicles') %></button>
+    <button id="deliverables-by-vehicle" class="btn btn-primary btn-sm"><%= t('.deliverables_by_vehicles') %></button>
   </div>
 </div>
 <% end %>

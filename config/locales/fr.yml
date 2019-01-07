@@ -1526,7 +1526,9 @@
       'over_max_limit': 'Vous avez atteint la limite de plans autorisés pour votre
         compte (Limite : %{limit}), veuillez supprimer vos précédents plans ou contacter
         le support si vous avez besoin de plus de plans.'
-      'routes_by_vehicles': 'Afficher toutes les tournées de'
+      'routes_by_vehicles': 'Afficher toutes les tournées du véhicule'
+      'deliverables_by_vehicles': 'Afficher l''état de charge du véhicule'
+      'vehicle_select_error': 'Vous devez avoir selectionné un véhicule'
     'edit':
       'sopac_title': 'Relevé de température'
       'device_name_label': 'Nom de l''appareil :'
@@ -1871,6 +1873,19 @@
       'annotating':
         'hour': 'Heure de passage :'
         'signature': 'Signature :'
+  'deliverables_by_vehicles':
+    'show':
+      'title_page': Etat de charge par tournée
+      'total_quantity': Total des unités livrables
+      'total_stops': 'Nombre total d''arrêts'
+      'total_destinations': Nombre total de clients
+      'visits_duration': Durée de visite (hh:mm)
+      'drive_duration': Durée de conduite (hh:mm)
+      'route_duration': Durée total de la tournée (hh:mm)
+      'average': Moyenne
+      'deliverable_unit': 'Unités livrables'
+      'fail': Impossible de charger les plannings pour ce véhicule
+      'empty': Aucune unité livrable à afficher
   'routes_by_vehicles':
     'show':
       'title_page': 'Tournées par véhicule'

@@ -1,0 +1,81 @@
+  <!-- TOTALS -->
+  <div class="table-wrapper">
+    <div class="inner-wrapper">
+      <table class="table table-condensed table-hover table-bordered">
+        <thead class="th-plan">
+          <tr>
+            <th scope="col"></th>
+            {{#plannings}}<th scope="col">{{name}}</th>{{/plannings}}
+            <th scope="col">{{#i18n}}deliverables_by_vehicles.show.average{{/i18n}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#routes_total_infos}}
+          <tr>
+            <th class="th-label" scope="col">{{#i18n}}deliverables_by_vehicles.show.total_destinations{{/i18n}}</td>
+            {{#total_per_route}}<td scope="col">{{total_destinations}}</td>{{/total_per_route}}
+            <td class="average" scope="col">{{destinations_average}}</td>
+          </tr>
+          <tr>
+            <th class="th-label" scope="col">{{#i18n}}deliverables_by_vehicles.show.total_stops{{/i18n}}</td>
+            {{#total_per_route}}<td scope="col">{{total_stops}}</td>{{/total_per_route}}
+            <td class="average" scope="col">{{stops_average}}</td>
+          </tr>
+          <tr>
+            <th class="th-label" scope="col">{{#i18n}}deliverables_by_vehicles.show.visits_duration{{/i18n}}</td>
+            {{#total_per_route}}<td scope="col">{{total_visits_time}}</td>{{/total_per_route}}
+            <td class="average" scope="col">{{visits_duration_average}}</td>
+          </tr>
+          <tr>
+            <th class="th-label" scope="col">{{#i18n}}deliverables_by_vehicles.show.drive_duration{{/i18n}}</td>
+            {{#total_per_route}}<td scope="col">{{total_drive_time}}</td>{{/total_per_route}}
+            <td class="average" scope="col">{{drive_time_average}}</td>
+          </tr>
+          <tr>
+            <th class="th-label" scope="col">{{#i18n}}deliverables_by_vehicles.show.route_duration{{/i18n}}</td>
+            {{#total_per_route}}<td scope="col">{{total_route_duration}}</td>{{/total_per_route}}
+            <td class="average" scope="col">{{route_duration_average}}</td>
+          </tr>
+          {{/routes_total_infos}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- INFO LIVRABLE / PLAN-->
+{{#have_deliverables}}
+  <div class="table-wrapper">
+    <div class="inner-wrapper">
+      <table class="table table-hover table-bordered">
+        <thead class="th-plan">
+          <tr>
+            <th scope="col">{{#i18n}}deliverables_by_vehicles.show.deliverable_unit{{/i18n}}</th>
+            {{#plannings}}<th scope="col">{{name}}</th>{{/plannings}}
+            <th scope="col">{{#i18n}}deliverables_by_vehicles.show.average{{/i18n}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#routes_quantities}}
+          <tr>
+            <th class="th-label" scope="col">{{label}}</th>
+            {{#quantities}}<td scope="col">{{.}}</td>{{/quantities}}
+            <td class="average" scope="col">{{average}}</td>
+          </tr>
+          {{/routes_quantities}}
+          {{#routes_total_infos}}
+          <tr>
+            <th class="th-label" scope="col">{{#i18n}}deliverables_by_vehicles.show.total_quantity{{/i18n}}</td>
+            {{#total_per_route}}<td scope="col">{{total_quantity}}</td>{{/total_per_route}}
+            <td class="average" scope="col">{{quantity_average}}</td>
+          </tr>
+          {{/routes_total_infos}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{{/have_deliverables}}
+{{^have_deliverables}}
+<div>
+  <h3>{{#i18n}}deliverables_by_vehicles.show.empty{{/i18n}}</h3>
+</div>
+{{/have_deliverables}}

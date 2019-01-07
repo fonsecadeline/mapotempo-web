@@ -2338,6 +2338,8 @@ var plannings_index = function(params) {
 
   iCalendarExport();
   spreadsheetModalExport(params.spreadsheet_columns);
+  var vehicle_id = $('#vehicle_id').val();
+  var planning_ids = $('[name^=planning]:checked').map(function() { return $(this).val(); }).toArray().join(',');
 
   var templateVehicle = function(vehicle) {
     if (vehicle.id)
@@ -2349,8 +2351,26 @@ var plannings_index = function(params) {
     templateSelection: templateVehicle,
     templateResult: templateVehicle
   }).change(function() {
-    window.location = '/routes_by_vehicles/' + $(this).val() + '?planning_ids=' + $('[name^=planning]:checked').map(function(elt) { return $(this).val() } ).toArray().join(',');
+    vehicle_id = $(this).val();
+    planning_ids = $('[name^=planning]:checked').map(function() { return $(this).val(); }).toArray().join(',');
   });
+
+  $('#routes-by-vehicle').on('click', function(e) {
+    e.preventDefault();
+    if (!vehicle_id) {
+      return warning(I18n.t('plannings.index.vehicle_select_error'));
+    }
+    location.assign('/routes_by_vehicles/' + vehicle_id + '?planning_ids=' + planning_ids);
+  });
+
+  $('#deliverables-by-vehicle').on('click', function(e) {
+    e.preventDefault();
+    if (!vehicle_id) {
+      return warning(I18n.t('plannings.index.vehicle_select_error'));
+    }
+    location.assign('/deliverables_by_vehicles/' + vehicle_id + '?planning_ids=' + planning_ids);
+  });
+
 };
 
 Paloma.controller('Plannings', {

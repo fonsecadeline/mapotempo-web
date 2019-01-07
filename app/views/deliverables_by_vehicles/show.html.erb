@@ -1,0 +1,117 @@
+<% content_for :title, t('.title_page') %>
+
+<div>
+  <h1><%= t('.title_page') %></h1>
+
+  <div class="vehicle-selector">
+    <%= select_tag 'vehicle_id', options_from_collection_for_select(@customer.vehicles, 'id', 'name', params[:vehicle_id]), include_blank: false, muliple: true, class: 'form-control' %>
+  </div>
+
+  <div class=table-container>
+
+    <!-- INFO TOTAL PAR PLAN-->
+    <div class="table-wrapper">
+      <div class="inner-wrapper">
+        <table class="table table-condensed table-hover table-bordered">
+          <thead class="th-plan">
+            <tr>
+              <th scope="col"></th>
+              <% @plannings.each do |p| %>
+                <th scope="col"><%= p.name %></th>
+              <% end %>
+              <th scope="col"><%= t('.average') %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th class="th-label" scope="col"><%= t('.total_destinations') %></td>
+              <% @routes_total_infos[:total_per_route].each.with_index do |r, i| %>
+                <td scope="col"><%= r[:total_destinations] %></td>
+              <% end %>
+              <td class="average" scope="col"><%= @routes_total_infos[:destinations_average] %></td>
+            </tr>
+            <tr>
+              <th class="th-label" scope="col"><%= t('.total_stops') %></th>
+              <% @routes_total_infos[:total_per_route].each.with_index do |r, i| %>
+                <td scope="col"><%= r[:total_stops] %></td>
+              <% end %>
+              <td class="average" scope="col"><%= @routes_total_infos[:stops_average] %></td>
+            </tr>
+            <tr>
+              <th class="th-label" scope="col"><%= t('.visits_duration') %></td>
+              <% @routes_total_infos[:total_per_route].each.with_index do |r, i| %>
+                <td scope="col"><%= time_over_day(r[:total_visits_time]) if r[:active] %></td>
+              <% end %>
+              <td class="average" scope="col"><%= time_over_day(@routes_total_infos[:visits_duration_average]) %></td>
+            </tr>
+            <tr>
+              <th class="th-label" scope="col"><%= t('.drive_duration') %></td>
+              <% @routes_total_infos[:total_per_route].each.with_index do |r, i| %>
+                <td scope="col"><%= time_over_day(r[:total_drive_time]) if r[:active] %></td>
+              <% end %>
+              <td class="average" scope="col"><%= time_over_day(@routes_total_infos[:drive_time_average]) %></td>
+            </tr>
+            <tr>
+              <th class="th-label" scope="col"><%= t('.route_duration') %></td>
+              <% @routes_total_infos[:total_per_route].each.with_index do |r, i| %>
+                <td scope="col"><%= time_over_day(r[:total_route_duration]) if r[:active] %></td>
+              <% end %>
+              <td class="average" scope="col"><%= time_over_day(@routes_total_infos[:route_duration_average]) %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- INFO LIVRABLE PAR PLAN-->
+    <% if !@routes_quantities.empty? %>
+    <div class="table-wrapper">
+      <div class="inner-wrapper">
+        <table class="table table-hover table-bordered">
+          <thead class="th-plan">
+            <tr>
+              <th scope="col"><%= t('.deliverable_unit')%></th>
+              <% @plannings.each do |p| %>
+                <th scope="col"><%= p.name %></th>
+              <% end %>
+              <th scope="col"><%= t('.average') %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @routes_quantities.each do |q| %>
+            <tr>
+              <th class="th-label" scope="col"><%= q[:label] %></th>
+              <% q[:quantities].each do |value| %>
+                <td scope="col"><%= format('%.2f', value) if !value.nil? %></td>
+              <%end%>
+              <td class="average" scope="col"><%= format('%.2f', q[:average]) %></td>
+            </tr>
+            <% end %>
+            <tr>
+              <th class="th-label" scope="col"><%= t('.total_quantity') %></td>
+              <% @routes_total_infos[:total_per_route].each do |r| %>
+                <td scope="col"><%= r[:total_quantity] if r[:active] %></td>
+              <% end %>
+              <td class="average" scope="col"><%=  @routes_total_infos[:quantity_average]%></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% else%>
+    <h3><%= t('.empty') %></h3>
+  <% end %>
+
+  </div>
+</div>
+
+<%
+controller.js({
+  routes_quantities: @routes_quantities,
+  routes_total_infos: @routes_total_infos,
+  plannings: @plannings,
+  vehicles: Hash[current_user.customer.vehicles.map{ |v| [v.id, {name: v.name, color: v.color}] }],
+  i18n: nil,
+  vehicle_id: params[:vehicle_id]
+})
+%>

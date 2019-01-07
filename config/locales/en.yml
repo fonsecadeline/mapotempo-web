@@ -1419,7 +1419,9 @@ en:
         spreadsheet: Spreadsheet CSV / Excel
         none_planning: Please select at least one plan to export
       over_max_limit: "You have reached the plans number limit for your account (Account Limit: %{limit})"
-      routes_by_vehicles: 'Show all routes from'
+      routes_by_vehicles: 'Show all routes for this vehicle'
+      deliverables_by_vehicles: 'Show all deliverables units for this vehicle'
+      vehicle_select_error: You must select a vehicle
     edit:
       sopac_title: Temperature statement
       device_name_label: 'Device Name :'
@@ -1751,6 +1753,19 @@ en:
       annotating:
         hour: 'Passing Time:'
         signature: 'Signature:'
+  deliverables_by_vehicles:
+    show:
+      title_page: Charge by plans
+      total_quantity: Total deliverable units
+      total_stops: Total stops
+      total_destinations: Total destinations
+      visits_duration: Visits duration (hh:mm)
+      drive_duration: Drive duration (hh:mm)
+      route_duration: Route duration (hh:mm)
+      average: Average
+      deliverable_unit: 'Deliverable units'
+      fail: Failed to load plans for this vehicle
+      empty: No deliverable units to display
   routes_by_vehicles:
     show:
       title_page: 'Routes by vehicles'

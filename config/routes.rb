@@ -138,6 +138,7 @@ Rails.application.routes.draw do
 
   get 'routes_by_vehicles/:vehicle_id' => 'routes_by_vehicles#show'
   get 'plannings_by_destinations/:destination_id' => 'plannings_by_destinations#show'
+  get 'deliverables_by_vehicles/:vehicle_id' => 'deliverables_by_vehicles#show'
 
   get 'visits/:id' => 'visits#show'
 
