@@ -18,19 +18,21 @@
 
 'use strict';
 
-var deliverable_by_vehicle_show = function(params) {
+import { mustache_i18n } from '../../assets/javascripts/ajax'
 
-  var ajaxParams = {
+const deliverable_by_vehicle_show = function(params) {
+
+  const ajaxParams = {
     vehicleId: params.vehicle_id,
     planningIds: params.plannings.map(function(p) {
       return p.id;
     }).join(',')
   };
 
-  var stateManager = (function() {
+  const stateManager = (function() {
 
-    var hasState = history.replaceState && history.pushState;
-    var startUrl = ajaxParams.vehicleId + '?planning_ids=' + ajaxParams.planningIds;
+    const hasState = history.replaceState && history.pushState;
+    const startUrl = ajaxParams.vehicleId + '?planning_ids=' + ajaxParams.planningIds;
 
     if (hasState) {
       history.replaceState(ajaxParams, "", startUrl);
@@ -48,8 +50,8 @@ var deliverable_by_vehicle_show = function(params) {
     };
   })();
 
-  var popStateHandler = function(event) {
-    var state = event.state;
+  const popStateHandler = function(event) {
+    const state = event.state;
     if (!state.vehicleId) {
       return;
     }
@@ -64,12 +66,12 @@ var deliverable_by_vehicle_show = function(params) {
     window.removeEventListener('popstate', popStateHandler);
   });
 
-  var templateVehicle = function(vehicle) {
+  const templateVehicle = function(vehicle) {
     if (vehicle.id) {
       return $("<span><span class='color_small' style='background: "
         + params.vehicles[vehicle.id].color
         + "'></span>&nbsp;</span>")
-        .append($("<span/>")
+          .append($("<span/>")
           .text(vehicle.text));
     }
   };
@@ -96,7 +98,7 @@ var deliverable_by_vehicle_show = function(params) {
     });
   });
 
-  var requestDeliverables = function requestDeliverables(vehicleId, planningIds) {
+  const requestDeliverables = function requestDeliverables(vehicleId, planningIds) {
     $.ajax({
       url: '/api/0.1/deliverables_by_vehicles/' + vehicleId ,
       type: 'GET',
@@ -119,7 +121,7 @@ var deliverable_by_vehicle_show = function(params) {
       stickyError(I18n.t('deliverables_by_vehicles.show.fail'));
     });
 
-    var setupQuantitiesDisplay = function setupQuantitiesDisplay(data) {
+    const setupQuantitiesDisplay = function setupQuantitiesDisplay(data) {
       return data.routes_quantities.map(function(e) {
         e.average = e.average.toFixed(2);
         e.quantities = e.quantities.map(function(q) {
@@ -129,16 +131,16 @@ var deliverable_by_vehicle_show = function(params) {
       });
     };
 
-    var setupCellFiller = function(nbPlannings) {
-      for (var i = 0; i < nbPlannings; ++i) {
-        var td = $(document.createElement('td'));
+    const setupCellFiller = function(nbPlannings) {
+      for (let i = 0; i < nbPlannings; ++i) {
+        const td = $(document.createElement('td'));
         td.attr('scope', 'col');
         td.attr('class', 'cell-filler');
         $('#cell-filler-container').append(td);
       }
     };
 
-    var setupRoutesInfosDisplay = function setupRoutesInfosDisplay(data) {
+    const setupRoutesInfosDisplay = function setupRoutesInfosDisplay(data) {
       return {
         destinations_average: data.routes_total_infos.destinations_average,
         stops_average: data.routes_total_infos.stops_average,
