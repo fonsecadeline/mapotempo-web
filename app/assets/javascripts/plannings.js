@@ -1271,7 +1271,7 @@ var plannings_edit = function(params) {
               fillQuantities(stops, vehicleUsageId);
             });
             fillQuantities(stops);
-            $('.overflow-500').css('max-height', ($(document).height() - 350) + 'px');
+            $('.overflow-500').css('max-height', ($(document).height() - 440) + 'px');
           }
         });
       });
