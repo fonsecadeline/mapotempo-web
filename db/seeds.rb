@@ -42,9 +42,9 @@ public_transport = RouterWrapper.create!(
     name_locale: {fr: 'Calculateur pour transport en commun', en: 'Public Transport router'},
     options: {time: true, distance: false, avoid_zones: false, isochrone: true, isodistance: true, max_walk_distance: true})
 
-profile_osm = Profile.create!(name: "1. OSM", layers: [mapnik_fr, mapnik, mapbox, stamen_bw], routers: [car, bicycle, pedestrian, public_transport])
-profile_all = Profile.create!(name: "2. All", layers: [mapnik_fr, mapnik, mapbox, stamen_bw, here_layer], routers: [car, car_urban, bicycle, pedestrian, here_car, here_truck, public_transport])
-profile_other = Profile.create!(name: "3. Other", layers: [mapnik_fr, mapnik, mapbox, stamen_bw], routers: [car_urban])
+profile_osm = Profile.create!(name: "1. OSM", layers: [mapnik_fr, mapnik, stamen_bw], routers: [car, bicycle, pedestrian, public_transport])
+profile_all = Profile.create!(name: "2. All", layers: [mapnik_fr, mapnik, stamen_bw, here_layer], routers: [car, car_urban, bicycle, pedestrian, here_car, here_truck, public_transport])
+profile_other = Profile.create!(name: "3. Other", layers: [mapnik_fr, mapnik, stamen_bw], routers: [car_urban])
 
 reseller = Reseller.create!(host: "localhost:3000", name: "Mapotempo")
 customer = Customer.create!(reseller: reseller, name: "Toto", default_country: "France", router: car, profile: profile_all, test: true, max_vehicles: 2, devices: {'fleet_demo' => {'enable' => '1'}})
