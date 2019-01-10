@@ -281,6 +281,7 @@ class ImporterDestinations < ImporterBase
           vehicle_usage_set: @customer.vehicle_usage_sets[0]})
         planning.default_empty_routes
         @plannings_by_ref[row[:planning_ref]] = planning
+        raise(Exceptions::OverMaxLimitError.new(I18n.t('activerecord.errors.models.customer.attributes.plannings.over_max_limit'))) if @customer.default_max_plannings && @plannings_by_ref.size > @customer.default_max_plannings
       end
       @plannings.push(@plannings_by_ref[row[:planning_ref]]) unless @plannings.include? @plannings_by_ref[row[:planning_ref]]
     end
