@@ -21,7 +21,6 @@ class V01::Entities::Customer < Grape::Entity
   end
   EDIT_ONLY_ADMIN = 'Only available in admin.'.freeze
 
-  # expose(:reseller_id, documentation: { type: Integer, desc: EDIT_ONLY_ADMIN })
   expose(:id, documentation: { type: Integer })
   expose(:end_subscription, documentation: { type: Date, desc: EDIT_ONLY_ADMIN })
 
@@ -32,10 +31,8 @@ class V01::Entities::Customer < Grape::Entity
 
   expose(:ref, documentation: { type: String, desc: EDIT_ONLY_ADMIN })
   expose(:name, documentation: { type: String, desc: EDIT_ONLY_ADMIN })
-  # expose(:test, documentation: { type: 'Boolean', desc: EDIT_ONLY_ADMIN })
   expose(:take_over, documentation: { type: DateTime, desc: 'Visit duration' }) { |m| m.take_over_time_with_seconds }
   expose(:default_country, documentation: { type: String })
-  expose(:profile_id, documentation: { type: Integer, desc: EDIT_ONLY_ADMIN })
   expose(:router_id, documentation: { type: Integer })
   expose(:router_dimension, documentation: { type: String, values: ::Router::DIMENSION.keys })
   # FIXME: RouterOptions entity can only be used to display results, otherwise swagger-ui interface is broken but tests are ok. Entities are working correctly only with is_array.
@@ -50,13 +47,6 @@ class V01::Entities::Customer < Grape::Entity
   expose(:sms_concat, documentation: { type: 'Boolean' })
   expose(:sms_from_customer_name, documentation: { type: 'Boolean' })
 
-  expose(:enable_references, documentation: { type: 'Boolean', desc: EDIT_ONLY_ADMIN })
-  expose(:enable_multi_visits, documentation: { type: 'Boolean', desc: EDIT_ONLY_ADMIN })
-  expose(:enable_global_optimization, documentation: { type: 'Boolean', desc: EDIT_ONLY_ADMIN })
-  expose(:enable_vehicle_position, documentation: { type: 'Boolean', desc: EDIT_ONLY_ADMIN })
-  expose(:enable_stop_status, documentation: { type: 'Boolean', desc: EDIT_ONLY_ADMIN })
-  expose(:enable_sms, documentation: { type: 'Boolean', desc: EDIT_ONLY_ADMIN })
-
   expose(:optimization_max_split_size, documentation: { type: Integer, desc: 'Maximum number of visits to split problem', default: Mapotempo::Application.config.optimize_max_split_size })
   expose(:optimization_cluster_size, documentation: { type: Integer, desc: 'Time in seconds to group near visits', default: Mapotempo::Application.config.optimize_cluster_size })
   expose(:optimization_time, documentation: { type: Integer, desc: 'Maximum optimization time (by vehicle)', default: Mapotempo::Application.config.optimize_time })
@@ -67,41 +57,11 @@ class V01::Entities::Customer < Grape::Entity
 
   expose(:advanced_options, documentation: { type: String, desc: 'Advanced options in a serialized json format' })
 
-  expose(:max_vehicles, documentation: { type: Integer, desc: EDIT_ONLY_ADMIN })
-  expose(:max_plannings, documentation: { type: Integer, desc: EDIT_ONLY_ADMIN })
-  expose(:max_zonings, documentation: { type: Integer, desc: EDIT_ONLY_ADMIN })
-  expose(:max_destinations, documentation: { type: Integer, desc: EDIT_ONLY_ADMIN })
-  expose(:max_vehicle_usage_sets, documentation: { type: Integer, desc: EDIT_ONLY_ADMIN })
-
   expose(:job_destination_geocoding_id, documentation: { type: Integer })
   expose(:job_store_geocoding_id, documentation: { type: Integer })
   expose(:job_optimizer_id, documentation: { type: Integer })
 
   expose(:devices, documentation: { type: Hash, desc: EDIT_ONLY_ADMIN })
-
-  # # Devices: Alyacom
-  # expose(:enable_alyacom, documentation: { type: 'Boolean', desc: EDIT_ONLY_ADMIN })
-  # expose(:alyacom_association, documentation: { type: String })
-
-  # # Devices: Masternaut
-  # expose(:enable_masternaut, documentation: { type: 'Boolean', desc: EDIT_ONLY_ADMIN })
-  # expose(:masternaut_user, documentation: { type: String })
-
-  # # Devices: Orange
-  # expose(:enable_orange, documentation: { type: 'Boolean', desc: EDIT_ONLY_ADMIN })
-  # expose(:orange_user, documentation: { type: String })
-
-  # # Devices: Teksat
-  # expose(:enable_teksat, documentation: { type: 'Boolean', desc: EDIT_ONLY_ADMIN })
-  # expose(:teksat_customer_id, documentation: { type: Integer })
-  # expose(:teksat_username, documentation: { type: String })
-  # expose(:teksat_url, documentation: { type: String })
-
-  # # Devices: TomTom
-  # expose(:enable_tomtom, documentation: { type: 'Boolean', desc: EDIT_ONLY_ADMIN })
-  # expose(:tomtom_user, documentation: { type: String })
-  # expose(:tomtom_account, documentation: { type: String })
-
 end
 
 class V01::Entities::CustomerAdmin < V01::Entities::Customer
@@ -110,5 +70,22 @@ class V01::Entities::CustomerAdmin < V01::Entities::Customer
   end
   EDIT_ONLY_ADMIN = 'Only available in admin.'.freeze
 
+  # expose(:reseller_id, documentation: { type: Integer, desc: EDIT_ONLY_ADMIN })
+  expose(:test, documentation: { type: 'Boolean', desc: 'Test account or not. ' + EDIT_ONLY_ADMIN })
   expose(:description, documentation: { type: String, desc: EDIT_ONLY_ADMIN })
+
+  expose(:profile_id, documentation: { type: Integer, desc: EDIT_ONLY_ADMIN })
+
+  expose(:enable_references, documentation: { type: 'Boolean', desc: 'Show references or not. ' + EDIT_ONLY_ADMIN })
+  expose(:enable_multi_visits, documentation: { type: 'Boolean', desc: 'More features to manage multiple visits by destinations. ' + EDIT_ONLY_ADMIN })
+  expose(:enable_global_optimization, documentation: { type: 'Boolean', desc: EDIT_ONLY_ADMIN })
+  expose(:enable_vehicle_position, documentation: { type: 'Boolean', desc: EDIT_ONLY_ADMIN })
+  expose(:enable_stop_status, documentation: { type: 'Boolean', desc: EDIT_ONLY_ADMIN })
+  expose(:enable_sms, documentation: { type: 'Boolean', desc: EDIT_ONLY_ADMIN })
+
+  expose(:max_vehicles, documentation: { type: Integer, desc: EDIT_ONLY_ADMIN })
+  expose(:max_plannings, documentation: { type: Integer, desc: EDIT_ONLY_ADMIN })
+  expose(:max_zonings, documentation: { type: Integer, desc: EDIT_ONLY_ADMIN })
+  expose(:max_destinations, documentation: { type: Integer, desc: EDIT_ONLY_ADMIN })
+  expose(:max_vehicle_usage_sets, documentation: { type: Integer, desc: EDIT_ONLY_ADMIN })
 end

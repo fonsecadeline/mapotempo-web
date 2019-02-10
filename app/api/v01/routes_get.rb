@@ -29,17 +29,17 @@ class V01::RoutesGet < Grape::API
   helpers do
     def present_routes(routes, params)
       if env['api.format'] == :geojson
-        Route.routes_to_geojson(routes, params[:stores], true,
-          if params[:geojson] == :polyline
+        Route.routes_to_geojson(routes, params[:stores] || params[:with_stores], true,
+          if params[:geojson] == 'polyline' || params[:with_geojson] == :polyline
             :polyline
-          elsif params[:geojson] == :point
+          elsif params[:geojson] == 'point' || params[:with_geojson] == :point
             false
           else
             true
           end,
-          params[:quantities])
+          params[:quantities] || params[:with_quantities])
       else
-        present routes, with: V01::Entities::Route, geojson: params[:geojson]
+        present routes, with: V01::Entities::Route, geojson: params[:geojson] || params[:with_geojson]
       end
     end
   end
@@ -51,9 +51,9 @@ class V01::RoutesGet < Grape::API
       success: V01::Entities::Route
     params do
       optional :ids, type: Array[String], desc: 'Select returned routes by id separated with comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
-      optional :geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry, when using json output. For geojson output, param can be only set to `point` to return only points, `polyline` to return with encoded linestring.'
-      optional :stores, type: Boolean, default: false, desc: 'Include the stores when using geojson output.'
-      optional :quantities, type: Boolean, default: false, desc: 'Include the quantities when using geojson output.'
+      optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry, when using json output. For geojson output, param can be only set to `point` to return only points, `polyline` to return with encoded linestring.'
+      optional :with_stores, type: Boolean, default: false, desc: 'Include the stores when using geojson output.'
+      optional :with_quantities, type: Boolean, default: false, desc: 'Include the quantities when using geojson output.'
     end
     get do
       routes = if params.key?(:ids)
@@ -79,9 +79,9 @@ class V01::RoutesGet < Grape::API
           success: V01::Entities::Route
         params do
           optional :ids, type: Array[String], desc: 'Select returned routes by id separated with comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
-          optional :geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry, when using json output. For geojson output, param can be only set to `point` to return only points, `polyline` to return with encoded linestring.'
-          optional :stores, type: Boolean, default: false, desc: 'Include the stores when using geojson output.'
-          optional :quantities, type: Boolean, default: false, desc: 'Include the quantities when using geojson output.'
+          optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry, when using json output. For geojson output, param can be only set to `point` to return only points, `polyline` to return with encoded linestring.'
+          optional :with_stores, type: Boolean, default: false, desc: 'Include the stores when using geojson output.'
+          optional :with_quantities, type: Boolean, default: false, desc: 'Include the quantities when using geojson output.'
         end
         get do
           planning_id = ParseIdsRefs.read(params[:planning_id])
@@ -100,7 +100,7 @@ class V01::RoutesGet < Grape::API
           success: V01::Entities::Route
         params do
           requires :id, type: String, desc: SharedParams::ID_DESC
-          optional :geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry, when using json output. For geojson output, param can be only set to `point` to return only points, `polyline` to return with encoded linestring.'
+          optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry, when using json output. For geojson output, param can be only set to `point` to return only points, `polyline` to return with encoded linestring.'
         end
         get ':id' do
           r = current_customer.plannings.where(ParseIdsRefs.read(params[:planning_id])).first!.routes.where(ParseIdsRefs.read(params[:id])).first!
@@ -122,9 +122,9 @@ class V01::RoutesGet < Grape::API
             status 204
           elsif env['api.format'] == :geojson
             r.to_geojson(true, true,
-              if params[:geojson] == :polyline
+              if params[:geojson] == 'polyline' || params[:with_geojson] == :polyline
                 :polyline
-              elsif params[:geojson] == :point
+              elsif params[:geojson] == 'point' || params[:with_geojson] == :point
                 false
               else
                 true
@@ -132,7 +132,7 @@ class V01::RoutesGet < Grape::API
           elsif env['api.format'] == :ics
             route_calendar(r).to_ical
           else
-            present r, with: V01::Entities::Route, geojson: params[:geojson]
+            present r, with: V01::Entities::Route, geojson: params[:geojson] || params[:with_geojson]
           end
         end
       end

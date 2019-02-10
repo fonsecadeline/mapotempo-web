@@ -46,14 +46,14 @@ class V01::Plannings < Grape::API
         vehicle_usage_set_id: { required: true }
       )
       optional :tag_ids, type: Array[Integer], desc: 'Ids separated by comma.', coerce_with: CoerceArrayInteger, documentation: { param_type: 'form' }
-      optional :geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
+      optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
     end
     post do
       planning = current_customer.plannings.build(planning_params)
       planning.default_routes
       planning.compute
       planning.save_import!
-      present planning, with: V01::Entities::Planning, geojson: params[:geojson]
+      present planning, with: V01::Entities::Planning, geojson: params[:geojson] || params[:with_geojson]
     end
 
     desc 'Update planning.',
@@ -62,12 +62,12 @@ class V01::Plannings < Grape::API
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       use :params_from_entity, entity: V01::Entities::Planning.documentation.except(:id, :route_ids, :outdated, :tag_ids)
-      optional :geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
+      optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
     end
     put ':id' do
       planning = current_customer.plannings.where(ParseIdsRefs.read(params[:id])).first!
       planning.update! planning_params
-      present planning, with: V01::Entities::Planning, geojson: params[:geojson]
+      present planning, with: V01::Entities::Planning, geojson: params[:geojson] || params[:with_geojson]
     end
 
     desc 'Delete planning.',
@@ -104,7 +104,7 @@ class V01::Plannings < Grape::API
       success: V01::Entities::Planning
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
-      optional :geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
+      optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
     end
     get ':id/refresh' do
       Route.includes_destinations.scoping do
@@ -113,7 +113,7 @@ class V01::Plannings < Grape::API
 
         planning.compute
         planning.save!
-        present planning, with: V01::Entities::Planning, geojson: params[:geojson]
+        present planning, with: V01::Entities::Planning, geojson: params[:geojson] || params[:with_geojson]
       end
     end
 
@@ -124,8 +124,8 @@ class V01::Plannings < Grape::API
       requires :id, type: String, desc: SharedParams::ID_DESC
       requires :route_id, type: Integer, desc: 'Route id to switch associated vehicle.'
       requires :vehicle_usage_id, type: Integer, desc: 'New vehicle id to associate to the route.'
-      optional :details, type: Boolean, desc: 'Output complete planning.', default: false
-      optional :geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
+      optional :with_details, type: Boolean, desc: 'Output complete planning.', default: false
+      optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
     end
     patch ':id/switch' do
       Stop.includes_destinations.scoping do
@@ -136,8 +136,8 @@ class V01::Plannings < Grape::API
         vehicle_usage = planning.vehicle_usage_set.vehicle_usages.find(params[:vehicle_usage_id])
         Planning.transaction do
           if route && vehicle_usage && planning.switch(route, vehicle_usage) && planning.save! && planning.compute && planning.save!
-            if params[:details]
-              present planning, with: V01::Entities::Planning, geojson: params[:geojson]
+            if params[:details] || params[:with_details]
+              present planning, with: V01::Entities::Planning, geojson: params[:geojson] || params[:with_geojson]
             else
               status 204
             end
@@ -189,8 +189,8 @@ class V01::Plannings < Grape::API
       nickname: 'applyZonings'
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
-      optional :details, type: Boolean, desc: 'Output route details', default: false
-      optional :geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
+      optional :with_details, type: Boolean, desc: 'Output route details', default: false
+      optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
     end
     get ':id/apply_zonings' do
       Route.includes_destinations.scoping do
@@ -201,8 +201,8 @@ class V01::Plannings < Grape::API
         planning.split_by_zones(nil)
         planning.compute
         planning.save!
-        if params[:details]
-          present planning, with: V01::Entities::Planning, geojson: params[:geojson]
+        if params[:details] || params[:with_details]
+          present planning, with: V01::Entities::Planning, geojson: params[:geojson] || params[:with_geojson]
         else
           status 204
         end
@@ -215,12 +215,12 @@ class V01::Plannings < Grape::API
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       optional :global, type: Boolean, desc: 'Use global optimization and move visits between routes if needed', default: false
-      optional :details, type: Boolean, desc: 'Output route details', default: false
       optional :synchronous, type: Boolean, desc: 'Synchronous', default: true
       optional :all_stops, type: Boolean, desc: 'Deprecated (Use active_only instead)'
       optional :active_only, type: Boolean, desc: 'If true only active stops are taken into account by optimization, else inactive stops are also taken into account but are not activated in result route.', default: true
-      optional :geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
       optional :ignore_overload_multipliers, type: String, desc: "Deliverable Unit id and whether or not it should be ignored : {'0'=>{'unit_id'=>'7', 'ignore'=>'true'}}"
+      optional :with_details, type: Boolean, desc: 'Output route details', default: false
+      optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
     end
     get ':id/optimize' do
       Route.includes_destinations.scoping do
@@ -232,8 +232,8 @@ class V01::Plannings < Grape::API
         rescue VRPNoSolutionError
           status 304
         end
-        if params[:details]
-          present planning, with: V01::Entities::Planning, geojson: params[:geojson]
+        if params[:details] || params[:with_details]
+          present planning, with: V01::Entities::Planning, geojson: params[:geojson] || params[:with_geojson]
         else
           status 204
         end
@@ -245,14 +245,14 @@ class V01::Plannings < Grape::API
       success: V01::Entities::Planning
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
-      optional :geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
+      optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
     end
     patch ':id/duplicate' do
       Route.includes_destinations.scoping do
         planning = current_customer.plannings.where(ParseIdsRefs.read(params[:id])).first!
         planning = planning.duplicate
         planning.save! validate: Mapotempo::Application.config.validate_during_duplication
-        present planning, with: V01::Entities::Planning, geojson: params[:geojson]
+        present planning, with: V01::Entities::Planning, geojson: params[:geojson] || params[:with_geojson]
       end
     end
 
@@ -264,7 +264,7 @@ class V01::Plannings < Grape::API
       requires :id, type: String, desc: SharedParams::ID_DESC
       requires :order_array_id, type: Integer
       requires :shift, type: Integer
-      optional :geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
+      optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
     end
     patch ':id/order_array' do
       Route.includes_destinations.scoping do
@@ -275,7 +275,7 @@ class V01::Plannings < Grape::API
         shift = Integer(params[:shift])
         planning.apply_orders(order_array, shift)
         planning.save!
-        present planning, with: V01::Entities::Planning, geojson: params[:geojson]
+        present planning, with: V01::Entities::Planning, geojson: params[:geojson] || params[:with_geojson]
       end
     end
 
@@ -325,7 +325,7 @@ class V01::Plannings < Grape::API
       success: V01::Entities::Planning
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
-      optional :details, type: Boolean, desc: 'Output route details', default: false
+      optional :with_details, type: Boolean, desc: 'Output route details', default: false
     end
     patch ':id/update_stops_status' do
       Route.includes_destinations.scoping do
@@ -336,7 +336,7 @@ class V01::Plannings < Grape::API
           service = DeviceService.new customer: @customer
           service.fetch_stops_status(planning)
           planning.save!
-          if params[:details]
+          if params[:details] || params[:with_details]
             present planning.routes, with: V01::Entities::RouteStatus
           else
             status 204
