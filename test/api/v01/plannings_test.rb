@@ -533,5 +533,15 @@ class V01::PlanningsErrorTest < V01::PlanningsBaseTest
       assert_equal 304, last_response.status, last_response.body
     end
   end
+end
+
+class V01::PlanningTestException < V01::PlanningsBaseTest
+
+  test 'should not apply zonings because of router exception' do
+    assert_no_difference('Stop.count') do
+      get api("/#{plannings(:planning_one).id}/apply_zonings", details: true)
+      assert_equal 409, last_response.status
+    end
+  end
 
 end

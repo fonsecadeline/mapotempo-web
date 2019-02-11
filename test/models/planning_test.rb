@@ -760,20 +760,3 @@ class PlanningTestError < ActiveSupport::TestCase
     end
   end
 end
-
-class PlanningTestException < ActiveSupport::TestCase
-
-  test 'should not compute because of router exception' do
-    o = plannings(:planning_one)
-    ApplicationController.stub_any_instance(:server_error, lambda { |*a| raise }) do
-      Routers::RouterWrapper.stub_any_instance(:compute_batch, lambda { |*a| raise }) do
-        assert_no_difference('Stop.count') do
-          assert_raises(RuntimeError) do
-            o.split_by_zones(nil)
-            o.compute
-          end
-        end
-      end
-    end
-  end
-end

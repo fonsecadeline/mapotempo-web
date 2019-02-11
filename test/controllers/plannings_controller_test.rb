@@ -857,4 +857,16 @@ class PlanningsControllerTest < ActionController::TestCase
     end
   end
 
+  test 'should not compute because of router exception' do
+    ApplicationController.stub_any_instance(:server_error, lambda { |*a| raise }) do
+      Route.stub_any_instance(:compute!, lambda { |*a| raise }) do
+        assert_no_difference('Stop.count') do
+          assert_raises(RuntimeError) do
+            patch :apply_zonings, id: @planning, format: :json, planning: { zoning_ids: [zonings(:zoning_one).id] }
+            assert_response :unprocessable_entity
+          end
+        end
+      end
+    end
+  end
 end

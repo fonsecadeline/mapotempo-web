@@ -339,25 +339,23 @@ class Planning < ApplicationRecord
         [vehicle_usage && vehicle_usage.vehicle, routes[0]]
       }]
 
-      Planning.transaction do
-        # Get free visits if not the first initial split on planning building
-        if !visits_free
-          visits_free = routes.reject(&:locked).flat_map(&:stops).select{ |stop| stop.is_a?(StopVisit) }.map(&:visit)
+      # Get free visits if not the first initial split on planning building
+      if !visits_free
+        visits_free = routes.reject(&:locked).flat_map(&:stops).select{ |stop| stop.is_a?(StopVisit) }.map(&:visit)
 
-          routes.each{ |route|
-            route.locked || route.set_visits([])
-          }
-        end
-
-        Zoning.new(zones: zonings.collect(&:zones).flatten).apply(visits_free).each{ |zone, visits|
-          if zone && zone.vehicle && vehicles_map[zone.vehicle] && !vehicles_map[zone.vehicle].locked
-            vehicles_map[zone.vehicle].add_visits(visits.collect{ |d| [d, true] })
-          else
-            # Add to unplanned route even if the route is locked
-            routes.find{ |r| !r.vehicle_usage? }.add_visits(visits.collect{ |d| [d, true] })
-          end
+        routes.each{ |route|
+          route.locked || route.set_visits([])
         }
       end
+
+      Zoning.new(zones: zonings.collect(&:zones).flatten).apply(visits_free).each{ |zone, visits|
+        if zone && zone.vehicle && vehicles_map[zone.vehicle] && !vehicles_map[zone.vehicle].locked
+          vehicles_map[zone.vehicle].add_visits(visits.collect{ |d| [d, true] })
+        else
+          # Add to unplanned route even if the route is locked
+          routes.find{ |r| !r.vehicle_usage? }.add_visits(visits.collect{ |d| [d, true] })
+        end
+      }
 
       fetch_stops_status if need_fetch_stop_status
 
