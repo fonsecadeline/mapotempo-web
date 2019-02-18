@@ -832,4 +832,14 @@ class V01::DestinationsTest < ActiveSupport::TestCase
       assert_equal 'dépassement du nombre maximal de clients', JSON.parse(last_response.body)['message']
     end
   end
+
+  test 'should reverse geocoding' do
+    Mapotempo::Application.config.geocoder.expects(:reverse).with(44.821934, -0.6211603).returns("{\"type\":\"FeatureCollection\",\"geocoding\":{\"version\":\"draft#namespace#score\",\"licence\":\"ODbL\",\"attribution\":\"BANO\"},\"features\":[{\"properties\":{\"geocoding\":{\"geocoder_version\":\"Wrapper:1.0.0 - addok:1.1.0-rc1\",\"score\":0.9999997217790441,\"type\":\"house\",\"label\":\"35 Rue de Marseille 33700 Mérignac\",\"name\":\"35 Rue de Marseille\",\"housenumber\":\"35\",\"street\":\"Rue de Marseille\",\"postcode\":\"33700\",\"city\":\"Mérignac\",\"country\":\"France\",\"id\":\"33281_1980_addff9\"}},\"type\":\"Feature\",\"geometry\":{\"coordinates\":[-0.620826,44.821944],\"type\":\"Point\"}}]}")
+
+    patch api('reverse', {lat: 44.821934, lng: -0.6211603})
+
+    assert last_response.ok?, last_response.body
+    assert last_response.body['success']
+    refute_empty last_response.body['result']
+  end
 end

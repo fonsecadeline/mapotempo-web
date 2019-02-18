@@ -64,6 +64,13 @@ class ApiWeb::V01::DestinationsControllerTest < ActionController::TestCase
     assert_valid response
   end
 
+  test 'should get index with store_ids' do
+    get :index, 'store_ids' => "#{stores(:store_one).id},#{stores(:store_two).id}"
+    assert_response :success
+    assert assigns(:stores).present?
+    assert_valid response
+  end
+
   test 'should get edit position' do
     get :edit_position, id: @destination
     assert_response :success

@@ -35,6 +35,20 @@ class V01::VehicleUsagesTest < ActiveSupport::TestCase
     assert_equal @vehicle_usage.rest_duration_absolute_time_with_seconds, JSON.parse(last_response.body)['rest_duration']
   end
 
+  test 'should return not found error on inexistant vehicle_usage_set' do
+    get api(@vehicle_usage.vehicle_usage_set.id + 42, @vehicle_usage.id)
+
+    assert_equal 404, last_response.status
+    assert last_response.body =~ /not found/
+  end
+
+  test 'should return not found error on inexistant vehicle_usage' do
+    get api(@vehicle_usage.vehicle_usage_set.id, VehicleUsage.last.id + 1)
+
+    assert_equal 404, last_response.status
+    assert last_response.body =~ /not found/
+  end
+
   test 'should update a vehicle_usage' do
     @vehicle_usage.rest_duration = '23:00:00'
     put api(@vehicle_usage.vehicle_usage_set.id, @vehicle_usage.id), @vehicle_usage.attributes

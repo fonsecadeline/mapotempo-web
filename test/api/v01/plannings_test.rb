@@ -3,7 +3,6 @@ require 'test_helper'
 class V01::PlanningsBaseTest < ActiveSupport::TestCase
   include Rack::Test::Methods
 
-
   def app
     Rails.application
   end
@@ -350,6 +349,18 @@ class V01::PlanningsTest < V01::PlanningsBaseTest
       assert_equal true, JSON.parse(last_response.body)[0]['locked']
       patch api("#{planning.id}/update_routes"), { route_ids: [route.id], selection: 'reverse', action: 'lock' }
       assert_equal false, JSON.parse(last_response.body)[0]['locked']
+    end
+  end
+
+  test 'should raise exceptions if job already in progress' do
+    customers(:customer_one).update job_optimizer_id: nil
+    planning = plannings(:planning_one)
+    Job.expects(:on_planning).with(planning.customer.job_optimizer, planning.id).returns(true)
+    route = routes(:route_one_one)
+
+    without_loading Stop do
+      patch api("#{planning.id}/update_routes"), { route_ids: [route.id], selection: 'none', action: 'toggle' }
+      assert_equal 409, last_response.status
     end
   end
 

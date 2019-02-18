@@ -8,6 +8,7 @@ ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 require 'webmock/minitest'
+require 'mocha/minitest'
 
 Dir[Rails.root.join('lib/**/*.rb')].each { |file| load file } # only explicitly required files are tracked
 
