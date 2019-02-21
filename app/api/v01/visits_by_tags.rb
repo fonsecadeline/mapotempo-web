@@ -20,13 +20,13 @@ class V01::VisitsByTags < Grape::API
 
   helpers SharedParams
 
-  resource :visits_by_tags do
+  resource :visits do
     desc 'Get visit with corresponding tag id or tag ref',
       nickname: 'VisitsByTags'
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
     end
-    get ':id' do
+    get ':id/tags' do
       destinations = current_customer.destinations.includes_visits
       destinations.reduce([]) { |sum, d|
         sum << d.visits.select { |v|

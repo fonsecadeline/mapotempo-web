@@ -13,7 +13,7 @@ class V01::VisitsByTagsTest < ActiveSupport::TestCase
   end
 
   def api(tag_id_ref)
-    "/api/0.1/visits_by_tags/#{tag_id_ref}?api_key=testkey1"
+    "/api/0.1/visits/#{tag_id_ref}/tags?api_key=testkey1"
   end
 
   test 'Should return visits with tag_ref' do

@@ -26,7 +26,7 @@ class V01::DeliverablesByVehicles < Grape::API
     end
   end
 
-  resource :deliverables_by_vehicles do
+  resource :vehicles do
     desc 'Fetch deliverables by vehicle for select plans',
       detail: 'Get list of deliverable for a vehicle on each selected plans',
       nickname: 'getDeliverablesByVehicles',
@@ -35,7 +35,7 @@ class V01::DeliverablesByVehicles < Grape::API
       requires :id, type: Integer, desc: 'Vehicle ID'
       requires :planning_ids, type: String, desc: 'Plannings ids'
     end
-    get ':id' do
+    get ':id/deliverable_units' do
       p = deliverables_by_vehicle_params
 
       deliverable_units = current_customer.deliverable_units

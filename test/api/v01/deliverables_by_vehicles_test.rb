@@ -12,7 +12,7 @@ class V01::DeliverablesByVehiclesTest < ActiveSupport::TestCase
   end
 
   def api(id, param = {})
-    "/api/0.1/deliverables_by_vehicles/#{id}?api_key=testkey1&" + param.collect{ |k, v| "#{k}=" + URI.escape(v.to_s) }.join('&')
+    "/api/0.1/vehicles/#{id}/deliverable_units?api_key=testkey1&" + param.collect{ |k, v| "#{k}=" + URI.escape(v.to_s) }.join('&')
   end
 
   test 'Should fetch deliverables by vehicle' do

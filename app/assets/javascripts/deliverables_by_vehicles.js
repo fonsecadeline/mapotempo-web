@@ -100,7 +100,7 @@ const deliverable_by_vehicle_show = function(params) {
 
   const requestDeliverables = function requestDeliverables(vehicleId, planningIds) {
     $.ajax({
-      url: '/api/0.1/deliverables_by_vehicles/' + vehicleId ,
+      url: '/api/0.1/vehicles/' + vehicleId + '/deliverable_units',
       type: 'GET',
       data: {
         planning_ids: planningIds
