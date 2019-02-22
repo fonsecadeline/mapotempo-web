@@ -34,7 +34,8 @@ import {
   initializeMapHash,
   templateSelectionColor,
   templateResultColor,
-  dropdownAutoDirection
+  dropdownAutoDirection,
+  modal_options
 } from '../../assets/javascripts/scaffolds';
 
 $(function() {

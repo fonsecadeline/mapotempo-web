@@ -19,6 +19,8 @@
 // All this logic will automatically be available in application.js.
 'use strict';
 
+import '../../assets/javascripts/scaffolds'
+
 const deliverable_units_form = function() {
   //for turbolinks, when clicking on link_to
   $('.selectpicker').selectpicker();
