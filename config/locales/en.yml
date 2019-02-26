@@ -610,6 +610,8 @@ en:
               bad_index: Bad index %{index} on the route %{route}
         planning:
           attributes:
+            date:
+              invalid: 'is an invalid plan date'
             ref:
               invalid_format: must not contain characters ".", "\" or "/"
               ref_value: 'Route reference '

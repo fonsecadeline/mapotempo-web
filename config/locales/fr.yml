@@ -616,6 +616,8 @@
               'bad_index': 'Mauvais index %{index} sur la tournée %{route}'
         'planning':
           'attributes':
+            'date':
+              'invalid': 'est une date de plan invalide'
             'ref':
               'invalid_format': 'ne doit pas contenir les caractères ".", "\" ou "/"'
               'ref_value': 'Référence tournée '
