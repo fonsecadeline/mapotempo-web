@@ -499,7 +499,7 @@ he:
         route:
           attributes:
             stops:
-              bad_index: אינדקס לא תקין %{n}
+              bad_index: Bad index %{index} on the route %{route}
         planning:
           attributes:
             ref:
