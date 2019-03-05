@@ -83,7 +83,7 @@ module FleetBuilder
           street: destination.street
         },
         time_windows: visit ? time_windows : nil,
-        quantities: destination.is_a?(StopVisit) && !customer.enable_orders ? VisitQuantities.normalize(destination.visit, route.vehicle_usage.try(&:vehicle)) : nil,
+        quantities: destination.is_a?(StopVisit) && !customer.enable_orders ? VisitQuantities.normalize(destination.visit, route.vehicle_usage.try(&:vehicle), with_nil: true) : nil,
         index: index_counter += 1,
       }.compact
     end
