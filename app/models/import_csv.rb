@@ -121,7 +121,16 @@ class ImportCsv
   private
 
   def should_fill_row?(key, row, values)
-    !values.empty? || ((key == :lat || key == :lng) && (!without_header? && row.to_h.key?(column_def[:lat] || 'lat') && row.to_h.key?(column_def[:lng] || 'lng')))
+    # lat or lng must be set even if empty but only when specified in columns
+    values.present? ||
+      (
+        %I[lat lng].include?(key) &&
+        (
+          !without_header? &&
+          row.to_h.key?(column_def[:lat].present? ? column_def[:lat] : 'lat') &&
+          row.to_h.key?(column_def[:lng].present? ? column_def[:lng] : 'lng')
+        )
+      )
   end
 
   def data
