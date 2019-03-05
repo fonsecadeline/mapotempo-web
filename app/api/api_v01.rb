@@ -36,6 +36,7 @@ class ApiV01 < Grape::API
   add_swagger_documentation(
     base_path: '/api',
     hide_documentation_path: true,
+    array_use_braces: true,
     consumes: [
       'application/json; charset=UTF-8',
       'application/xml',

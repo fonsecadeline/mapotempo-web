@@ -89,14 +89,6 @@ class V01::Api < Grape::API
            404)
   end
 
-  # Generate a properly formatted 404 error for '/'
-  route :any do
-    error!({ error:  'Not Found',
-             detail: "No such route '#{request.path}'",
-             status: '404' },
-           404)
-  end
-
   rescue_from :all, backtrace: ENV['RAILS_ENV'] != 'production' do |e|
     ActiveRecord::Base.connection.transaction_open? && ActiveRecord::Base.connection.rollback_transaction
 

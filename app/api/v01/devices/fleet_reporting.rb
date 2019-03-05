@@ -29,8 +29,6 @@ class V01::Devices::FleetReporting < Grape::API
           def service
             FleetService.new customer: @customer
           end
-
-          MAX_DAYS = 31
         end
 
         before do
@@ -38,7 +36,7 @@ class V01::Devices::FleetReporting < Grape::API
         end
 
         desc 'Get reporting',
-          detail: "Get reporting from Mapotempo Live missions. Range between begin_date and end_date must be inferior to #{MAX_DAYS} days",
+          detail: "Get reporting from Mapotempo Live missions. Range between begin_date and end_date must be inferior to #{SharedParams::MAX_DAYS} days",
           nickname: 'reporting'
         params do
           requires :begin_date, type: Date, coerce_with: ->(d) { Date.strptime(d.to_s, I18n.t('time.formats.datepicker')).strftime(ACTIVE_RECORD_DATE_MASK).to_date }, desc: 'Select only plannings after this date.' + SharedParams::DATE_DESC
@@ -48,7 +46,7 @@ class V01::Devices::FleetReporting < Grape::API
         get do
           if params[:end_date] < params[:begin_date]
               error!(I18n.t('reporting.download.end_date_inferior'), 400)
-          elsif (params[:end_date] - params[:begin_date]).to_i > MAX_DAYS
+          elsif (params[:end_date] - params[:begin_date]).to_i > SharedParams::MAX_DAYS
               error!(I18n.t('reporting.download.max_interval_reached'), 400)
           else
             service.reporting(params) || status(204)

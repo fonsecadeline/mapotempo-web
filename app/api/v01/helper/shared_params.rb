@@ -41,4 +41,5 @@ module SharedParams
   ex:\n
   en: mm-dd-yyyy\n
   fr: dd-mm-yyyy"
+  MAX_DAYS = 31
 end

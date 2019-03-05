@@ -86,10 +86,10 @@ group :test do
   gem 'chromedriver-helper'
 end
 
-gem 'grape', '< 1'
+gem 'grape'
 gem 'grape-entity'
-gem 'grape-swagger', '< 0.26'
-gem 'grape-swagger-entity', '< 0.3'
+gem 'grape-swagger'
+gem 'grape-swagger-entity'
 gem 'rack-cors'
 gem 'swagger-docs'
 

@@ -24,7 +24,7 @@ class ApiCors
     if env['REQUEST_METHOD'] != 'OPTIONS'
       @app.call(env)
     else
-      Rack::Response.new([nil], 204).finish
+      Rack::Response.new([nil], 204)
     end
   end
 end
