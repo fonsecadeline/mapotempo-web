@@ -38,8 +38,7 @@ class CustomersController < ApplicationController
     @customer = current_user.reseller.customers.build
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @customer = current_user.reseller.customers.build(customer_params)

@@ -223,7 +223,7 @@ var customers_edit = function(params) {
 var routersAllowedForProfile = function(params) {
   var routersModesByProfile = JSON.parse(params.routers_modes_by_profile);
   var profileId = $('#customer_profile_id').val();
-  if (profileId == '' || profileId === undefined) return;
+  if (profileId === '' || profileId === undefined) return;
   var routersModesAuthorized = routersModesByProfile[profileId];
   var routerOptions = $('#customer_router option');
   var e = document.getElementById('customer_router');
