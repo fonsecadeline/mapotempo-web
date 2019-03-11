@@ -90,10 +90,18 @@ $sidebar-margins: 10px;
   #routes-by-vehicle, #deliverables-by-vehicle {
     width: 155px;
     white-space: normal;
-    height: 35px;
     line-height: 1.2;
   }
+
+  .form-inline > hr {
+    margin-top: 15px;
+  }
+
+  .vehicle-action {
+    margin-top: 10px;
+  }
 }
+
 
 [data-controller='plannings'] {
   .sidebar.extended {

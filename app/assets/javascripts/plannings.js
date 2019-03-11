@@ -2411,8 +2411,11 @@ var plannings_show = function(params) {
 var plannings_index = function(params) {
   'use strict';
 
+  var requestPending = false;
+
   iCalendarExport();
   spreadsheetModalExport(params.spreadsheet_columns);
+
   var vehicle_id = $('#vehicle_id').val(),
     planning_ids;
 
@@ -2427,6 +2430,28 @@ var plannings_index = function(params) {
     templateResult: templateVehicle
   }).change(function() {
     vehicle_id = $(this).val();
+  });
+
+  $('#external-url').on('click', function(e) {
+    e.preventDefault();
+
+    planning_ids = $('[name^=planning]:checked').map(function() { return $(this).val(); }).toArray().join(',');
+
+    var url = params.external_url
+      .replace('{PLANNING_ID}', planning_ids)
+      .replace('{API_KEY}', params.user_api_key)
+      .replace('{CUSTOMER_ID}', params.customer_id);
+
+    if (!requestPending) {
+      requestPending = true;
+      $.ajax({
+        type: 'GET',
+        url: url,
+        success: function() { notice(I18n.t('plannings.edit.export.customer_external_callback_url.success')); },
+        error: function() { stickyError(I18n.t('plannings.edit.export.customer_external_callback_url.fail')); },
+        complete: function() { requestPending = false; }
+      });
+    }
   });
 
   $('#routes-by-vehicle').on('click', function(e) {

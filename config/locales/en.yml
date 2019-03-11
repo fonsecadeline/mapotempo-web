@@ -1450,9 +1450,10 @@ en:
         spreadsheet: Spreadsheet CSV / Excel
         none_planning: Please select at least one plan to export
       over_max_limit: "You have reached the plans number limit for your account (Account Limit: %{limit})"
-      routes_by_vehicles: 'Show all routes for this vehicle'
-      deliverables_by_vehicles: 'Show all deliverables units for this vehicle'
+      routes_by_vehicles: 'Vehicle''s routes'
+      deliverables_by_vehicles: 'Vehicle''s deliverables'
       vehicle_select_error: You must select a vehicle
+      vehicle_action: 'Actions for a vehicle  :'
     edit:
       sopac_title: Temperature statement
       device_name_label: 'Device Name :'

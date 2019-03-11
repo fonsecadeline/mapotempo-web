@@ -93,10 +93,17 @@
           <a class="export_spreadsheet" href="#"><i class="fa fa-table fa-fw"></i> <%= t '.export.spreadsheet' %></a>
         </li>
       </ul>
+      <% if @customer.enable_external_callback %>
+        <button id="external-url" class="btn btn-sm btn-default"><i class="fa fa-desktop fa-fw"></i> <%= @customer.external_callback_name || I18n.t('plannings.edit.customer_external_callback_url.action') %></button>
+      <% end %>
     </div>
-    <%= select_tag 'vehicle_id', options_from_collection_for_select(@customer.vehicles, 'id', 'name'), include_blank: true, class: 'form-control' %>
-    <button id="routes-by-vehicle" class="btn btn-primary btn-sm"><%= t('.routes_by_vehicles') %></button>
-    <button id="deliverables-by-vehicle" class="btn btn-primary btn-sm"><%= t('.deliverables_by_vehicles') %></button>
+    <hr/>
+    <div class="vehicle-action">
+      <h4><%= t('.vehicle_action')%></h4>
+      <%= select_tag 'vehicle_id', options_from_collection_for_select(@customer.vehicles, 'id', 'name'), include_blank: true, class: 'form-control' %>
+      <button id="routes-by-vehicle" class="btn btn-default btn-sm"><i class="fa fa-truck fa-wd"></i> <%= t('.routes_by_vehicles') %></button>
+      <button id="deliverables-by-vehicle" class="btn btn-default btn-sm"><i class="fa fa-archive fa-wd"></i>  <%= t('.deliverables_by_vehicles') %></button>
+    </div>
   </div>
 </div>
 <% end %>
@@ -106,7 +113,9 @@
 <%
 controller.js(
   user_api_key: current_user.api_key,
+  customer_id: @customer.id,
   spreadsheet_columns: @spreadsheet_columns,
-  vehicles: Hash[@customer.vehicles.map{ |v| [v.id, {name: v.name, color: v.color}] }]
+  vehicles: Hash[@customer.vehicles.map{ |v| [v.id, {name: v.name, color: v.color}] }],
+  external_url: @customer.external_callback_url
 )
 %>

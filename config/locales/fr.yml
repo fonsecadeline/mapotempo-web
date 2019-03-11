@@ -1556,9 +1556,10 @@
       'over_max_limit': 'Vous avez atteint la limite de plans autorisés pour votre
         compte (Limite : %{limit}), veuillez supprimer vos précédents plans ou contacter
         le support si vous avez besoin de plus de plans.'
-      'routes_by_vehicles': 'Afficher toutes les tournées du véhicule'
-      'deliverables_by_vehicles': 'Afficher l''état de charge du véhicule'
+      'routes_by_vehicles': 'Tournées du véhicule'
+      'deliverables_by_vehicles': 'État de charge'
       'vehicle_select_error': 'Vous devez avoir selectionné un véhicule'
+      'vehicle_action': 'Actions pour un vehicule :'
     'edit':
       'sopac_title': 'Relevé de température'
       'device_name_label': 'Nom de l''appareil :'
