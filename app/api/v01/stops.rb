@@ -80,15 +80,19 @@ class V01::Stops < Grape::API
             patch ':id/move/:index' do
               planning = current_customer.plannings.where(ParseIdsRefs.read(params[:planning_id])).first!
               raise Exceptions::JobInProgressError if Job.on_planning(current_customer.job_optimizer, planning.id)
-              route = planning.routes.find{ |route| route.id == Integer(params[:route_id]) }
+
               stop = nil
               planning.routes.find{ |route| stop = route.stops.find{ |stop| stop.id == Integer(params[:id]) } }
-              raise(ActiveRecord::RecordNotFound.new) unless route && stop
-              Planning.transaction do
-                if planning.move_stop(route, stop, Integer(params[:index])) && planning.compute && planning.save!
+              route = planning.routes.find{ |route| route.id == Integer(params[:route_id]) }
+              begin
+                planning.move_stop(route, stop, Integer(params[:index]))
+                planning.compute && planning.save!
                   status 204
-                else
+              rescue Exceptions::StopIndexError => e
+                if e.route == route && e.bad_index == Integer(params[:index])
                   status 400
+                else
+                  raise e
                 end
               end
             end

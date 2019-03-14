@@ -99,7 +99,7 @@ class V01::Api < Grape::API
     response = {message: e.message}
     if e.is_a?(ActiveRecord::RecordNotFound) || e.is_a?(ArgumentError)
       rack_response(nil, 404)
-    elsif e.is_a?(ActiveRecord::RecordInvalid) || e.is_a?(RangeError) || e.is_a?(Grape::Exceptions::ValidationErrors)
+    elsif e.is_a?(ActiveRecord::RecordInvalid) || e.is_a?(RangeError) || e.is_a?(Grape::Exceptions::ValidationErrors) || e.is_a?(Exceptions::StopIndexError)
       rack_response(format_message(response, e.backtrace), 400)
     elsif e.is_a?(Exceptions::OverMaxLimitError)
       rack_response(format_message(response, e.backtrace), 403)

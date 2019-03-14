@@ -5,6 +5,40 @@ module Exceptions
   class JobInProgressError < StandardError; end
   class OverMaxLimitError < StandardError; end
 
+  class StopIndexError < StandardError
+    attr_reader :route
+
+    def initialize(route, message = nil)
+      @route = route
+      @bad_position = bad_position
+      @route_name = route_name
+      super(message ||= formatted_message)
+    end
+
+    def bad_position
+      bad_position = nil
+      (1..@route.stops.length).each{ |index|
+        if @route.stops[0..(index - 1)].collect(&:index).sum != (index * (index + 1)) / 2
+          bad_position = index
+          break
+        end
+      }
+      bad_position
+    end
+
+    def bad_index
+      @route.stops[bad_position]
+    end
+
+    def route_name
+      route.vehicle_usage? ? "#{route.ref}:#{route.vehicle_usage.vehicle.name}" : I18n.t('activerecord.attributes.planning.out_of_route')
+    end
+
+    def formatted_message
+      I18n.t('activerecord.errors.models.route.attributes.stops.bad_index', index: @bad_position || '', route: @route_name)
+    end
+  end
+
   ############################################
   #  Base class for nested model validations #
   ############################################

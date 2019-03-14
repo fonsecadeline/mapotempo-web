@@ -36,6 +36,7 @@ class Route < ApplicationRecord
 
   after_initialize :assign_defaults, if: 'new_record?'
   after_create :complete_geojson
+  after_save { @computed = false }
 
   scope :for_customer_id, ->(customer_id) { joins(:planning).where(plannings: {customer_id: customer_id}) }
   scope :includes_vehicle_usages, -> { includes(vehicle_usage: [:vehicle_usage_set, :store_start, :store_stop, :store_rest, vehicle: [:customer]]) }
@@ -323,6 +324,7 @@ class Route < ApplicationRecord
     self.geojson_points = stops_to_geojson_points unless options[:no_geojson]
 
     self.outdated = false
+    @computed = true
     true
   end
 
@@ -693,17 +695,10 @@ class Route < ApplicationRecord
   end
 
   def stop_index_validation
-    if !@no_stop_index_validation && @stops_updated && !stops.empty? && stops.collect(&:index).sum != (stops.length * (stops.length + 1)) / 2
-      bad_index = nil
-      (1..stops.length).each{ |index|
-        if stops[0..(index - 1)].collect(&:index).sum != (index * (index + 1)) / 2
-          bad_index = index
-          break
-        end
-      }
-      route_name = vehicle_usage? ? "#{ref}:#{vehicle_usage.vehicle.name}" : I18n.t('activerecord.attributes.planning.out_of_route')
-      errors.add :stops, -> { I18n.t('activerecord.errors.models.route.attributes.stops.bad_index', index: bad_index || '', route: route_name) }
+    if !@no_stop_index_validation && (@stops_updated || @computed) && !stops.empty? && stops.collect(&:index).sum != (stops.length * (stops.length + 1)) / 2
+      raise Exceptions::StopIndexError.new(self)
     end
+
     @no_stop_index_validation = nil
   end
 

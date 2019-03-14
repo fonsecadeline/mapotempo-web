@@ -390,9 +390,8 @@ class PlanningsControllerTest < ActionController::TestCase
   test 'should not move' do
     assert_no_difference('Stop.count') do
       patch :move, planning_id: @planning, route_id: @planning.routes[1], stop_id: @planning.routes[0].stops[0], index: 666, format: :json
-      planning = assigns(:planning)
-      assert planning.errors.any?
       assert_valid response
+      refute_empty JSON.parse(response.body)['error']
       assert_response 422
     end
   end
