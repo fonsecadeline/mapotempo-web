@@ -181,7 +181,7 @@
         'layer_warning': 'Ce fond de carte n''est pas autorisé dans ce profil'
         'router_id': 'Calculateur d''itinéraire'
         'router_dimension': 'Objectif du calculateur'
-        'router_options_traffic': 'Tenir compte du traffic'
+        'router_options_traffic': 'Tenir compte du trafic'
         'router_options_track': 'Utiliser les chemins'
         'router_options_motorway': 'Utiliser les autoroutes'
         'router_options_toll': 'Autoriser les sections à péage'
