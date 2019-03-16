@@ -71,8 +71,7 @@ class V01::Stops < Grape::API
             end
 
             desc 'Move stop position in routes.',
-              # FIXME: Unit test succeeds in move stop from route in another...
-              detail: 'Set a new #N position for a stop in route which was in a previous #M position in the same route.',
+              detail: 'Set a new #N position for a stop in route which was in a previous #M position in the same route or another.',
               nickname: 'moveStop'
             params do
               requires :id, type: Integer, desc: 'Stop id to move'
@@ -81,11 +80,12 @@ class V01::Stops < Grape::API
             patch ':id/move/:index' do
               planning = current_customer.plannings.where(ParseIdsRefs.read(params[:planning_id])).first!
               raise Exceptions::JobInProgressError if Job.on_planning(current_customer.job_optimizer, planning.id)
+              route = planning.routes.find{ |route| route.id == Integer(params[:route_id]) }
               stop = nil
-              # FIXME: raise RecordNotFound for route and stop
               planning.routes.find{ |route| stop = route.stops.find{ |stop| stop.id == Integer(params[:id]) } }
+              raise(ActiveRecord::RecordNotFound.new) unless route && stop
               Planning.transaction do
-                if planning.move_stop(planning.routes.find{ |route| route.id == Integer(params[:route_id]) }, stop, Integer(params[:index])) && planning.compute && planning.save!
+                if planning.move_stop(route, stop, Integer(params[:index])) && planning.compute && planning.save!
                   status 204
                 else
                   status 400
