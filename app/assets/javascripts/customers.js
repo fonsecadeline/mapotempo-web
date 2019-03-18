@@ -208,14 +208,14 @@ var customers_edit = function(params) {
   routerOptionsSelect('#customer_router', params);
 
   routersAllowedForProfile(params);
-  $('#customer_profile_id').on('click', function() {
+  $('#customer_profile_id').on('change', function() {
     routersAllowedForProfile(params);
     if (params['validate_layer'] === true) layersAllowedForProfile(params);
   });
-  $('#customer_router').on('click', function() {
+  $('#customer_router').on('change', function() {
     removeRouterWarning();
   });
-  $('#customer_layer_id').on('click', function() {
+  $('#customer_layer_id').on('change', function() {
     removeLayerWarning();
   });
 };
