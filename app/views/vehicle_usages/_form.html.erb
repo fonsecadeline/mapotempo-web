@@ -72,8 +72,10 @@
           </div>
         <% end %>
 
-        <%= f.select :tag_ids, t('activerecord.attributes.vehicle.tag_ids'), options_for_select(@vehicle_usage.vehicle.customer.tags.map{ |tag| [tag.label, tag.id, {'data-color' => tag.color && tag.color[1..-1], 'data-icon' => tag.icon}]}, @vehicle_usage.vehicle.tags.collect(&:id)), {}, {multiple: true, input_group: content_tag('i', '', class: 'fa fa-tags fa-fw')} do %>
-          <p class="help-block"><%= t('vehicles.form.tags_help') %></p>
+        <% if @vehicle_usage_sets.count < 2 || (!@vehicle_usage.vehicle.tags.nil? && @vehicle_usage.vehicle.tags.count > 0) %>
+          <%= f.select :tag_ids, t('activerecord.attributes.vehicle.tag_ids'), options_for_select(@vehicle_usage.vehicle.customer.tags.map{ |tag| [tag.label, tag.id, {'data-color' => tag.color && tag.color[1..-1], 'data-icon' => tag.icon}]}, @vehicle_usage.vehicle.tags.collect(&:id)), {}, {multiple: true, input_group: content_tag('i', '', class: 'fa fa-tags fa-fw')} do %>
+            <p class="help-block"><%= t('vehicles.form.tags_help') %></p>
+          <% end %>
         <% end %>
 
         <div id="vehicle_router_input" class="form-group">

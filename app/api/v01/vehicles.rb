@@ -52,7 +52,7 @@ class V01::Vehicles < Grape::API
       # Deals with deprecated speed_multiplicator
       p[:speed_multiplier] = p.delete[:speed_multiplicator] if p[:speed_multiplicator] && !p[:speed_multiplier]
 
-      p.permit(:contact_email, :phone_number, :ref, :name, :emission, :consumption, :color, :router_id, :router_dimension, :max_distance, :speed_multiplier, router_options: [:time, :distance, :isochrone, :isodistance, :traffic, :avoid_zones, :track, :motorway, :toll, :trailers, :weight, :weight_per_axle, :height, :width, :length, :hazardous_goods, :max_walk_distance, :approach, :snap, :strict_restriction], capacities: (current_customer || @current_user.reseller.customers.where(id: params[:customer_id]).first!).deliverable_units.map{ |du| du.id.to_s }, devices: permit_devices)
+      p.permit(:contact_email, :phone_number, :ref, :name, :emission, :consumption, :color, :router_id, :router_dimension, :max_distance, :speed_multiplier, router_options: [:time, :distance, :isochrone, :isodistance, :traffic, :avoid_zones, :track, :motorway, :toll, :trailers, :weight, :weight_per_axle, :height, :width, :length, :hazardous_goods, :max_walk_distance, :approach, :snap, :strict_restriction], capacities: (current_customer || @current_user.reseller.customers.where(id: params[:customer_id]).first!).deliverable_units.map{ |du| du.id.to_s }, devices: permit_devices, tag_ids: [])
     end
 
     def permit_devices
@@ -74,7 +74,7 @@ class V01::Vehicles < Grape::API
     def vehicle_usage_params
       p = ActionController::Parameters.new(params)
       p = p[:vehicle] if p.key?(:vehicle)
-      p.permit(:open, :close, :store_start_id, :store_stop_id, :store_rest_id, :rest_start, :rest_stop, :rest_duration)
+      p.permit(:open, :close, :store_start_id, :store_stop_id, :store_rest_id, :rest_start, :rest_stop, :rest_duration, tag_ids: [])
     end
   end
 
@@ -238,7 +238,8 @@ class V01::Vehicles < Grape::API
       end
       use :params_from_entity, entity: V01::Entities::Vehicle.documentation.except(
           :id,
-          :router_options
+          :router_options,
+          :tag_ids
       ).deep_merge(
         name: { required: true }
       ).deep_merge(V01::Entities::VehicleUsage.documentation.except(
@@ -251,7 +252,8 @@ class V01::Vehicles < Grape::API
           :work_time,
           :rest_start,
           :rest_stop,
-          :rest_duration
+          :rest_duration,
+          :tag_ids
       ).except(:vehicle_usage_set))
 
       optional :capacities, type: Array do
@@ -283,6 +285,7 @@ class V01::Vehicles < Grape::API
       optional :rest_start, type: Integer, documentation: { type: 'string', desc: 'Schedule time (HH:MM)' }, coerce_with: ->(value) { ScheduleType.new.type_cast(value) }
       optional :rest_stop, type: Integer, documentation: { type: 'string', desc: 'Schedule time (HH:MM)' }, coerce_with: ->(value) { ScheduleType.new.type_cast(value) }
       optional :rest_duration, type: Integer, documentation: { type: 'string', desc: 'Schedule time (HH:MM)' }, coerce_with: ->(value) { ScheduleType.new.type_cast(value) }
+      optional :tag_ids, type: Array[Integer], desc: 'Ids separated by comma.', coerce_with: CoerceArrayInteger, documentation: { param_type: 'form' }
     end
     post do
       if Mapotempo::Application.config.manage_vehicles_only_admin

@@ -34,6 +34,7 @@ class V01::Entities::VehicleUsage < Grape::Entity
   expose(:rest_duration, documentation: { type: DateTime }) { |m| m.rest_duration_absolute_time_with_seconds }
   expose(:store_rest_id, documentation: { type: Integer })
   expose(:active, documentation: { type: 'Boolean' })
+  expose(:tag_ids, documentation: { type: Integer, is_array: true })
 end
 
 class V01::Entities::VehicleUsageWithVehicle < V01::Entities::VehicleUsage

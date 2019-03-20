@@ -45,6 +45,25 @@ class V01::VehicleUsagesTest < ActiveSupport::TestCase
     assert_equal @vehicle_usage.rest_duration_absolute_time_with_seconds, JSON.parse(last_response.body)['rest_duration']
   end
 
+  test 'should update a vehicle_usage tag_ids' do
+
+    tags_str = tags(:tag_one).id.to_s + ',' + tags(:tag_two).id.to_s
+
+      #tag_ids can be string coma separated or array of integer
+    [
+      [tags(:tag_one).id, tags(:tag_two).id],
+      tags_str
+    ].each { |tags|
+      put api(@vehicle_usage.vehicle_usage_set.id, @vehicle_usage.id), tag_ids: tags
+      assert last_response.ok?, last_response.body
+
+      get api(@vehicle_usage.vehicle_usage_set.id, @vehicle_usage.id)
+      assert last_response.ok?, last_response.body
+      vehicle_usage = JSON.parse(last_response.body)
+      assert_equal tags_str, vehicle_usage['tag_ids'].join(',')
+    }
+  end
+
   test 'should update a vehicle_usage with time exceeding one day' do
     @vehicle_usage.open = '12:00:00'
     @vehicle_usage.rest_start = '22:00:00'

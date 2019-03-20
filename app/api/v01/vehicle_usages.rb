@@ -24,7 +24,7 @@ class V01::VehicleUsages < Grape::API
     def vehicle_usage_params
       p = ActionController::Parameters.new(params)
       p = p[:vehicle_usage] if p.key?(:vehicle_usage)
-      p.permit(:name, :open, :close, :store_start_id, :store_stop_id, :service_time_start, :service_time_end, :work_time, :rest_start, :rest_stop, :rest_duration, :store_rest_id, :active)
+      p.permit(:name, :open, :close, :store_start_id, :store_stop_id, :service_time_start, :service_time_end, :work_time, :rest_start, :rest_stop, :rest_duration, :store_rest_id, :active, tag_ids: [])
     end
   end
 
@@ -89,7 +89,8 @@ class V01::VehicleUsages < Grape::API
               :work_time,
               :rest_start,
               :rest_stop,
-              :rest_duration)
+              :rest_duration,
+              :tag_ids)
 
           optional :open, type: Integer, documentation: { type: 'string', desc: 'Schedule time (HH:MM)' }, coerce_with: ->(value) { ScheduleType.new.type_cast(value) }
           optional :close, type: Integer, documentation: { type: 'string', desc: 'Schedule time (HH:MM)' }, coerce_with: ->(value) { ScheduleType.new.type_cast(value) }
@@ -99,6 +100,7 @@ class V01::VehicleUsages < Grape::API
           optional :rest_start, type: Integer, documentation: { type: 'string', desc: 'Schedule time (HH:MM)' }, coerce_with: ->(value) { ScheduleType.new.type_cast(value) }
           optional :rest_stop, type: Integer, documentation: { type: 'string', desc: 'Schedule time (HH:MM)' }, coerce_with: ->(value) { ScheduleType.new.type_cast(value) }
           optional :rest_duration, type: Integer, documentation: { type: 'string', desc: 'Schedule time (HH:MM)' }, coerce_with: ->(value) { ScheduleType.new.type_cast(value) }
+          optional :tag_ids, type: Array[Integer], desc: 'Ids separated by comma.', coerce_with: CoerceArrayInteger, documentation: { param_type: 'form' }
         end
         put ':id' do
           vehicle_usage_set = current_customer.vehicle_usage_sets.where(id: params[:vehicle_usage_set_id]).first

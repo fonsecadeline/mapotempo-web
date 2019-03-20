@@ -156,6 +156,38 @@ class V01::VehiclesTest < ActiveSupport::TestCase
     end
   end
 
+  test 'should create a vehicle with tag_ids' do
+    begin
+      manage_vehicles_only_admin = Mapotempo::Application.config.manage_vehicles_only_admin
+      Mapotempo::Application.config.manage_vehicles_only_admin = false
+
+      customer = customers(:customer_one)
+      tags_str = tags(:tag_one).id.to_s + ',' + tags(:tag_two).id.to_s
+
+      #tag_ids can be string coma separated or array of integer
+      [
+        [tags(:tag_one).id, tags(:tag_two).id],
+        tags_str
+      ].each { |tags|
+        assert_difference('Vehicle.count', 1) do
+          assert_difference('VehicleUsage.count', customer.vehicle_usage_sets.length) do
+            assert_difference('Route.count', customer.plannings.length) do
+              post api, { ref: 'new', name: 'Vh1', open: '10:00', store_start_id: stores(:store_zero).id, store_stop_id: stores(:store_zero).id, customer_id: customers(:customer_one).id, color: '#bebeef', max_distance: 60, capacities: [{deliverable_unit_id: 1, quantity: 30}], tag_ids: tags }, as: :json
+              assert last_response.created?, last_response.body
+              vehicle = JSON.parse last_response.body
+              assert_equal tags_str, vehicle['tag_ids'].join(',')
+              assert_equal tags_str, vehicle['vehicle_usages'].first['tag_ids'].join(',')
+              assert_equal '#bebeef', vehicle['color']
+              assert_equal 30, vehicle['capacities'][0]['quantity']
+            end
+          end
+        end
+      }
+    ensure
+      Mapotempo::Application.config.manage_vehicles_only_admin = manage_vehicles_only_admin
+    end
+  end
+
   test 'should create a vehicle with time exceeding one day' do
     begin
       manage_vehicles_only_admin = Mapotempo::Application.config.manage_vehicles_only_admin

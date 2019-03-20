@@ -50,7 +50,7 @@ class V01::Entities::VehicleWithoutVehicleUsage < Grape::Entity
   expose(:speed_multiplicator, documentation: { type: Float, desc: 'Deprecated, use speed_multiplier instead.' }) { |m| m.speed_multiplier }
   expose(:speed_multiplier, documentation: { type: Float })
   expose(:max_distance, documentation: { type: Integer, desc: 'Maximum achievable distance in meters' })
-
+  expose(:tag_ids, documentation: { type: Integer, is_array: true })
   # Devices
   # add auth for : orange_id, teksat_id, tomtom_id
   expose(:devices, documentation: {type: Hash})
