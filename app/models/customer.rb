@@ -243,6 +243,14 @@ class Customer < ApplicationRecord
     {lat: store ? store.lat : I18n.t('stores.default.lat'), lng: store ? store.lng : I18n.t('stores.default.lng')}
   end
 
+  def default_callback_url
+    external_callback_url || reseller.external_callback_url
+  end
+
+  def default_callback_name
+    external_callback_name || reseller.external_callback_url_name
+  end
+
   def visits
     destinations.flat_map(&:visits)
   end

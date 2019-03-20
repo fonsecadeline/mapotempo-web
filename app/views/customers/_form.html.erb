@@ -446,8 +446,8 @@
         <div id="collapseExternalCallback" class="panel-collapse">
           <div class="panel-body">
             <div class="col-md-10">
-              <%= f.text_field :external_callback_name, t('.external_callback.name'), placeholder: t('.external_callback.name_placeholder') %>
-              <%= f.text_field :external_callback_url, t('.external_callback.url'), placeholder: t('.external_callback.url_placeholder') do %>
+              <%= f.text_field :external_callback_name, t('.external_callback.name'), placeholder: t('.external_callback.name_placeholder'), value: @customer.default_callback_name %>
+              <%= f.text_field :external_callback_url, t('.external_callback.url'), placeholder: t('.external_callback.url_placeholder'), value: @customer.default_callback_url do %>
                 <div class="help-block"><%= simple_format t('.external_callback.url_help') %></div>
               <% end %>
             </div>

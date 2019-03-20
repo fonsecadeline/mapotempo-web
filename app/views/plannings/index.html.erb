@@ -116,6 +116,6 @@ controller.js(
   customer_id: @customer.id,
   spreadsheet_columns: @spreadsheet_columns,
   vehicles: Hash[@customer.vehicles.map{ |v| [v.id, {name: v.name, color: v.color}] }],
-  external_url: @customer.external_callback_url
+  external_url: @customer.default_callback_url
 )
 %>
