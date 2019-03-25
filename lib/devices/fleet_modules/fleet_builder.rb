@@ -17,11 +17,11 @@
 #
 module FleetBuilder
   def build_route_with_missions(route, customer)
-    destinations = []
+    missions = []
     departure = route.vehicle_usage.default_store_start
     index_counter = -1
 
-    destinations << {
+    missions << {
       index: index_counter += 1,
       mission_type: 'departure',
       external_ref: generate_store_id(departure, route, p_time(route, route.start), type: 'departure'),
@@ -41,55 +41,55 @@ module FleetBuilder
       }
     } if departure
 
-    destinations += route.stops.select{ |stop| stop.active? && stop.time }.sort_by(&:index).map do |destination|
-      visit = destination.is_a?(StopVisit)
-      # labels = visit ? (destination.visit.tags + destination.visit.destination.tags).map(&:label).join(', ') : nil
+    missions += route.stops.select{ |stop| stop.active? && stop.time }.sort_by(&:index).map do |stop|
+      is_visit = stop.is_a?(StopVisit)
+      # labels = is_visit ? (stop.visit.tags + stop.visit.stop.tags).map(&:label).join(', ') : nil
 
       time_windows = []
       time_windows << {
-        start: p_time(route, destination.open1).strftime('%FT%T.%L%:z'),
-        end: p_time(route, destination.close1).strftime('%FT%T.%L%:z')
-      } if visit && destination.open1 && destination.close1
+        start: p_time(route, stop.open1).strftime('%FT%T.%L%:z'),
+        end: p_time(route, stop.close1).strftime('%FT%T.%L%:z')
+      } if is_visit && stop.open1 && stop.close1
       time_windows << {
-        start: p_time(route, destination.open2).strftime('%FT%T.%L%:z'),
-        end: p_time(route, destination.close2).strftime('%FT%T.%L%:z')
-      } if visit && destination.open2 && destination.close2
+        start: p_time(route, stop.open2).strftime('%FT%T.%L%:z'),
+        end: p_time(route, stop.close2).strftime('%FT%T.%L%:z')
+      } if is_visit && stop.open2 && stop.close2
 
       {
-        mission_type: visit ? 'mission' : 'rest',
-        external_ref: generate_mission_id(destination, planning_date(route.planning)),
-        name: destination.name,
-        date: p_time(route, destination.time).strftime('%FT%T.%L%:z'),
-        duration: destination.duration,
-        planned_travel_time: destination.drive_time,
-        planned_distance: destination.distance,
+        mission_type: is_visit ? 'mission' : 'rest',
+        external_ref: generate_mission_id(stop, planning_date(route.planning)),
+        name: stop.name,
+        date: p_time(route, stop.time).strftime('%FT%T.%L%:z'),
+        duration: stop.duration,
+        planned_travel_time: stop.drive_time,
+        planned_distance: stop.distance,
         location: {
-          lat: destination.lat,
-          lon: destination.lng
+          lat: stop.lat,
+          lon: stop.lng
         },
-        comment: visit ? [
-          destination.comment,
-          # destination.priority ? I18n.t('activerecord.attributes.visit.priority') + I18n.t('text.separator') + destination.priority_text : nil,
+        comment: is_visit ? [
+          stop.comment,
+          # stop.priority ? I18n.t('activerecord.attributes.visit.priority') + I18n.t('text.separator') + stop.priority_text : nil,
           # labels.present? ? I18n.t('activerecord.attributes.visit.tags') + I18n.t('text.separator') + labels : nil,
         ].compact.join("\r\n\r\n").strip : nil,
-        phone: visit ? destination.phone_number : nil,
-        reference: visit ? destination.visit.destination.ref : nil,
+        phone: is_visit ? stop.phone_number : nil,
+        reference: is_visit ? stop.visit.ref || stop.visit.destination.ref : nil,
         address: {
-          city: destination.city,
-          country: destination.country || customer.default_country,
-          detail: destination.detail,
-          postalcode: destination.postalcode,
-          state: destination.state,
-          street: destination.street
+          city: stop.city,
+          country: stop.country || customer.default_country,
+          detail: stop.detail,
+          postalcode: stop.postalcode,
+          state: stop.state,
+          street: stop.street
         },
-        time_windows: visit ? time_windows : nil,
-        quantities: destination.is_a?(StopVisit) && !customer.enable_orders ? VisitQuantities.normalize(destination.visit, route.vehicle_usage.try(&:vehicle), with_nil: true) : nil,
+        time_windows: is_visit ? time_windows : nil,
+        quantities: is_visit && !customer.enable_orders ? VisitQuantities.normalize(stop.visit, route.vehicle_usage.try(&:vehicle), with_nil: true) : nil,
         index: index_counter += 1,
       }.compact
     end
 
     arrival = route.vehicle_usage.default_store_stop
-    destinations << {
+    missions << {
       index: index_counter += 1,
       mission_type: 'arrival',
       external_ref: generate_store_id(arrival, route, p_time(route, route.end), type: 'arrival'),
@@ -111,16 +111,16 @@ module FleetBuilder
       }
     } if arrival
 
-    build_route(route, destinations)
+    build_route(route, missions)
   end
 
-  def build_route(route, destinations = nil)
+  def build_route(route, missions = nil)
     {
       user_id: convert_user(route.vehicle_usage.vehicle.devices[:fleet_user]),
       name: route.ref || route.vehicle_usage.vehicle.ref || route.vehicle_usage.vehicle.name,
       date: p_time(route, route.start).strftime('%FT%T.%L%:z'),
       external_ref: generate_route_id(route, p_time(route, route.start)),
-      missions: destinations
+      missions: missions
     }
   end
 end
