@@ -1825,7 +1825,7 @@ en:
       name_rest: Rest
   stores:
     default:
-      name: Store
+      name: Depot number 1
       lat: '51.4899'
       lng: '-0.2596'
       city: London

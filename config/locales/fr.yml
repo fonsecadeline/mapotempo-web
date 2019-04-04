@@ -1950,7 +1950,7 @@
       'name_rest': 'Pause'
   'stores':
     'default':
-      'name': 'Départ véhicule'
+      'name': 'Dépôt numéro 1'
       'lat': '44.83423'
       'lng': '-0.60068'
       'city': 'Bordeaux'
