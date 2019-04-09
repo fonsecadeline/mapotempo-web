@@ -76,6 +76,7 @@ Rails.application.routes.draw do
     end
     member do
       delete :delete_vehicle
+      delete :delete_multiple_vehicles
       patch :duplicate
       get :export
     end

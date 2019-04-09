@@ -355,7 +355,7 @@ class V01::Vehicles < Grape::API
     end
     delete do
       Vehicle.transaction do
-        if Mapotempo::Application.config.manage_vehicles_only_admin
+        if Mapotempo::Application.config.manage_vehicles_only_admin || @current_user.admin?
           if @current_user.admin?
             Vehicle.for_reseller_id(@current_user.reseller.id).select{ |vehicle|
               params[:ids].any?{ |s| ParseIdsRefs.match(s, vehicle) }

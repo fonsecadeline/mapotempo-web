@@ -808,6 +808,8 @@ en:
       success: Accounts deleted successfully
     delete_vehicle:
       success: Vehicle deleted successfully
+    delete_multiple_vehicles:
+      success: Vehicles deleted successfully
     form:
       max_distance_default: '%{n} (default value)'
       name: Account

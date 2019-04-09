@@ -832,6 +832,8 @@
       'success': 'Clients supprimés avec succès'
     'delete_vehicle':
       'success': 'Véhicule supprimé avec succès'
+    'delete_multiple_vehicles':
+      'success': 'Véhicules supprimés avec succès'
     'form':
       'max_distance_default': '%{n} (valeur par défaut)'
       'name': 'Compte'

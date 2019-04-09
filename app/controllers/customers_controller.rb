@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright © Mapotempo, 2013-2016
 #
 # This file is part of Mapotempo.
@@ -17,7 +19,7 @@
 #
 class CustomersController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_customer, only: [:edit, :update, :delete_vehicle]
+  before_action :set_customer, only: %i[edit update delete_vehicle]
 
   load_and_authorize_resource
 
@@ -86,7 +88,7 @@ class CustomersController < ApplicationController
 
   def export
     export = ImportExportCustomer.export(@customer)
-    send_data export, :filename => "customer_#{@customer.name}_#{@customer.id}.dump"
+    send_data export, filename: "customer_#{@customer.name}_#{@customer.id}.dump"
   end
 
   def import
@@ -101,7 +103,7 @@ class CustomersController < ApplicationController
       render action: :import
     else
       file_path = Rails.root.join('public', 'uploads', uploaded_io.original_filename)
-      File.open(file_path, 'wb'){ |file| file.write(uploaded_io.read)}
+      File.open(file_path, 'wb'){ |file| file.write(uploaded_io.read) }
 
       string_customer = File.open(file_path, 'rb')
       options = {profile_id: customer_params[:profile_id], router_id: customer_params[:router_id], layer_id: customer_params[:layer_id]}
@@ -131,7 +133,7 @@ class CustomersController < ApplicationController
     end
     parse_router_options(params[:customer]) if params[:customer][:router_options]
     # From customer form all keys are not present: need merge
-    params[:customer][:devices] = @customer[:devices].deep_merge(params[:customer][:devices] || {}) if @customer && @customer[:devices].size > 0
+    params[:customer][:devices] = @customer[:devices].deep_merge(params[:customer][:devices] || {}) if @customer && !@customer[:devices].empty?
     if current_user.admin?
       parameters = params.require(:customer).permit(
         :ref,
@@ -254,8 +256,7 @@ class CustomersController < ApplicationController
   end
 
   def permit_recursive_params(params)
-    unless params.nil?
-      params.map do |key, value|
+    params&.map do |key, value|
         if value.is_a?(Array)
           { key => [permit_recursive_params(value.first)] }
         elsif value.is_a?(Hash) || value.is_a?(ActionController::Parameters)
@@ -263,7 +264,6 @@ class CustomersController < ApplicationController
         else
           key
         end
-      end
     end
   end
 end
