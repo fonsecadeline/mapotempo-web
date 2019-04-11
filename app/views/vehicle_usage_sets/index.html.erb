@@ -71,13 +71,19 @@
         </td>
         <td class="text-right">
           <% if current_user.customer.default_max_vehicle_usage_sets > 1 %>
-            <%= link_to vehicle_usage_set_duplicate_path(vehicle_usage_set), disabled: current_user.customer.too_many_vehicle_usage_sets?, :class => 'btn btn-default btn-sm', method: :patch do %><i class="fa fa-copy fa-fw"></i> <%= t 'all.verb.duplicate' %><% end %>
+            <%= link_to vehicle_usage_set_duplicate_path(vehicle_usage_set), disabled: current_user.customer.too_many_vehicle_usage_sets?, :class => 'btn btn-default btn-sm', method: :patch, title: t('all.verb.duplicate') do %><i class="fa fa-copy fa-fw"></i><% end %>
           <% end %>
-          <%= link_to edit_vehicle_usage_set_path(vehicle_usage_set, back: true), :class => 'btn btn-primary btn-sm' do %><i class="fa fa-edit fa-fw"></i> <%= t 'all.verb.edit' %><% end %>
+          <%= link_to edit_vehicle_usage_set_path(vehicle_usage_set, back: true), :class => 'btn btn-primary btn-sm' ,title: t('all.verb.edit') do %><i class="fa fa-edit fa-fw"></i><% end %>
+
+          <% if @vehicle_usage_sets.count > 1 %>
+            <%= link_to vehicle_usage_set, :class => 'btn btn-danger btn-sm', method: :delete, data: { confirm: t('all.verb.destroy_confirm') }, title: t('all.verb.destroy') do %>
+              <i class="fa fa-trash-o fa-fw"></i>
+            <% end %>
+          <% end %>
 
           <div class="dropdown form-group export-dropdown">
             <button class="btn btn-sm btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-              <i class="fa fa-share-square-o fa-fw"></i> <%= t('all.verb.export.button') %> <span class="caret"></span>
+              <i class="fa fa-share-square-o fa-fw" title="<%= t('all.verb.export.button')%>"></i><span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
               <li>
@@ -92,13 +98,8 @@
               </li>
             </ul>
           </div>
-
-          <% if @vehicle_usage_sets.count > 1 %>
-            <%= link_to vehicle_usage_set, :class => 'btn btn-danger btn-sm', method: :delete, data: { confirm: t('all.verb.destroy_confirm') } do %>
-              <i class="fa fa-trash-o fa-fw"></i> <%= t 'all.verb.destroy' %>
-            <% end %>
-          <% end %>
         </td>
+
       </tr>
       <tr class="vehicle_usages">
         <td colspan="<%= current_user.customer.default_max_vehicle_usage_sets > 1 ? 6 : 5 %>">
