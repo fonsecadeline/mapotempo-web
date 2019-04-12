@@ -1828,6 +1828,15 @@ export const plannings_edit = function(params) {
     map.closePopup();
 
     checkLockAndActive();
+
+    var updateOptimButton = function(routes) {
+      routes.forEach(function(route) {
+        $("li[data-route_id=\"" + route.route_id + "\"]").find('.optimize').toggleClass('btn-success', !!route.optimized_at_formatted);
+      });
+    };
+
+    updateOptimButton(data.routes);
+
   };
 
   // Update only stops by default
