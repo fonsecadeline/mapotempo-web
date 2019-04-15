@@ -336,8 +336,8 @@
         <label class="col-md-2 control-label"><%= t '.optimization_time' %></label>
         <div class="col-md-6">
           <div class="input-group">
-            <%= number_field 'customer', 'optimization_minimal_time', value: @customer.optimization_minimal_time, placeholder: t('.optimization_minimal_time_default', n: LocalizedValues.localize_numeric_value(Mapotempo::Application.config.optimize_minimal_time)), min: 3, class: 'form-control width_1_2' %>
-            <%= number_field 'customer', 'optimization_time' , value: @customer.optimization_time, placeholder: t('.optimization_time_default', n: LocalizedValues.localize_numeric_value(Mapotempo::Application.config.optimize_time)), min: 0, class: 'form-control width_1_2' %>
+            <%= number_field 'customer', 'optimization_minimal_time', value: @customer.optimization_minimal_time, placeholder: t('.optimization_minimal_time_default', n: LocalizedValues.localize_numeric_value(Mapotempo::Application.config.optimize_minimal_time)), min: 0.1, step: 0.1, class: 'form-control width_1_2' %>
+            <%= number_field 'customer', 'optimization_time' , value: @customer.optimization_time, placeholder: t('.optimization_time_default', n: LocalizedValues.localize_numeric_value(Mapotempo::Application.config.optimize_time)), min: 1, step: 1, class: 'form-control width_1_2' %>
             <span class="input-group-addon" ><%= t('all.unit.second') %></span>
           </div>
           <p class="help-block col-md-6"><%= t '.optimization_minimal_time_help' %></p>

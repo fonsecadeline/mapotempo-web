@@ -62,7 +62,7 @@ class V01::CustomerTest < ActiveSupport::TestCase
   test 'should update a customer' do
     @customer.devices[:tomtom] = {enable: true}
     @customer.save!
-    put api(@customer.id), { devices: {tomtom: {user: 'user_abcd'}}.to_json, ref: 'ref-abcd', router_options: {motorway: true, trailers: 2, weight: 10, hazardous_goods: 'gas'} }
+    put api(@customer.id), { devices: {tomtom: {user: 'user_abcd'}}.to_json, ref: 'ref-abcd', router_options: {motorway: true, trailers: 2, weight: 10, hazardous_goods: 'gas'}, optimization_minimal_time: 3, optimization_time: 5 }
     assert last_response.ok?, last_response.body
 
     get api(@customer.id)
@@ -74,10 +74,13 @@ class V01::CustomerTest < ActiveSupport::TestCase
     assert_equal 'user_abcd', customer_response[:devices][:tomtom][:user], last_response.body
 
     # FIXME: replace each assertion by one which checks if hash is included in another
-    assert customer_response[:router_options][:weight] = '10'
-    assert customer_response[:router_options][:motorway] = 'true'
-    assert customer_response[:router_options][:trailers] = '2'
-    assert customer_response[:router_options][:hazardous_goods] = 'gas'
+    assert_equal '10', customer_response[:router_options][:weight]
+    assert_equal 'true', customer_response[:router_options][:motorway]
+    assert_equal '2', customer_response[:router_options][:trailers]
+    assert_equal 'gas', customer_response[:router_options][:hazardous_goods]
+
+    assert_equal 3, customer_response[:optimization_minimal_time]
+    assert_equal 5, customer_response[:optimization_time]
   end
 
   test 'should not update customer with invalid router options' do
