@@ -36,7 +36,7 @@ class V01::Devices::FleetReportingTest < ActiveSupport::TestCase
     stub_request(:get, 'http://localhost:8084/api/0.1/reportings?format=json&from=2019-01-01&to=2019-02-01&with_actions=true')
       .with(
         headers: { 'Authorization' => 'Token token=123456', 'Charset' => 'utf-8', 'Content-Type' => 'application/json' })
-      .to_return(status: 200, body: '', headers: {})
+        .to_return(status: 200, body: '[{"mission_action_final_label":"To do","mission_address":{"city":"bordeaux","country":"france","postalcode":"33000","street":"40 rue de canolle"},"mission_date":"2019-04-17T12:00:00.000+02:00","mission_duration":3600,"mission_external_ref":"mission-r15587-2019_04_17-1312","mission_id":"mission-a8c0f6ff9","mission_location":{"lat":44.828271,"lon":-0.602265},"mission_name":"jean roger Pomme"}]', headers: {})
 
 
     get api('devices/fleet/reporting', { customer_id: @customer.id, begin_date: '01-01-2019', end_date: '31-01-2019', with_actions: true })

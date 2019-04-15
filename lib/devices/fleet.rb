@@ -345,7 +345,9 @@ class Fleet < DeviceBase
       )
       return nil if response.code == 204
 
-      response.to_s
+      return response.to_s if params[:format] == 'csv'
+
+      JSON.parse(response.body)
     rescue RestClient::Unauthorized, RestClient::InternalServerError, RestClient::ResourceNotFound, RestClient::UnprocessableEntity => e
       raise DeviceServiceError, "Mapo. Live: #{e.message}"
     rescue RestClient::RequestTimeout, Errno::ECONNREFUSED, SocketError

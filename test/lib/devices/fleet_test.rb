@@ -140,4 +140,15 @@ class FleetTest < ActionController::TestCase
 
     assert_equal 2, result[:missions].count
   end
+
+  test 'should return json on reporting if format is not csv' do
+    set_route
+    stub_request(:get, 'http://localhost:8084/api/0.1/reportings?format=json&from=2019-04-04&to=2019-05-01&with_actions=false')
+        .to_return(status: 200, body: '[{"mission_action_final_label":"To do","mission_address":{"city":"bordeaux","country":"france","postalcode":"33000","street":"40 rue de canolle"},"mission_date":"2019-04-17T12:00:00.000+02:00","mission_duration":3600,"mission_external_ref":"mission-r15587-2019_04_17-1312","mission_id":"mission-a8c0f6ff9","mission_location":{"lat":44.828271,"lon":-0.602265},"mission_name":"jean roger Pomme"}]')
+
+    params = {format: 'json', from: '2019-04-04', to: '2019-05-01', with_actions: false}
+    result = @service.reporting('demo', 'en', params)
+
+    assert_kind_of Hash, result.first
+  end
 end
