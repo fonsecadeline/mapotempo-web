@@ -69,15 +69,22 @@ class Fleet < DeviceBase
     'departure_to_do' => 'Planned',
     'rest_to_do' => 'Planned',
     'arrival_to_do' => 'Planned',
-    'mission_in_progress' => 'Started',
+    'mission_in_progress' => 'Started', # legacy
     'departure_loading' => 'Started',
-    'rest_resting' => 'Started',
+    'departure_service' => 'Started',
+    'rest_resting' => 'Started', # legacy
+    'rest_in_progress' => 'Started',
     'arrival_unloading' => 'Started',
-    'mission_completed' => 'Finished',
-    'departure_gone' => 'Finished',
+    'arrival_service' => 'Started',
+    'mission_completed' => 'Finished', # legacy
+    'mission_done' => 'Finished',
+    'departure_gone' => 'Finished', # legacy
+    'departure_done' => 'Finished',
     'rest_done' => 'Finished',
-    'arrival_arrived' => 'Finished',
-    'mission_uncompleted' => 'Rejected',
+    'arrival_arrived' => 'Finished', # legacy
+    'arrival_done' => 'Finished',
+    'mission_uncompleted' => 'Rejected', # legacy
+    'mission_undone' => 'Rejected',
   }
 
   def check_auth(params)
@@ -259,8 +266,8 @@ class Fleet < DeviceBase
         mission_type: mission['mission_type'],
         order_id: order_id,
         route_id: decode_route_id_from_mission_ref(mission['external_ref']),
-        status: @@order_status[mission['status_type_reference']],
-        color: mission['status_type_color'],
+        status: @@order_status[mission['status_type_reference']] || mission['status_type_label'],
+        # color: mission['status_type_color'],
         quantities: mission['quantities'],
         eta: mission['eta']
       }
