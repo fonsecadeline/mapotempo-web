@@ -1023,7 +1023,7 @@ export const plannings_edit = function(params) {
       url: this.href,
       beforeSend: beforeSendWaiting,
       success: function(data) {
-        notice(I18n.t('plannings.edit.send_sms_success', {c: data}));
+        stickyNotice(I18n.t('plannings.edit.send_sms_success', {c: data}));
       },
       complete: completeAjaxMap,
       error: ajaxError

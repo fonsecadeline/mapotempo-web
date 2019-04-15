@@ -96,6 +96,11 @@ const isWindowVisible = (function() {
     notice: function(message, options) {
       notify('success', message, options);
     },
+    stickyNotice: function(message, options) {
+      notify('success', message, $.extend(options, {
+        hide: false
+      }));
+    },
     warning: function(message, options) {
       notify('warning', message, options);
     },
