@@ -66,7 +66,7 @@ CREATE TABLE public.customers (
     enable_orders boolean DEFAULT false NOT NULL,
     test boolean DEFAULT false NOT NULL,
     optimization_cluster_size integer,
-    optimization_time integer,
+    optimization_time double precision,
     optimization_stop_soft_upper_bound double precision,
     profile_id integer NOT NULL,
     speed_multiplier double precision DEFAULT 1.0 NOT NULL,
@@ -104,7 +104,7 @@ CREATE TABLE public.customers (
     print_barcode character varying,
     sms_concat boolean DEFAULT false NOT NULL,
     sms_from_customer_name boolean DEFAULT false NOT NULL,
-    optimization_minimal_time integer
+    optimization_minimal_time double precision
 );
 
 
@@ -2769,3 +2769,5 @@ INSERT INTO schema_migrations (version) VALUES ('20181220135439');
 INSERT INTO schema_migrations (version) VALUES ('20181227141833');
 
 INSERT INTO schema_migrations (version) VALUES ('20190315184420');
+
+INSERT INTO schema_migrations (version) VALUES ('20190417121926');
