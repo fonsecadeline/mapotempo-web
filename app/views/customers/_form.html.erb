@@ -431,10 +431,10 @@
 
     <% if current_user.admin? %>
       <%= f.toggles t 'activerecord.attributes.customer.enable_external_callback' do %>
-        <%= f.check_box :enable_external_callback %>
+        <%= f.check_box_tag :enable_external_callback, '', value: @customer.default_callback_enabled? %>
       <% end %>
     <% end %>
-    <% if @customer.enable_external_callback? %>
+    <% if @customer.default_callback_enabled? %>
       <div id="external_callback_container" class="panel panel-default accordion">
         <div class="panel-heading">
           <h2 class="panel-title">

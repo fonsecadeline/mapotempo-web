@@ -251,6 +251,10 @@ class Customer < ApplicationRecord
     external_callback_name || reseller.external_callback_url_name
   end
 
+  def default_callback_enabled?
+    enable_external_callback || reseller.enable_external_callback
+  end
+
   def visits
     destinations.flat_map(&:visits)
   end

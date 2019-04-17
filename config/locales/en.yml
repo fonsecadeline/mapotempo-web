@@ -915,7 +915,7 @@ en:
         url_help: 'External URL to call from Plan Export Menu
 
           Can contain the following replacement tokens: PLANNING_ID, PLANNING_REF,
-          ROUTE_ID, ROUTE_REF
+          PLANNING_IDS, ROUTE_ID, ROUTE_REF, API_KEY, CUSTOMER_ID
 
           Example: http://www.example.com?p_id={PLANNING_ID}
 

@@ -722,8 +722,8 @@ he:
         url_placeholder: http://www.example.com?p_id={PLANNING_ID}
         url_help: 'כתובת אתר חיצונית לקישור מתפריט ייצוא תכנון
 
-          יכול להכיל את האסימונים החלפת בעקבות: PLANNING_ID, PLANNING_REF, route_id,
-          route_ref
+          יכול להכיל את האסימונים החלפת בעקבות: PLANNING_ID, PLANNING_REF,
+          PLANNING_IDS, ROUTE_ID, ROUTE_REF, API_KEY, CUSTOMER_ID
 
           דוגמה: http://www.example.com?p_id={PLANNING_ID}
 

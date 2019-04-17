@@ -35,17 +35,23 @@
   <% end %>
   <%= f.password_field :sms_api_secret, value: @reseller.sms_api_secret %>
 
-<fieldset>
-  <legend>
-    <i class="fa fa-link" aria-hidden="true"></i>
-    <%= t('customers.form.external_callback.title') %>
-  </legend>
+  <%= f.toggles t 'activerecord.attributes.customer.enable_external_callback' do %>
+    <%= f.check_box :enable_external_callback %>
+  <% end %>
 
-  <%= f.text_field :external_callback_url_name, t('customers.form.external_callback.name'), value: @reseller.external_callback_url_name %>
-  <%= f.text_field :external_callback_url, t('customers.form.external_callback.url'), value: @reseller.external_callback_url  do %>
-    <div class="help-block"><%= simple_format t('customers.form.external_callback.url_help') %></div>
-  <% end%>
-</fieldset>
+  <% if @reseller.enable_external_callback %>
+    <fieldset>
+      <legend>
+        <i class="fa fa-link" aria-hidden="true"></i>
+        <%= t('customers.form.external_callback.title') %>
+      </legend>
+
+      <%= f.text_field :external_callback_url_name, t('customers.form.external_callback.name'), value: @reseller.external_callback_url_name %>
+      <%= f.text_field :external_callback_url, t('customers.form.external_callback.url'), value: @reseller.external_callback_url  do %>
+        <div class="help-block"><%= simple_format t('customers.form.external_callback.url_help') %></div>
+      <% end%>
+    </fieldset>
+  <%end%>
 
   <%= render 'help_urls', f: f %>
 

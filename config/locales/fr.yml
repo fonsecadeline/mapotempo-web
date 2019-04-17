@@ -901,16 +901,22 @@
       'optimization_soft_upper_bound_default': '%{n} (valeur par défaut)'
       'optimization_stop_soft_upper_bound_help': 'Plus la valeur est grande plus les
         retards seront pénalisants (0 pour empêcher les retards de manière stricte :
-        désactive les clusters dans ce cas).'
+        désactive les clusters dans ce cas).<br> Valeurs conseillées :<br>
+        - Au plus rapide: 0 à 1<br>
+        - Au plus court: 0 à 30'
       'optimization_vehicle_soft_upper_bound_help': 'Pour une optimisation globale,
         permet de gérer la répartition sur les véhicules. Plus la valeur est grande
         plus les retards seront pénalisants (0 pour empêcher les retards de manière
-        stricte : désactive les clusters dans ce cas).'
+        stricte : désactive les clusters dans ce cas).<br> Valeurs conseillées :<br>
+        - Au plus rapide : 0 à 1<br>
+        - Au plus court : 0 à 30'
       'optimization_cost_waiting_time_default': '%{n} (valeur par défaut)'
       'optimization_cost_waiting_time_help': 'Permet d''évaluer l''importance des
         temps d''attente. Plus la valeur est grande, plus l''attente avant l''ouverture
         d''un créneau horaire sera pénalisée (0 pour ne pas considérer l''attente
-        dans l''optimisation).'
+        dans l''optimisation).<br> Valeurs conseillées :<br>
+        - Au plus rapide : 0 à 1<br>
+        - Au plus rcourt : non pris en compte'
       'optimization_force_start_help': 'Forcer le départ du véhicule à son horaire
         de début.'
       'enable_global_optimization_test': 'Actif si Test'
@@ -950,8 +956,8 @@
         'url_placeholder': 'http://www.example.com?p_id={PLANNING_ID}'
         'url_help': 'URL externe à appeler depuis le menu export du plan des tournées
 
-          Les chaînes de caractères suivantes vont etre remplacées : PLANNING_ID,
-          PLANNING_REF, ROUTE_ID, ROUTE_REF
+          Les chaînes de caractères suivantes vont etre remplacées : PLANNING_ID, PLANNING_REF,
+          PLANNING_IDS, ROUTE_ID, ROUTE_REF, API_KEY, CUSTOMER_ID
 
           Exemple : http://www.example.com?p_id={PLANNING_ID}
 

@@ -851,7 +851,8 @@ de:
         name_placeholder: Externe Anwendung
         url: URL
         url_placeholder: http://www.example.com?p_id={PLANNING_ID}
-        url_help: "Externe URL, die vom Export-Menü des Plans aufgerufen wird \nKann die folgenden Ersatz-Token enthalten: PLANNING_ID, PLANNING_REF, ROUTE_ID, ROUTE_REF\nBeispiel: http://www.example.com?p_id={PLANNING_ID}\n"
+        url_help: "Externe URL, die vom Export-Menü des Plans aufgerufen wird \nKann die folgenden Ersatz-Token enthalten: PLANNING_ID, PLANNING_REF,
+          PLANNING_IDS, ROUTE_ID, ROUTE_REF, API_KEY, CUSTOMER_ID\nBeispiel: http://www.example.com?p_id={PLANNING_ID}\n"
   deliverable_units:
     edit:
       title: Bearbeiten der lieferbaren Einheit

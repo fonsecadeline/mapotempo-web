@@ -868,7 +868,7 @@
         'url_help': 'URL externa a evocar a partir do menu export do plano de rotas
 
           As cadeias de caracteres seguintes serão substituidas: PLANNING_ID, PLANNING_REF,
-          ROUTE_ID, ROUTE_REF
+          PLANNING_IDS, ROUTE_ID, ROUTE_REF, API_KEY, CUSTOMER_ID
 
           Exemplo: http://www.example.com?p_id={PLANNING_ID}
 

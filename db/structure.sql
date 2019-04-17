@@ -550,7 +550,8 @@ CREATE TABLE public.resellers (
     sms_api_secret character varying,
     authorized_fleet_administration boolean DEFAULT false,
     external_callback_url character varying,
-    external_callback_url_name character varying
+    external_callback_url_name character varying,
+    enable_external_callback boolean
 );
 
 

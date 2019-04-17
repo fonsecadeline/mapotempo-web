@@ -14,7 +14,7 @@
       </div>
       <h1><% if @manage_planning[:manage_edit] %><%= t '.title' %><% else %><%= @planning.name %><% end %></h1>
 
-      <% if @callback_button && @planning.customer.enable_external_callback && @planning.customer.default_callback_url %>
+      <% if @callback_button && @planning.customer.default_callback_enabled? && @planning.customer.default_callback_url %>
         <p class="text-center">
           <button type="button" class="btn btn-primary btn-sm customer_external_callback_url" id="external-callback-btn" data-url="<%= @planning.customer.external_callback_url %>">
             <i class="fa fa-desktop fa-fw"></i>
@@ -103,7 +103,7 @@
           <ul class="dropdown-menu" role="menu">
             <li class="dropdown-header"><h5><%= t("plannings.edit.all_plannings_related") %></h5></li>
             <hr>
-            <% if current_user.customer.enable_external_callback && current_user.customer.default_callback_url %>
+            <% if current_user.customer.default_callback_enabled? && current_user.customer.default_callback_url %>
               <li class="link customer_external_callback_url">
                 <i class="fa fa-desktop fa-fw"></i>
                 <%= current_user.customer.default_callback_name || t('plannings.edit.customer_external_callback_url.action') %>
