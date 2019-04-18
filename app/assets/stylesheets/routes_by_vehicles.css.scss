@@ -44,7 +44,7 @@ $sidebar-margins: 10px;
       h2 {
         font-size: 1em;
         float: right;
-        margin: 0px;
+        margin: 0;
         top: -40px;
         position: relative;
       }
@@ -63,7 +63,7 @@ $sidebar-margins: 10px;
 
         h3 {
           font-size: 1.5em;
-          margin: 0px;
+          margin: 0;
 
           .color_select {
             width: 44px;
@@ -142,13 +142,13 @@ $sidebar-margins: 10px;
         .stops {
           position:relative;
           cursor: default;
-          margin: 0px;
+          margin: 0;
 
           li.wait {
-            border-top: 0px;
-            border-bottom: 0px;
-            padding-top: 0px;
-            padding-bottom: 0px;
+            border-top: 0;
+            border-bottom: 0;
+            padding-top: 0;
+            padding-bottom: 0;
           }
 
           >li {
@@ -168,7 +168,6 @@ $sidebar-margins: 10px;
             }
 
             .title {
-              display: inline-block;
               line-height: 14px;
               vertical-align: middle;
               overflow: hidden;
@@ -196,9 +195,9 @@ $sidebar-margins: 10px;
 
   .sidebar.extended {
     width: 100% !important;
-    right: 0px;
-    bottom: 0px;
-    padding: 0px;
+    right: 0;
+    bottom: 0;
+    padding: 0;
 
     .sidebar-content {
       white-space: nowrap;
@@ -229,6 +228,9 @@ $sidebar-margins: 10px;
           margin: 2px;
           max-width: 350px;
 
+          .panel-body {
+            white-space: initial;
+          }
           .stops {
             display: block !important;
           }
