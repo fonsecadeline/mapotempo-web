@@ -28,6 +28,7 @@ end
 Bundler.require(*Rails.groups)
 
 require 'devise'
+require 'hashie'
 
 module Mapotempo
   class Application < Rails::Application
@@ -69,6 +70,8 @@ module Mapotempo
     end
 
     config.middleware.use ::ResellerByHost
+
+    Hashie.logger = Rails.logger
 
     config.lograge.enabled = true
     config.lograge.custom_options = lambda do |event|

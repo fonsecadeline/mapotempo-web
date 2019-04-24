@@ -9,3 +9,8 @@ ActiveSupport::Notifications.subscribe('grape.request') do |name, starts, ends, 
     payload[:params] ? "| #{payload[:params].inspect}" : ""
   ]
 end
+
+# from grape 1.0.0, hashie is replaced by HashWithIndifferentAccess
+Grape.configure do |config|
+  config.param_builder = Grape::Extensions::Hashie::Mash::ParamBuilder
+end
