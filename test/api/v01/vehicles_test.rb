@@ -27,6 +27,10 @@ class V01::VehiclesTest < ActiveSupport::TestCase
     "/api/0.1/vehicles#{part}.json?api_key=adminkey&" + param.collect{ |k, v| "#{k}=" + URI.escape(v.to_s) }.join('&')
   end
 
+  def api_deliverables(id, param = {})
+    "/api/0.1/vehicles/#{id}/deliverable_units?api_key=testkey1&" + param.collect{ |k, v| "#{k}=" + URI.escape(v.to_s) }.join('&')
+  end
+
   test "should return customer's vehicles" do
     get api()
     assert last_response.ok?, last_response.body
@@ -364,4 +368,10 @@ class V01::VehiclesTest < ActiveSupport::TestCase
     assert last_response.ok?
     assert_not_nil @vehicle.reload.phone_number
   end
+
+  test 'Should fetch deliverables by vehicle' do
+    get api_deliverables(@vehicle.id, planning_ids: @vehicle.customer.plannings.collect(&:id).join(','))
+    assert last_response.ok?, last_response.body
+  end
+
 end

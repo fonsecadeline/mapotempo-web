@@ -19,7 +19,7 @@ require 'coerce'
 
 require Rails.root.join('app/api/v01/devices/device_helpers')
 include Devices::Helpers
-
+include DeliverableByVehiclesHelper
 class V01::Vehicles < Grape::API
 
   rescue_from DeviceServiceError do |e|
@@ -75,6 +75,11 @@ class V01::Vehicles < Grape::API
       p = ActionController::Parameters.new(params)
       p = p[:vehicle] if p.key?(:vehicle)
       p.permit(:open, :close, :store_start_id, :store_stop_id, :store_rest_id, :rest_start, :rest_stop, :rest_duration, tag_ids: [])
+    end
+
+    def deliverables_by_vehicle_params
+      p = ActionController::Parameters.new(params)
+      p.permit(:id, :planning_ids)
     end
   end
 
@@ -356,6 +361,32 @@ class V01::Vehicles < Grape::API
           status 204
         end
       end
+    end
+
+    desc 'Fetch deliverables by vehicle for select plans',
+      detail: 'Get list of deliverable for a vehicle on each selected plans',
+      nickname: 'getDeliverablesByVehicles',
+      success: V01::Entities::Layer
+    params do
+      requires :id, type: Integer, desc: 'Vehicle ID'
+      requires :planning_ids, type: String, desc: 'Plannings ids'
+    end
+    get ':id/deliverable_units' do
+      p = deliverables_by_vehicle_params
+
+      deliverable_units = current_customer.deliverable_units
+      plannings = plannings_by_ids(current_customer, p[:planning_ids])
+
+      routes = routes_by_vehicle(plannings, p[:id])
+      routes_quantities = routes_quantities_by_deliverables(routes, deliverable_units)
+
+      data = {
+        plannings: plannings,
+        routes_quantities: routes_quantities,
+        routes_total_infos: routes_total_infos(routes_quantities, routes)
+      }
+
+      present data, with: V01::Entities::DeliverablesByVehicles
     end
   end
 end

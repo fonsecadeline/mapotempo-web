@@ -109,5 +109,20 @@ class V01::Tags < Grape::API
         status 204
       end
     end
+
+    desc 'Get visit with corresponding tag id or tag ref',
+      nickname: 'VisitsByTags'
+    params do
+      requires :id, type: String, desc: SharedParams::ID_DESC
+    end
+    get ':id/visits' do
+      destinations = current_customer.destinations.includes_visits
+      visits = destinations.reduce([]) { |sum, d|
+        sum << d.visits.select { |v|
+          v.tags.find { |t| ParseIdsRefs.match(params[:id], t) }
+        }
+      }.flatten
+      present visits, with: V01::Entities::Visit
+    end
   end
 end

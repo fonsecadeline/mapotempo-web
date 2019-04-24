@@ -16,6 +16,10 @@ class V01::TagsTest < ActiveSupport::TestCase
     "/api/0.1/tags#{part}.json?api_key=testkey1&" + param.collect{ |k, v| "#{k}=" + URI.escape(v.to_s) }.join('&')
   end
 
+  def api_tags(tag_id_ref)
+    "/api/0.1/tags/#{tag_id_ref}/visits?api_key=testkey1"
+  end
+
   test "should return customer's tags" do
     get api()
     assert last_response.ok?, last_response.body
@@ -104,5 +108,26 @@ class V01::TagsTest < ActiveSupport::TestCase
     tag.icon = 'fa-bolt'
     tag.save!
     assert tag.visits[0].stop_visits[-1].route.reload.outdated # Reload route because it not updated in main scope
+  end
+
+  test 'Should return visits with tag_ref' do
+    @tag.update ref: 'tag_1'
+    get api_tags("ref:#{@tag.ref}")
+    assert last_response.ok?, last_response.body
+    assert_equal 4, JSON.parse(last_response.body).size
+  end
+
+  test 'Should return visits with tag_id' do
+    get api_tags(@tag.id)
+    @tag.update ref: 'tag_1'
+    assert last_response.ok?, last_response.body
+    assert_equal 4, JSON.parse(last_response.body).size
+  end
+
+  test 'Should return empty list with invalid tag id/ref' do
+    @tag.update ref: 'tag_1'
+    get api_tags(-1)
+    assert last_response.ok?, last_response.body
+    assert_equal 0, JSON.parse(last_response.body).size
   end
 end
