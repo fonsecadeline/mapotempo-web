@@ -33,4 +33,14 @@ module CustomersHelper
     return false if customer.new_record? || customer.profile.blank?
     (customer.users.pluck(:layer_id) - customer.profile.layers.pluck(:id)).present?
   end
+
+  def customer_external_callback_name(customer, default)
+    trad = customer.reseller[:external_callback_url_name] ? customer.reseller[:external_callback_url_name] : default
+    t('web.form.default', n: trad)
+  end
+
+  def customer_external_callback_url(customer)
+    customer.reseller[:external_callback_url] ? t('web.form.default', n: customer.reseller[:external_callback_url]) : ''
+  end
+
 end

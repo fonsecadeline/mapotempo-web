@@ -962,6 +962,7 @@
           Exemple : http://www.example.com?p_id={PLANNING_ID}
 
           '
+        'enabled': '(Actif sur le compte revendeur)'
   'deliverable_units':
     'edit':
       'title': 'Modifier unité livrable'

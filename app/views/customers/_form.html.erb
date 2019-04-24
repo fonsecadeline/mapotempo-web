@@ -431,7 +431,10 @@
 
     <% if current_user.admin? %>
       <%= f.toggles t 'activerecord.attributes.customer.enable_external_callback' do %>
-        <%= f.check_box_tag :enable_external_callback, '', value: @customer.default_callback_enabled? %>
+        <%= f.check_box :enable_external_callback, '', checked: @customer[:enable_external_callback] %>
+        <span class='help-block'>
+          <%= t('.external_callback.enabled') if @customer.reseller[:enable_external_callback] && !@customer[:enable_external_callback] %>
+        </span>
       <% end %>
     <% end %>
     <% if @customer.default_callback_enabled? %>
@@ -446,8 +449,8 @@
         <div id="collapseExternalCallback" class="panel-collapse">
           <div class="panel-body">
             <div class="col-md-10">
-              <%= f.text_field :external_callback_name, t('.external_callback.name'), placeholder: t('.external_callback.name_placeholder'), value: @customer.default_callback_name %>
-              <%= f.text_field :external_callback_url, t('.external_callback.url'), placeholder: t('.external_callback.url_placeholder'), value: @customer.default_callback_url do %>
+              <%= f.text_field :external_callback_name, t('.external_callback.name'), placeholder: customer_external_callback_name(@customer, t('.external_callback.name_placeholder')), value: @customer.external_callback_name %>
+              <%= f.text_field :external_callback_url, t('.external_callback.url'), placeholder: customer_external_callback_url(@customer), value: @customer.external_callback_url do %>
                 <div class="help-block"><%= simple_format t('.external_callback.url_help') %></div>
               <% end %>
             </div>
