@@ -29,7 +29,7 @@ class V01::Api < Grape::API
 
     def current_customer(customer_id = nil)
       @current_user ||= params['api_key'] && User.find_by(api_key: params['api_key'])
-      @current_user ||= warden.authenticated? && warden.user unless params.key? 'api_key'
+      @current_user ||= warden.authenticated? && warden.user
       @current_customer ||= @current_user && (@current_user.admin? && customer_id ? @current_user.reseller.customers.find(customer_id) : @current_user.customer)
     end
 
