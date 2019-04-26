@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'hashie'
 
 class V01::StoresTest < ActiveSupport::TestCase
   include Rack::Test::Methods
