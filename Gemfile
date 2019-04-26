@@ -19,6 +19,9 @@ gem 'sdoc', '~> 0.4', group: :doc
 
 gem 'rake'
 
+# Make hashes more powerful
+gem 'hashie', '~> 3.4', '>= 3.4.4'
+
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2' # FIXME: require Rails 5
@@ -26,9 +29,6 @@ group :development do
   # Improve error interaction
   gem 'better_errors'
   gem 'binding_of_caller'
-
-  # Make hashes more powerful
-  gem 'hashie', '~> 3.4', '>= 3.4.4'
 
   # Preview emails
   gem 'letter_opener_web'
