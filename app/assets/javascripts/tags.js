@@ -64,7 +64,7 @@ export const selectTag = function(event) {
         $select.find('option').filter(function() { this.value == data.label }).remove();
         $select.append(new Option(data.label, data.id, false, false)).trigger('change');
 
-        selectedOptions = $select.select2('data').map(function(el) { return el.id });
+        const selectedOptions = $select.select2('data').map(function(el) { return el.id });
         selectedOptions.push(data.id.toString());
 
         $select.val(selectedOptions).trigger('change');
