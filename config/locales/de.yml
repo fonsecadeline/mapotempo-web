@@ -1135,6 +1135,24 @@ de:
       name: Name
       comment: Bemerkung
       total: Summe
+  reporting:
+    download:
+      max_interval_reached: Das Intervall zwischen dem Startdatum und dem Enddatum muss weniger als 31 Tage betragen
+      end_date_inferior: Das Enddatum muss größer sein als das Startdatum
+      fail: Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut
+      success: Der Bericht wird heruntergeladen
+      retry: Re-Download
+      no_content: Kein Bericht während dieser Zeit
+    index:
+      title: Verhältnis
+      head: Laden Sie den Bericht über Touren herunter, die mit der mobilen Anwendung Mapotempo Live erstellt wurden
+      submit: Download
+      downloading: Download läuft...
+      default_begin_date: T-8 standardmäßig
+      default_end_date: T-1 standardmäßig
+      begin_date: Startdatum
+      end_date: Enddatum
+      with_actions: Statusverlauf
   route_mailer:
     send_kmz_route:
       title: "KMZ-Export planen"

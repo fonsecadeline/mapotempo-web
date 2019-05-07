@@ -1207,8 +1207,8 @@ en:
       end_date_inferior: End date must be superior to begin date
       fail: An error has occured, try again
       success: The reporting is currently downloading
-      retry: Retry download
-      no_content: The request body is empty
+      retry: Download again
+      no_content: No report during this period
     index:
       title: Reporting
       head: Download report of routes executed with Mapotempo Live mobile application
