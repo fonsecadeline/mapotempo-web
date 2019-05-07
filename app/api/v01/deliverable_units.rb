@@ -32,7 +32,8 @@ class V01::DeliverableUnits < Grape::API
     desc 'Fetch customer\'s deliverable units. At least one deliverable unit exists per customer.',
       nickname: 'getDeliverableUnits',
       is_array: true,
-      entity: V01::Entities::DeliverableUnit
+      success: V01::Status.success(:code_200, V01::Entities::DeliverableUnit),
+      failure: V01::Status.failures(is_array: true)
     params do
       optional :ids, type: Array[String], desc: 'Select returned deliverable units by id separated with comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
     end
@@ -47,7 +48,8 @@ class V01::DeliverableUnits < Grape::API
 
     desc 'Fetch deliverable unit.',
       nickname: 'getDeliverableUnit',
-      entity: V01::Entities::DeliverableUnit
+      success: V01::Status.success(:code_200, V01::Entities::DeliverableUnit),
+      failure: V01::Status.failures
     params do
       requires :id, type: Integer
     end
@@ -58,7 +60,8 @@ class V01::DeliverableUnits < Grape::API
     desc 'Create deliverable unit.',
       detail: '(Note a default deliverable unit is already automatically created with a customer.) By creating a new deliverable unit, it will be possible to specify quantities and capacities for this another unit.',
       nickname: 'createDeliverableUnit',
-      entity: V01::Entities::DeliverableUnit
+      success: V01::Status.success(:code_201, V01::Entities::DeliverableUnit),
+      failure: V01::Status.failures
     params do
       use :params_from_entity, entity: V01::Entities::DeliverableUnit.documentation.except(:id)
     end
@@ -70,7 +73,8 @@ class V01::DeliverableUnits < Grape::API
 
     desc 'Update deliverable unit.',
       nickname: 'updateDeliverableUnit',
-      entity: V01::Entities::DeliverableUnit
+      success: V01::Status.success(:code_200, V01::Entities::DeliverableUnit),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       use :params_from_entity, entity: V01::Entities::DeliverableUnit.documentation.except(:id)
@@ -83,7 +87,9 @@ class V01::DeliverableUnits < Grape::API
     end
 
     desc 'Delete deliverable unit.',
-      nickname: 'deleteDeliverableUnit'
+      nickname: 'deleteDeliverableUnit',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
     end
@@ -94,7 +100,9 @@ class V01::DeliverableUnits < Grape::API
     end
 
     desc 'Delete multiple deliverable units.',
-         nickname: 'deleteDeliverableUnits'
+      nickname: 'deleteDeliverableUnits',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :ids, type: Array[String], desc: 'Ids separated by comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
     end

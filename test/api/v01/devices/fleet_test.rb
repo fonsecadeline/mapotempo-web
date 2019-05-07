@@ -105,8 +105,8 @@ class V01::Devices::FleetTest < ActiveSupport::TestCase
       ref = service.send(:generate_route_id, route, service.p_time(route, route.start))
       route.update(last_sent_at: Time.now, last_sent_to: 'Mapo.Live')
 
-      post api('devices/fleet/clear_multiple', customer_id: @customer.id), external_refs: [{fleet_user: 'fake_user@example.com', external_ref: ref}]
-      assert_equal 201, last_response.status
+      delete api('devices/fleet/clear_multiple', customer_id: @customer.id), external_refs: [{fleet_user: 'fake_user@example.com', external_ref: ref}]
+      assert_equal 200, last_response.status
 
       assert_equal([route.id, nil, nil, nil],
         JSON.parse(last_response.body).flat_map{ |rt|
@@ -182,9 +182,8 @@ class V01::Devices::FleetTest < ActiveSupport::TestCase
     with_stubs [:create_or_update_vehicle] do
       stub_request(:put, %r{^.*/api/0.1/users/.*$})
 
-      get api('devices/fleet/create_or_update_drivers', { customer_id: @customer.id })
+      patch api('devices/fleet/create_or_update_drivers', { customer_id: @customer.id })
       assert JSON.parse(last_response.body).first['updated']
     end
-
   end
 end

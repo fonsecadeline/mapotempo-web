@@ -124,28 +124,28 @@ class V01::Customers < Grape::API
         end
       end
     end
-
   end
 
   resource :customers do
     desc 'Fetch customer accounts (admin).',
       detail: 'Retrieve all customer accounts. Only available with an admin api_key.',
-      nickname: 'getCustomers',
       is_array: true,
-      success: V01::Entities::Customer
+      nickname: 'getCustomers',
+      success: V01::Status.success(:code_200, V01::Entities::CustomerAdmin),
+      failure: V01::Status.failures(is_array: true)
     get do
       if @current_user.admin?
         present @current_user.reseller.customers, with: V01::Entities::CustomerAdmin
       else
-        error! 'Forbidden', 403
+        error! V01::Status.code_response(:code_403), 403
       end
     end
 
     desc 'Fetch customer account.',
       detail: 'Get informations and details, for example customer account associated to the current api_key.',
       nickname: 'getCustomer',
-      is_array: true,
-      success: V01::Entities::Customer
+      success: V01::Status.success(:code_200, V01::Entities::CustomerAdmin),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
     end
@@ -156,14 +156,15 @@ class V01::Customers < Grape::API
       elsif ParseIdsRefs.match params[:id], @current_customer
         present @current_customer, with: V01::Entities::Customer
       else
-        status 404
+        error! V01::Status.code_response(:code_404, before: 'Customer'), 404
       end
     end
 
-    desc 'Fetch users for customer account id',
+    desc 'Fetch users for customer account id.',
       nickname: 'getCustomerUsers',
       is_array: true,
-      success: V01::Entities::User
+      success: V01::Status.success(:code_200, V01::Entities::User),
+      failure: V01::Status.failures(is_array: true)
     params do
     end
     get ':id/users' do
@@ -171,14 +172,15 @@ class V01::Customers < Grape::API
         customer = @current_user.reseller.customers.where(ParseIdsRefs.read(params[:id])).first!
         present customer.users, whith: V01::Entities::User
       else
-        status 401
+        error! V01::Status.code_response(:code_403), 403
       end
     end
 
     desc 'Update customer account.',
       detail: 'Update informations and details, for example customer account associated to the current api_key.',
       nickname: 'updateCustomer',
-      success: V01::Entities::Customer
+      success: V01::Status.success(:code_200, V01::Entities::CustomerAdmin),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       use :params_from_entity, entity: V01::Entities::Customer.documentation.except(
@@ -223,14 +225,15 @@ class V01::Customers < Grape::API
         @current_customer.update! customer_params
         present @current_customer, with: V01::Entities::Customer
       else
-        status 404
+        error! V01::Status.code_response(:code_404, before: 'Customer'), 404
       end
     end
 
     desc 'Create customer account (admin).',
       detail: 'Only available with an admin api_key.',
       nickname: 'createCustomer',
-      success: V01::Entities::Customer
+      success: V01::Status.success(:code_201, V01::Entities::CustomerAdmin),
+      failure: V01::Status.failures
     params do
       use :params_from_entity, entity: V01::Entities::Customer.documentation.except(
         :id,
@@ -272,13 +275,15 @@ class V01::Customers < Grape::API
         @current_user.reseller.save!
         present customer, with: V01::Entities::CustomerAdmin
       else
-        error! 'Forbidden', 403
+        error! V01::Status.code_response(:code_403), 403
       end
     end
 
     desc 'Delete customer account (admin).',
       detail: 'Only available with an admin api_key.',
-      nickname: 'deleteCustomer'
+      nickname: 'deleteCustomer',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
     end
@@ -288,13 +293,15 @@ class V01::Customers < Grape::API
         @current_user.reseller.customers.where(id).first!.destroy
         status 204
       else
-        error! 'Forbidden', 403
+        error! V01::Status.code_response(:code_403), 403
       end
     end
 
     desc 'Return a job.',
       detail: 'Return asynchronous job (like geocoding, optimizer) currently runned for the customer.',
-      nickname: 'getJob'
+      nickname: 'getJob',
+      success: V01::Status.success(:code_200),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       requires :job_id, type: Integer
@@ -312,13 +319,15 @@ class V01::Customers < Grape::API
           customer.job_store_geocoding
         end
       else
-        status 404
+        error! V01::Status.code_response(:code_404, before: 'Customer'), 404
       end
     end
 
     desc 'Cancel job.',
       detail: 'Cancel asynchronous job (like geocoding, optimizer) currently runned for the customer.',
-      nickname: 'deleteJob'
+      nickname: 'deleteJob',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       requires :job_id, type: Integer
@@ -337,18 +346,20 @@ class V01::Customers < Grape::API
         end
         status 204
       else
-        status 404
+        error! V01::Status.code_response(:code_404, before: 'Customer'), 404
       end
     end
 
     desc 'Duplicate customer account (admin).',
       detail: 'Create a copy of customer account. Only available with an admin api_key.',
-      nickname: 'duplicateCustomer'
+      nickname: 'duplicateCustomer',
+      success: V01::Status.success(:code_201, V01::Entities::CustomerAdmin),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       optional :exclude_users, type: Boolean, default: false
     end
-    put ':id/duplicate' do
+    patch ':id/duplicate' do
       if @current_user.admin?
         customer = @current_user.reseller.customers.where(ParseIdsRefs.read(params[:id])).first!
         customer.exclude_users = params[:exclude_users]
@@ -357,7 +368,7 @@ class V01::Customers < Grape::API
 
         present customer, with: V01::Entities::CustomerAdmin
       else
-        error! 'Forbidden', 403
+        error! V01::Status.code_response(:code_403), 403
       end
     end
   end

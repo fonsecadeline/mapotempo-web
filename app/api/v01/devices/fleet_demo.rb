@@ -33,9 +33,11 @@ class V01::Devices::FleetDemo < Grape::API
         error! e.message, 200
       end
 
-      desc 'Send Planning Routes',
-        detail: 'Send Planning Routes',
-        nickname: 'deviceFleetDemoSendMultiple'
+      desc 'Send Planning Routes.',
+        detail: 'In Mapotempo Live demo version (Fleet Demo).',
+        nickname: 'deviceFleetDemoSendMultiple',
+        success: V01::Status.success(:code_201),
+        failure: V01::Status.failures
       params do
         requires :planning_id, type: Integer, desc: 'Planning ID'
       end
@@ -43,9 +45,11 @@ class V01::Devices::FleetDemo < Grape::API
         device_send_routes params.slice(:type).merge(device_id: :mapotempo_fleet_id)
       end
 
-      desc 'Clear Route',
-        detail: 'Clear Route',
-        nickname: 'deviceFleetDemoClear'
+      desc 'Clear Route.',
+        detail: 'In Mapotempo Live demo version (Fleet Demo).',
+        nickname: 'deviceFleetDemoClear',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       params do
         requires :route_id, type: Integer, desc: 'Route ID'
       end
@@ -53,9 +57,11 @@ class V01::Devices::FleetDemo < Grape::API
         device_clear_route
       end
 
-      desc 'Clear Planning Routes',
-        detail: 'Clear Planning Routes',
-        nickname: 'deviceFleetDemoClearMultiple'
+      desc 'Clear Planning Routes.',
+        detail: 'In Mapotempo Live demo version (Fleet Demo).',
+        nickname: 'deviceFleetDemoClearMultiple',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       params do
         requires :planning_id, type: Integer, desc: 'Planning ID'
       end

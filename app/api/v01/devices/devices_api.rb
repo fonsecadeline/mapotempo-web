@@ -30,9 +30,11 @@ class V01::Devices::DevicesApi < Grape::API
         error! e.message, 200
       end
 
-      desc 'Validate device Credentials',
-        detail: 'Validate device Credentials.',
-        nickname: 'checkAuth'
+      desc 'Validate device Credentials.',
+        detail: 'Generic device.',
+        nickname: 'checkAuth',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       params do
         requires :id, type: Integer, desc: 'Customer ID as we need to get customer devices'
       end
@@ -44,16 +46,18 @@ class V01::Devices::DevicesApi < Grape::API
             device.check_auth(params) # raises DeviceServiceError
             status 204
           else
-            status 400
+            error! V01::Status.code_response(:code_400), 400
           end
         else
-          status 404
+          error! V01::Status.code_response(:code_404, 'Device'), 404
         end
       end
 
-      desc 'Send Route',
-        detail: 'Send Route to device.',
-        nickname: 'sendRoute'
+      desc 'Send Route.',
+        detail: 'Generic device.',
+        nickname: 'sendRoute',
+        success: V01::Status.success(:code_201),
+        failure: V01::Status.failures
       params do
         requires :route_id, type: Integer, desc: 'Route ID'
         optional :type, type: Symbol, desc: 'Action Name'
@@ -69,7 +73,7 @@ class V01::Devices::DevicesApi < Grape::API
             present route, with: V01::Entities::DeviceRouteLastSentAt
           end
         else
-          status 404
+          error! V01::Status.code_response(:code_404, 'Device'), 404
         end
       end
     end

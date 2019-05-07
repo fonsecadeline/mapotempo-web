@@ -32,7 +32,8 @@ class V01::VehicleUsageSets < Grape::API
     desc 'Fetch customer\'s vehicle_usage_sets. At least one vehicle_usage_set exists per customer.',
       nickname: 'getVehicleUsageSets',
       is_array: true,
-      success: V01::Entities::VehicleUsageSet
+      success: V01::Status.success(:code_200, V01::Entities::VehicleUsageSet),
+      failure: V01::Status.failures(is_array: true)
     params do
       optional :ids, type: Array[Integer], desc: 'Select returned vehicle_usage_sets by id.', coerce_with: CoerceArrayInteger
     end
@@ -47,7 +48,8 @@ class V01::VehicleUsageSets < Grape::API
 
     desc 'Fetch vehicle_usage_set.',
       nickname: 'getVehicleUsageSet',
-      success: V01::Entities::VehicleUsageSet
+      success: V01::Status.success(:code_200, V01::Entities::VehicleUsageSet),
+      failure: V01::Status.failures
     params do
       requires :id, type: Integer
     end
@@ -59,7 +61,8 @@ class V01::VehicleUsageSets < Grape::API
       detail: "(Note a vehicle_usage_set is already automatically created with a customer.) Only available if \"multi usage set\" option is active for current customer.
         For instance, if customer needs to use its vehicle 2 times per day (morning and evening), he needs 2 VehicleUsageSet called \"Morning\" and \"Evening\". A VehicleUsage per Vehicle is automatically created. The new VehicleUsageSet allows to define new default values for VehicleUsage.",
       nickname: 'createVehicleUsageSet',
-      success: V01::Entities::VehicleUsageSet
+      success: V01::Status.success(:code_201, V01::Entities::VehicleUsageSet),
+      failure: V01::Status.failures
     params do
       use :params_from_entity, entity: V01::Entities::VehicleUsageSet.documentation.except(
           :id,
@@ -95,7 +98,8 @@ class V01::VehicleUsageSets < Grape::API
 
     desc 'Update vehicle_usage_set.',
       nickname: 'updateVehicleUsageSet',
-      success: V01::Entities::VehicleUsageSet
+      success: V01::Status.success(:code_200, V01::Entities::VehicleUsageSet),
+      failure: V01::Status.failures
     params do
       requires :id, type: Integer
       use :params_from_entity, entity: V01::Entities::VehicleUsageSet.documentation.except(
@@ -126,7 +130,9 @@ class V01::VehicleUsageSets < Grape::API
     end
 
     desc 'Delete vehicle_usage_set.',
-      nickname: 'deleteVehicleUsageSet'
+      nickname: 'deleteVehicleUsageSet',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :id, type: Integer
     end
@@ -136,7 +142,9 @@ class V01::VehicleUsageSets < Grape::API
     end
 
     desc 'Delete multiple vehicle_usage_sets.',
-      nickname: 'deleteVehicleUsageSets'
+      nickname: 'deleteVehicleUsageSets',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :ids, type: Array[Integer], coerce_with: CoerceArrayInteger
     end
@@ -148,9 +156,10 @@ class V01::VehicleUsageSets < Grape::API
     end
 
     desc 'Import vehicle usage set by upload a CSV file or by JSON.',
-         nickname: 'importVehicleUsageSets',
-         is_array: true,
-         success: V01::Entities::VehicleUsageSet
+      nickname: 'importVehicleUsageSets',
+      is_array: true,
+      success: V01::Status.success(:code_200, V01::Entities::VehicleUsageSet),
+      failure: V01::Status.failures(is_array: true, add: [:code_422])
     params do
       use :params_from_entity, entity: V01::Entities::VehicleUsageSetsImport.documentation
     end

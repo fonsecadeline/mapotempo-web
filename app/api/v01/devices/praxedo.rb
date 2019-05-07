@@ -33,9 +33,11 @@ class V01::Devices::Praxedo < Grape::API
         error! e.message, 200
       end
 
-      desc 'Send Planning Routes',
-           detail: 'Send Planning Routes',
-           nickname: 'devicePraxedoSendMultiple'
+      desc 'Send Planning Routes.',
+        detail: 'On Praxedo.',
+        nickname: 'devicePraxedoSendMultiple',
+        success: V01::Status.success(:code_201),
+        failure: V01::Status.failures
       params do
         requires :planning_id, type: Integer, desc: 'Planning ID'
       end
@@ -43,9 +45,11 @@ class V01::Devices::Praxedo < Grape::API
         device_send_routes device_id: :praxedo_agent_id
       end
 
-      desc 'Clear route from praxedo',
-          details: 'Unschedule routes on praxedo',
-          nickname: 'devicePraxedoClear'
+      desc 'Clear route from Praxedo.',
+        details: 'Unschedule routes on praxedo.',
+        nickname: 'devicePraxedoClear',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       params do
         requires :route_id, type: Integer, desc: 'Planning ID'
       end
@@ -53,16 +57,17 @@ class V01::Devices::Praxedo < Grape::API
         device_clear_route
       end
 
-      desc 'Clear route from praxedo',
-          details: 'Unschedule routes on praxedo',
-          nickname: 'devicePraxedoClear'
+      desc 'Clear routes from Praxedo.',
+        details: 'Unschedule routes on praxedo.',
+        nickname: 'devicePraxedoClear',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       params do
         requires :planning_id, type: Integer, desc: 'Planning ID'
       end
       delete '/clear_multiple' do
         device_clear_routes device_id: :praxedo_agent_id
       end
-
     end
   end
 end

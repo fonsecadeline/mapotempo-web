@@ -24,5 +24,4 @@ class V01::Entities::DeliverablesByVehicles < Grape::Entity
   expose(:plannings, documentation: { type: V01::Entities::Planning })
   expose(:routes_total_infos, documentation: { type: Array })
   expose(:routes_quantities, documentation: { type: Array })
-
 end

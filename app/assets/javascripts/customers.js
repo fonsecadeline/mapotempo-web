@@ -464,7 +464,7 @@ const devicesObserveCustomer = (function () {
       $('#create-customer-device').attr('disabled', true);
 
       $.ajax({
-        type: 'GET',
+        type: 'PATCH',
         url: '/api/0.1/devices/fleet/create_company.json',
         data: {
           customer_id: params.customer_id
@@ -500,7 +500,7 @@ const devicesObserveCustomer = (function () {
       $('#create-user-device').attr('disabled', true);
 
       $.ajax({
-        type: 'GET',
+        type: 'PATCH',
         url: '/api/0.1/devices/fleet/create_or_update_drivers.json',
         data: {
           customer_id: params.customer_id

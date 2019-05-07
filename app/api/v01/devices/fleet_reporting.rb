@@ -35,9 +35,13 @@ class V01::Devices::FleetReporting < Grape::API
           @customer = current_customer(params[:customer_id])
         end
 
-        desc 'Get reporting',
-          detail: "Get reporting from Mapotempo Live missions. Range between begin_date and end_date must be inferior to #{SharedParams::MAX_DAYS} days",
-          nickname: 'reporting'
+        desc 'Get reporting.',
+          detail: "Get reporting from Mapotempo Live missions. Range between begin_date and end_date must be inferior to #{SharedParams::MAX_DAYS} days.",
+          nickname: 'reporting.',
+          http_codes: [
+            V01::Status.success(:code_200),
+            V01::Status.success(:code_204)
+          ].concat(V01::Status.failures)
         params do
           requires :begin_date, type: Date, coerce_with: ->(d) { Date.strptime(d.to_s, I18n.t('time.formats.datepicker')).strftime(ACTIVE_RECORD_DATE_MASK).to_date }, desc: 'Select only plannings after this date.' + SharedParams::DATE_DESC
           requires :end_date, type: Date, coerce_with: ->(d) { Date.strptime(d.to_s, I18n.t('time.formats.datepicker')).strftime(ACTIVE_RECORD_DATE_MASK).to_date }, desc: 'Select only plannings before this date.' + SharedParams::DATE_DESC

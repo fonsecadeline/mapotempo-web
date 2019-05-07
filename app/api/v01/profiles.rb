@@ -22,12 +22,13 @@ class V01::Profiles < Grape::API
         Get the available profiles which allow to select layers (maps) and routers (routes).",
       nickname: 'getProfiles',
       is_array: true,
-      success: V01::Entities::Profile
+      success: V01::Status.success(:code_200, V01::Entities::Profile),
+      failure: V01::Status.failures(is_array: true)
     get do
       if @current_user.admin?
         present Profile.all, with: V01::Entities::Profile
       else
-        error! 'Forbidden', 403
+        error! V01::Status.code_response(:code_403), 403
       end
     end
 
@@ -36,7 +37,8 @@ class V01::Profiles < Grape::API
         Get the list of available routers which can be used for finding route between destinations.",
       nickname: 'getProfileRouters',
       is_array: true,
-      success: V01::Entities::Router
+      success: V01::Status.success(:code_200, V01::Entities::Router),
+      failure: V01::Status.failures(is_array: true)
     params do
       requires :id, type: Integer
     end
@@ -45,7 +47,7 @@ class V01::Profiles < Grape::API
         profile = Profile.find(params[:id])
         present profile.routers.load, with: V01::Entities::Router
       else
-        error! 'Forbidden', 403
+        error! V01::Status.code_response(:code_403), 403
       end
     end
 
@@ -54,7 +56,8 @@ class V01::Profiles < Grape::API
         Get the list of available layers which can be used for maps.",
       nickname: 'getProfileLayers',
       is_array: true,
-      success: V01::Entities::Layer
+      success: V01::Status.success(:code_200, V01::Entities::Layer),
+      failure: V01::Status.failures(is_array: true)
     params do
       requires :id, type: Integer
     end
@@ -63,7 +66,7 @@ class V01::Profiles < Grape::API
         profile = Profile.find(params[:id])
         present profile.layers.load, with: V01::Entities::Layer
       else
-        error! 'Forbidden', 403
+        error! V01::Status.code_response(:code_403), 403
       end
     end
   end

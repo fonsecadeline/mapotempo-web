@@ -2,15 +2,16 @@ class V01::OrderArrays < Grape::API
   helpers do
     def authorize!
       ability = Ability.new(@current_user)
-      error!('401 Unauthorized', 401) unless ability.can?(:manage, OrderArray)
+      error!(V01::Status.code_response(:code_401), 401) unless ability.can?(:manage, OrderArray)
     end
   end
 
   resource :order_arrays do
-
     desc 'Orders mass assignment.',
       detail: 'Only available if "enable orders" option is active for current customer.',
-      nickname: 'massAssignmentOrder'
+      nickname: 'massAssignmentOrder',
+      success: V01::Status.success(:code_200, V01::Entities::OrderArray),
+      failure: V01::Status.failures
     params do
       requires :id, type: Integer
       optional :orders, type: Hash, coerce_with: JSON
@@ -32,6 +33,5 @@ class V01::OrderArrays < Grape::API
       end
       status 200
     end
-
   end
 end

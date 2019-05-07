@@ -34,10 +34,10 @@ class V01::Api < Grape::API
     end
 
     def authenticate!
-      error!('401 Unauthorized', 401) unless env
+      error!(V01::Status.code_response(:code_401), 401) unless env
       current_customer
-      error!('401 Unauthorized', 401) unless @current_user
-      error!('402 Subscription error : Subscription expired (' + @current_customer.end_subscription.to_s + ') - Contact your reseller ', 402) if @current_customer && @current_customer.end_subscription && @current_customer.end_subscription < Time.now
+      error!(V01::Status.code_response(:code_401), 401) unless @current_user
+      error!(V01::Status.code_response(:code_402, after: "Subscription expired (#{@current_customer.end_subscription.to_s}) - Contact your reseller."), 402) if @current_customer && @current_customer.end_subscription && @current_customer.end_subscription < Time.now
     end
 
     def authorize!
@@ -83,10 +83,7 @@ class V01::Api < Grape::API
 
   # Generate a properly formatted 404 error for all unmatched routes except '/'
   route :any, '*path' do
-    error!({ error:  'Not Found',
-             detail: "No such route '#{request.path}'",
-             status: '404' },
-           404)
+    error! V01::Status.code_response(:code_404, after: "No such route #{request.path}"), 404
   end
 
   rescue_from :all, backtrace: ENV['RAILS_ENV'] != 'production' do |e|
@@ -98,18 +95,18 @@ class V01::Api < Grape::API
 
     response = {message: e.message}
     if e.is_a?(ActiveRecord::RecordNotFound) || e.is_a?(ArgumentError)
-      rack_response(nil, 404)
+      rack_response(V01::Status.code_response(:code_404), 404)
     elsif e.is_a?(ActiveRecord::RecordInvalid) || e.is_a?(RangeError) || e.is_a?(Grape::Exceptions::ValidationErrors) || e.is_a?(Exceptions::StopIndexError)
-      rack_response(format_message(response, e.backtrace), 400)
+      rack_response(format_message(response.merge(status: 400), e.backtrace), 400)
     elsif e.is_a?(Exceptions::OverMaxLimitError)
-      rack_response(format_message(response, e.backtrace), 403)
+      rack_response(format_message(response.merge(status: 403), e.backtrace), 403)
     elsif e.is_a?(Grape::Exceptions::MethodNotAllowed)
-      rack_response(format_message(response, e.backtrace), 405)
+      rack_response(format_message(response.merge(status: 405), e.backtrace), 405)
     elsif e.is_a?(Exceptions::JobInProgressError) || e.is_a?(PG::TRSerializationFailure)
       response[:message] = I18n.t('errors.database.deadlock') if e.is_a?(PG::TRSerializationFailure)
-      rack_response(format_message(response, e.backtrace), 409)
+      rack_response(format_message(response.merge(status: 409), e.backtrace), 409)
     else
-      rack_response(format_message(response, e.backtrace), 500)
+      rack_response(format_message(response.merge(status: 500), e.backtrace), 500)
     end
   end
 

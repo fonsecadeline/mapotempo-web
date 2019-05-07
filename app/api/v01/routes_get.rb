@@ -48,7 +48,8 @@ class V01::RoutesGet < Grape::API
     desc 'Fetch customer\'s routes.',
       nickname: 'getRoutes',
       is_array: true,
-      success: V01::Entities::Route
+      success: V01::Status.success(:code_200, V01::Entities::Route),
+      failure: V01::Status.failures(is_array: true)
     params do
       optional :ids, type: Array[String], desc: 'Select returned routes by id separated with comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
       optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry, when using json output. For geojson output, param can be only set to `point` to return only points, `polyline` to return with encoded linestring.'
@@ -76,7 +77,8 @@ class V01::RoutesGet < Grape::API
         desc 'Fetch planning\'s routes.',
           nickname: 'getRoutes',
           is_array: true,
-          success: V01::Entities::Route
+          success: V01::Status.success(:code_200, V01::Entities::Route),
+          failure: V01::Status.failures(is_array: true)
         params do
           optional :ids, type: Array[String], desc: 'Select returned routes by id separated with comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
           optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry, when using json output. For geojson output, param can be only set to `point` to return only points, `polyline` to return with encoded linestring.'
@@ -97,7 +99,10 @@ class V01::RoutesGet < Grape::API
 
         desc 'Fetch route.',
           nickname: 'getRoute',
-          success: V01::Entities::Route
+          http_codes: [
+            V01::Status.success(:code_200, V01::Entities::Route),
+            V01::Status.success(:code_204)
+          ].concat(V01::Status.failures)
         params do
           requires :id, type: String, desc: SharedParams::ID_DESC
           optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry, when using json output. For geojson output, param can be only set to `point` to return only points, `polyline` to return with encoded linestring.'

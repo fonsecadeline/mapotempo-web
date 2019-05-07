@@ -49,7 +49,11 @@ class V01::PlanningsGet < Grape::API
   resource :plannings do
     desc 'Fetch customer\'s plannings.',
       nickname: 'getPlannings',
-      success: V01::Entities::Planning
+      is_array: true,
+      http_codes: [
+        V01::Status.success(:code_200, V01::Entities::Planning),
+        V01::Status.success(:code_204)
+      ].concat(V01::Status.failures(is_array: true))
     params do
       optional :ids, type: Array[String], desc: 'Select returned plannings by id separated with comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
       optional :begin_date, type: Date, desc: 'Select only plannings after this date.'
@@ -92,7 +96,10 @@ class V01::PlanningsGet < Grape::API
 
     desc 'Fetch planning.',
       nickname: 'getPlanning',
-      success: V01::Entities::Planning
+      http_codes: [
+        V01::Status.success(:code_200, V01::Entities::Planning),
+        V01::Status.success(:code_204)
+      ].concat(V01::Status.failures)
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry, when using json output. For geojson output, param can be only set to `point` to return only points, `polyline` to return with encoded linestring.'

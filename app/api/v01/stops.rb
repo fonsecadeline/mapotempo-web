@@ -42,7 +42,8 @@ class V01::Stops < Grape::API
           resource :stops do
             desc 'Fetch stop.',
               nickname: 'getStop',
-              success: V01::Entities::Route
+              success: V01::Status.success(:code_200, V01::Entities::Stop),
+              failure: V01::Status.failures
             params do
               requires :id, type: Integer
             end
@@ -52,7 +53,9 @@ class V01::Stops < Grape::API
             end
 
             desc 'Update stop activation.',
-              nickname: 'updateStop'
+              nickname: 'updateStop',
+              success: V01::Status.success(:code_204),
+              failure: V01::Status.failures
             params do
               requires :id, type: Integer
               use :params_from_entity, entity: V01::Entities::Stop.documentation.slice(:active)
@@ -72,7 +75,9 @@ class V01::Stops < Grape::API
 
             desc 'Move stop position in routes.',
               detail: 'Set a new #N position for a stop in route which was in a previous #M position in the same route or another.',
-              nickname: 'moveStop'
+              nickname: 'moveStop',
+              success: V01::Status.success(:code_204),
+              failure: V01::Status.failures
             params do
               requires :id, type: Integer, desc: 'Stop id to move'
               requires :index, type: Integer, desc: 'New position in the route'
@@ -90,7 +95,7 @@ class V01::Stops < Grape::API
                   status 204
               rescue Exceptions::StopIndexError => e
                 if e.route == route && e.bad_index == Integer(params[:index])
-                  status 400
+                  error! V01::Status.code_response(:code_400), 400
                 else
                   raise e
                 end

@@ -47,7 +47,8 @@ class V01::Routes < Grape::API
       resource :routes do
         desc 'Update route attributes.',
           nickname: 'updateRoute',
-          success: V01::Entities::Route
+          success: V01::Status.success(:code_200, V01::Entities::RouteProperties),
+          failure: V01::Status.failures
         params do
           requires :id, type: String, desc: SharedParams::ID_DESC
           use :params_from_entity, entity: V01::Entities::Route.documentation.slice(:ref, :hidden, :locked, :color)
@@ -60,7 +61,8 @@ class V01::Routes < Grape::API
         desc 'Change stops activation.',
           detail: 'Allow to activate/deactivate all stops in a planning\'s route.',
           nickname: 'activationStops',
-          success: V01::Entities::Route
+          success: V01::Status.success(:code_200, V01::Entities::Route),
+          failure: V01::Status.failures
         params do
           requires :id, type: String, desc: SharedParams::ID_DESC
           requires :active, type: String, values: ['all', 'reverse', 'none']
@@ -78,7 +80,9 @@ class V01::Routes < Grape::API
 
         desc 'Move visit(s) to route. Append in order at end if automatic_insert is false.',
           detail: 'Set a new A route (or vehicle) for a visit which was in a previous B route in the same planning. Automatic_insert parameter allows to compute index of the stops created for visits.',
-          nickname: 'moveVisits'
+          nickname: 'moveVisits',
+          success: V01::Status.success(:code_204),
+          failure: V01::Status.failures
         params do
           requires :id, type: String, desc: SharedParams::ID_DESC
           requires :visit_ids, type: Array[String], desc: 'Ids separated by comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', documentation: {param_type: 'form'}, coerce_with: CoerceArrayString
@@ -104,7 +108,11 @@ class V01::Routes < Grape::API
 
         desc 'Optimize a single route.',
           detail: 'Get the shortest route in time or distance.',
-          nickname: 'optimizeRoute'
+          nickname: 'optimizeRoute',
+          http_codes: [
+            V01::Status.success(:code_204),
+            V01::Status.success(:code_200, V01::Entities::Route)
+          ].concat(V01::Status.failures(add: [:code_304]))
         params do
           requires :id, type: String, desc: SharedParams::ID_DESC
           optional :details, type: Boolean, desc: 'Output Route Details', default: false
@@ -131,14 +139,15 @@ class V01::Routes < Grape::API
               end
             end
           rescue VRPNoSolutionError => e
-            status 304
+            error! V01::Status.code_response(:code_304), 304
           end
         end
 
-        desc 'Reverse stops order',
-          detail: 'Reverse all the stops in a route',
+        desc 'Reverse stops order.',
+          detail: 'Reverse all the stops in a route.',
           nickname: 'reverseStopsOrder',
-          success: V01::Entities::Route
+          success: V01::Status.success(:code_200, V01::Entities::Route),
+          failure: V01::Status.failures
         params do
           requires :id, type: String, desc: SharedParams::ID_DESC
         end
@@ -152,9 +161,11 @@ class V01::Routes < Grape::API
           end
         end
 
-        desc 'Send SMS for each stop visit',
+        desc 'Send SMS for each stop visit.',
           detail: 'Send SMS for each stop visit of the specified route.',
-          nickname: 'sendSMS'
+          nickname: 'sendSMS',
+          success: V01::Status.success(:code_200),
+          failure: V01::Status.failures
         params do
           requires :id, type: String, desc: SharedParams::ID_DESC
         end
@@ -164,7 +175,7 @@ class V01::Routes < Grape::API
               send_sms_route get_route
             end
           else
-            status 403
+            error! V01::Status.code_response(:code_403), 403
           end
         end
       end
@@ -172,7 +183,8 @@ class V01::Routes < Grape::API
       resource :routes_by_vehicle do
         desc 'Fetch route from vehicle.',
           nickname: 'getRouteByVehicle',
-          success: V01::Entities::Route
+          success: V01::Status.success(:code_200, V01::Entities::Route),
+          failure: V01::Status.failures
         params do
           requires :id, type: String, desc: SharedParams::ID_DESC
           optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'

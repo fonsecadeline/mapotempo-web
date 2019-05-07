@@ -33,16 +33,21 @@ class V01::Devices::Orange < Grape::API
         error! e.message, 200
       end
 
-      desc 'List Devices',
-        detail: 'List Devices',
-        nickname: 'deviceOrangeList'
+      desc 'List Devices.',
+        detail: 'For Orange device.',
+        nickname: 'deviceOrangeList',
+        is_array: true,
+        success: V01::Status.success(:code_200, V01::Entities::DeviceItem),
+        failure: V01::Status.failures(is_array: true)
       get '/devices' do
         present service.list_devices, with: V01::Entities::DeviceItem
       end
 
-      desc 'Send Planning Routes',
-        detail: 'Send Planning Routes',
-        nickname: 'deviceOrangeSendMultiple'
+      desc 'Send Planning Routes.',
+        detail: 'For Orange device.',
+        nickname: 'deviceOrangeSendMultiple',
+        success: V01::Status.success(:code_201),
+        failure: V01::Status.failures
       params do
         requires :planning_id, type: Integer, desc: 'Planning ID'
       end
@@ -50,9 +55,11 @@ class V01::Devices::Orange < Grape::API
         device_send_routes device_id: :orange_id
       end
 
-      desc 'Clear Route',
-        detail: 'Clear Route',
-        nickname: 'deviceOrangeClear'
+      desc 'Clear Route.',
+        detail: 'For Orange device.',
+        nickname: 'deviceOrangeClear',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       params do
         requires :route_id, type: Integer, desc: 'Route ID'
       end
@@ -60,9 +67,11 @@ class V01::Devices::Orange < Grape::API
         device_clear_route
       end
 
-      desc 'Clear Planning Routes',
-        detail: 'Clear Planning Routes',
-        nickname: 'deviceOrangeClearMultiple'
+      desc 'Clear Planning Routes.',
+        detail: 'For Orange device.',
+        nickname: 'deviceOrangeClearMultiple',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       params do
         requires :planning_id, type: Integer, desc: 'Planning ID'
       end
@@ -70,9 +79,11 @@ class V01::Devices::Orange < Grape::API
         device_clear_routes device_id: :orange_id
       end
 
-      desc 'Sync Vehicles',
-        detail: 'Sync Vehicles',
-        nickname: 'deviceOrangeClearSync'
+      desc 'Synchronise Vehicles.',
+        detail: 'For Orange device.',
+        nickname: 'deviceOrangeClearSync',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       post '/sync' do
         orange_sync_vehicles @current_customer
         status 204

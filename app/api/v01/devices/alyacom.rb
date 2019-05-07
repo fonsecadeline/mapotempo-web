@@ -33,9 +33,11 @@ class V01::Devices::Alyacom < Grape::API
         error! e.message, 200
       end
 
-      desc 'Send Planning Routes',
-        detail: 'Send Planning Routes',
-        nickname: 'deviceAlyacomSendMultiple'
+      desc 'Send Planning Routes.',
+        detail: 'For Alyacom device.',
+        nickname: 'deviceAlyacomSendMultiple',
+        success: V01::Status.success(:code_201),
+        failure: V01::Status.failures
       params do
         requires :planning_id, type: Integer, desc: 'Planning ID'
       end

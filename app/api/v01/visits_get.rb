@@ -30,7 +30,8 @@ class V01::VisitsGet < Grape::API
     desc 'Fetch customer\'s visits.',
       nickname: 'getVisits',
       is_array: true,
-      success: V01::Entities::Visit
+      success: V01::Status.success(:code_200, V01::Entities::Visit),
+      failure: V01::Status.failures(is_array: true)
     params do
       optional :ids, type: Array[String], desc: 'Select returned visits by id separated with comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
       optional :quantities, type: Boolean, default: false, desc: 'Include the quantities when using geojson output.'

@@ -31,7 +31,10 @@ class V01::Geocoder < Grape::API
   resource :geocoder do
     desc 'Geocode.',
       detail: 'Return a list of address which match with input query.',
-      nickname: 'geocode'
+      nickname: 'geocode',
+      is_array: true,
+      success: V01::Status.success(:code_200),
+      failure: V01::Status.failures(is_array: true)
     params do
       requires :q, type: String, desc: 'Free query string.'
       optional :lat, type: Float, desc: 'Prioritize results around this latitude.'

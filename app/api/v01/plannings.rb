@@ -39,7 +39,8 @@ class V01::Plannings < Grape::API
     desc 'Create planning.',
       detail: 'Create a planning. An out-of-route (unplanned) route and a route for each vehicle are automatically created. If some visits exist (or fetch if you use tags), as many stops as fetching visits will be created (ie: there is no specific operation to create routes and stops, the application create them for you).',
       nickname: 'createPlanning',
-      success: V01::Entities::Planning
+      success: V01::Status.success(:code_201, V01::Entities::Planning),
+      failure: V01::Status.failures
     params do
       use :params_from_entity, entity: V01::Entities::Planning.documentation.except(:id, :route_ids, :outdated, :tag_ids).deep_merge(
         name: { required: true },
@@ -58,7 +59,8 @@ class V01::Plannings < Grape::API
 
     desc 'Update planning.',
       nickname: 'updatePlanning',
-      success: V01::Entities::Planning
+      success: V01::Status.success(:code_200, V01::Entities::Planning),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       use :params_from_entity, entity: V01::Entities::Planning.documentation.except(:id, :route_ids, :outdated, :tag_ids)
@@ -71,7 +73,9 @@ class V01::Plannings < Grape::API
     end
 
     desc 'Delete planning.',
-      nickname: 'deletePlanning'
+      nickname: 'deletePlanning',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
     end
@@ -83,7 +87,9 @@ class V01::Plannings < Grape::API
     end
 
     desc 'Delete multiple plannings.',
-      nickname: 'deletePlannings'
+      nickname: 'deletePlannings',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :ids, type: Array[String], desc: 'Ids separated by comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
     end
@@ -101,7 +107,8 @@ class V01::Plannings < Grape::API
     desc 'Recompute the planning after parameter update.',
       detail: 'Refresh planning and outdated routes infos if inputs have been changed (for instance stores, destinations, visits, etc...)',
       nickname: 'refreshPlanning',
-      success: V01::Entities::Planning
+      success: V01::Status.success(:code_200, V01::Entities::Planning),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
@@ -119,7 +126,11 @@ class V01::Plannings < Grape::API
 
     desc 'Switch two vehicles.',
       detail: 'Switch vehicle associated to one route with another existing vehicle.',
-      nickname: 'switchVehicles'
+      nickname: 'switchVehicles',
+      http_codes: [
+        V01::Status.success(:code_204),
+        V01::Status.success(:code_200, V01::Entities::Planning)
+      ].concat(V01::Status.failures)
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       requires :route_id, type: Integer, desc: 'Route id to switch associated vehicle.'
@@ -142,7 +153,7 @@ class V01::Plannings < Grape::API
               status 204
             end
           else
-            status 400
+            error! V01::Status.code_response(:code_400), 400
           end
         end
       end
@@ -150,7 +161,9 @@ class V01::Plannings < Grape::API
 
     desc 'Insert one or more stop into planning routes.',
       detail: 'Insert automatically one or more stops in best routes and on best positions to have minimal influence on route\'s total time (this operation doesn\'t take into account time windows if they exist...). You should use this operation with existing stops in current planning\'s routes. In addition, you should not use this operation with many stops. You should use instead zoning (with automatic clustering creation for instance) to set multiple stops in each available route.',
-      nickname: 'automaticInsertStop'
+      nickname: 'automaticInsertStop',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       requires :stop_ids, type: Array[Integer], desc: 'Ids separated by comma. You should not have too many stops.', documentation: { param_type: 'form' }, coerce_with: CoerceArrayInteger
@@ -179,14 +192,18 @@ class V01::Plannings < Grape::API
             status 204
           end
         rescue Exceptions::LoopError => e
-          status 400
+          error! V01::Status.code_response(:code_400), 400
         end
       end
     end
 
     desc 'Apply zonings.',
       detail: 'Apply zoning by assign stops to vehicles using the corresponding zones.',
-      nickname: 'applyZonings'
+      nickname: 'applyZonings',
+      http_codes: [
+        V01::Status.success(:code_204),
+        V01::Status.success(:code_200, V01::Entities::Planning)
+      ].concat(V01::Status.failures)
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       optional :with_details, type: Boolean, desc: 'Output route details', default: false
@@ -211,7 +228,11 @@ class V01::Plannings < Grape::API
 
     desc 'Optimize routes.',
       detail: 'Optimize all unlocked routes by keeping visits in same route or not.',
-      nickname: 'optimizeRoutes'
+      nickname: 'optimizeRoutes',
+      http_codes: [
+        V01::Status.success(:code_204),
+        V01::Status.success(:code_200, V01::Entities::Planning)
+      ].concat(V01::Status.failures(add: [:code_304]))
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       optional :global, type: Boolean, desc: 'Use global optimization and move visits between routes if needed', default: false
@@ -230,7 +251,7 @@ class V01::Plannings < Grape::API
         begin
           Optimizer.optimize(planning, nil, { global: params[:global], synchronous: params[:synchronous], active_only: params[:all_stops].nil? ? params[:active_only] : !params[:all_stops], ignore_overload_multipliers: params[:ignore_overload_multipliers] })
         rescue VRPNoSolutionError
-          status 304
+          error! V01::Status.code_response(:code_304), 304
         end
         if params[:details] || params[:with_details]
           present planning, with: V01::Entities::Planning, geojson: params[:geojson] || params[:with_geojson]
@@ -242,7 +263,8 @@ class V01::Plannings < Grape::API
 
     desc 'Clone the planning.',
       nickname: 'clonePlanning',
-      success: V01::Entities::Planning
+      success: V01::Status.success(:code_201, V01::Entities::Planning),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       optional :with_geojson, type: Symbol, values: [:true, :false, :point, :polyline], default: :false, desc: 'Fill the geojson field with route geometry: `point` to return only points, `polyline` to return with encoded linestring.'
@@ -259,7 +281,8 @@ class V01::Plannings < Grape::API
     desc 'Use order_array in the planning.',
       detail: 'Only available if "order array" option is active for current customer.',
       nickname: 'useOrderArray',
-      success: V01::Entities::Planning
+      success: V01::Status.success(:code_200, V01::Entities::Planning),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       requires :order_array_id, type: Integer
@@ -280,7 +303,9 @@ class V01::Plannings < Grape::API
     end
 
     desc 'Update routes visibility and lock.',
-      nickname: 'updateRoutes'
+      nickname: 'updateRoutes',
+      success: V01::Status.success(:code_200, V01::Entities::RouteProperties),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       requires :action, type: String, values: %w(visibility toggle lock), desc: 'Toogle is deprecated, use visibility instead'
@@ -322,7 +347,10 @@ class V01::Plannings < Grape::API
     desc 'Update stops status.',
       detail: 'Update stops status from remote devices. Only available if enable_stop_status is true for customer.',
       nickname: 'updateStopsStatus',
-      success: V01::Entities::Planning
+      http_codes: [
+        V01::Status.success(:code_204),
+        V01::Status.success(:code_200, V01::Entities::RouteStatus)
+      ].concat(V01::Status.failures)
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       optional :with_details, type: Boolean, desc: 'Output route details', default: false
@@ -345,9 +373,11 @@ class V01::Plannings < Grape::API
       end
     end
 
-    desc 'Send SMS for each stop visit',
+    desc 'Send SMS for each stop visit.',
       detail: 'Send SMS for each stop visit of each routes',
-      nickname: 'sendSMS'
+      nickname: 'sendSMS',
+      success: V01::Status.success(:code_200),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
     end
@@ -357,11 +387,16 @@ class V01::Plannings < Grape::API
           send_sms_planning current_customer.plannings.where(ParseIdsRefs.read(params[:id])).first!
         end
       else
-        status 403
+        error! V01::Status.code_response(:code_403), 403
       end
     end
 
     # For internal usage
+    desc 'Fetch vehicle usage(s) from a planning.',
+      detail: 'For internal usage',
+      nickname: 'getVehicleUsage(s)',
+      success: V01::Status.success(:code_200),
+      failure: V01::Status.failures
     params do
       requires :id, type: Integer, desc: 'The planning id'
     end
@@ -371,6 +406,11 @@ class V01::Plannings < Grape::API
     end
 
     # For internal usage
+    desc 'Fetch quantities from a planning.',
+      detail: 'For internal usage',
+      nickname: 'getQuantity(s)',
+      success: V01::Status.success(:code_200),
+      failure: V01::Status.failures
     params do
       requires :id, type: Integer, desc: 'The planning id'
     end

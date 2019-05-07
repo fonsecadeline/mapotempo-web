@@ -32,9 +32,12 @@ class V01::Devices::Sopac < Grape::API
         error! e.message, 200
       end
 
-      desc 'List Devices',
-        detail: 'List sopac devices',
-        nickname: 'deviceTomtomList'
+      desc 'List Devices.',
+        detail: 'List Sopac devices.',
+        nickname: 'deviceSopacList',
+        is_array: true,
+        success: V01::Status.success(:code_200, V01::Entities::DeviceItem),
+        failure: V01::Status.failures(is_array: true)
       get '/devices' do
         present service.list_devices, with: V01::Entities::DeviceItem
       end

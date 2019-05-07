@@ -36,9 +36,10 @@ class V01::Users < Grape::API
     desc 'Fetch customer\'s users (or all users with an admin key).',
       nickname: 'getUsers',
       is_array: true,
-      success: V01::Entities::User
+      success: V01::Status.success(:code_200, V01::Entities::User),
+      failure: V01::Status.failures(is_array: true)
     params do
-      optional :email, type: String, desc: "Only available with an admin api_key."
+      optional :email, type: String, desc: 'Only available with an admin api_key.'
     end
     get do
       if @current_user.admin?
@@ -52,7 +53,8 @@ class V01::Users < Grape::API
 
     desc 'Fetch user.',
       nickname: 'getUser',
-      success: V01::Entities::User
+      success: V01::Status.success(:code_200, V01::Entities::User),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
     end
@@ -63,7 +65,7 @@ class V01::Users < Grape::API
         if user
           present user, with: V01::Entities::User
         else
-          status 404
+          error! V01::Status.code_response(:code_404), 404
         end
       else
         present @current_customer.users.where(id).first!, with: V01::Entities::User
@@ -73,7 +75,8 @@ class V01::Users < Grape::API
     desc 'Create user (admin).',
       detail: 'Only available with an admin api_key.',
       nickname: 'createUser',
-      success: V01::Entities::User
+      success: V01::Status.success(:code_201, V01::Entities::User),
+      failure: V01::Status.failures
     params do
       use :params_from_entity, entity: V01::Entities::User.documentation.except(:id).deep_merge(
         email: { required: true },
@@ -92,13 +95,14 @@ class V01::Users < Grape::API
 
         present user, with: V01::Entities::User
       else
-        error! 'Forbidden', 403
+        error! V01::Status.code_response(:code_403), 403
       end
     end
 
     desc 'Update user.',
       nickname: 'updateUser',
-      success: V01::Entities::User
+      success: V01::Status.success(:code_200, V01::Entities::User),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       use :params_from_entity, entity: V01::Entities::User.documentation.except(:id)
@@ -112,7 +116,9 @@ class V01::Users < Grape::API
 
     desc 'Delete user (admin).',
       detail: 'Only available with an admin api_key.',
-      nickname: 'deleteUser'
+      nickname: 'deleteUser',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
     end
@@ -123,13 +129,15 @@ class V01::Users < Grape::API
         user.destroy!
         status 204
       else
-        error! 'Forbidden', 403
+        error! V01::Status.code_response(:code_403), 403
       end
     end
 
     desc 'Delete multiple users (admin).',
       detail: 'Only available with an admin api_key.',
-      nickname: 'deleteUsers'
+      nickname: 'deleteUsers',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :ids, type: Array[String], desc: 'Ids separated by comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
     end
@@ -142,7 +150,7 @@ class V01::Users < Grape::API
         end
         status 204
       else
-        error! 'Forbidden', 403
+        error! V01::Status.code_response(:code_403), 403
       end
     end
   end

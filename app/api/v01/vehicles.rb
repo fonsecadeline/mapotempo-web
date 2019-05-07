@@ -87,7 +87,8 @@ class V01::Vehicles < Grape::API
     desc 'Fetch customer\'s vehicles.',
       nickname: 'getVehicles',
       is_array: true,
-      success: V01::Entities::Vehicle
+      success: V01::Status.success(:code_200, V01::Entities::Vehicle),
+      failure: V01::Status.failures(is_array: true)
     params do
       optional :ids, type: Array[String], desc: 'Select returned vehicles by id separated with comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
     end
@@ -102,11 +103,12 @@ class V01::Vehicles < Grape::API
       present vehicles, with: V01::Entities::Vehicle
     end
 
-    desc 'Get vehicle\'s position.',
+    desc 'Get vehicle\'s positions.',
       detail: 'Only available if enable_vehicle_position is true for customer.',
       nickname: 'currentPosition',
       is_array: true,
-      success: V01::Entities::VehiclePosition
+      success: V01::Status.success(:code_200, V01::Entities::VehiclePosition),
+      failure: V01::Status.failures(is_array: true)
     params do
       optional :ids, type: Array[Integer]
     end
@@ -148,11 +150,12 @@ class V01::Vehicles < Grape::API
       end
     end
 
-    desc 'Get vehicles\'s temperature.',
+    desc 'Get vehicle\'s temperatures.',
       detail: 'return vehicle temperature',
       nickname: 'getTemperature',
       is_array: true,
-      success: V01::Entities::VehicleTemperature
+      success: V01::Status.success(:code_200, V01::Entities::VehicleTemperature),
+      failure: V01::Status.failures(is_array: true)
     params do
       optional :ids, type: Array[Integer]
     end
@@ -180,7 +183,8 @@ class V01::Vehicles < Grape::API
 
     desc 'Fetch vehicle.',
       nickname: 'getVehicle',
-      success: V01::Entities::Vehicle
+      success: V01::Status.success(:code_200, V01::Entities::Vehicle),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
     end
@@ -191,7 +195,8 @@ class V01::Vehicles < Grape::API
 
     desc 'Update vehicle.',
       nickname: 'updateVehicle',
-      success: V01::Entities::Vehicle
+      success: V01::Status.success(:code_200, V01::Entities::Vehicle),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       use :params_from_entity, entity: V01::Entities::Vehicle.documentation.except(
@@ -229,14 +234,15 @@ class V01::Vehicles < Grape::API
       present vehicle, with: V01::Entities::Vehicle
     end
 
-    detailCreate = 'For each new created Vehicle and VehicleUsageSet a new VehicleUsage will be created at the same time (i.e. customer has 2 VehicleUsageSets \'Morning\' and \'Evening\', a new Vehicle is created: 2 new VehicleUsages will be automatically created with the new vehicle.)'
+    detailCreate = 'For each new created Vehicle and VehicleUsageSet a new VehicleUsage will be created at the same time (i.e. customer has 2 VehicleUsageSets \'Morning\' and \'Evening\', a new Vehicle is created: 2 new VehicleUsages will be automatically created with the new vehicle).'
     if Mapotempo::Application.config.manage_vehicles_only_admin
       detailCreate = 'Only available with an admin api_key. ' + detailCreate
     end
     desc "Create vehicle#{Mapotempo::Application.config.manage_vehicles_only_admin ? ' (admin)' : ''}.",
       detail: detailCreate,
       nickname: 'createVehicle',
-      success: V01::Entities::Vehicle
+      success: V01::Status.success(:code_201, V01::Entities::Vehicle),
+      failure: V01::Status.failures
     params do
       if Mapotempo::Application.config.manage_vehicles_only_admin
         requires :customer_id, type: Integer
@@ -302,7 +308,7 @@ class V01::Vehicles < Grape::API
           }
           vehicle.save!
         else
-          error! 'Forbidden', 403
+          error! V01::Status.code_response(:code_403), 403
         end
       else
         vehicle = current_customer.vehicles.create(vehicle_params)
@@ -317,7 +323,9 @@ class V01::Vehicles < Grape::API
     detailDelete = Mapotempo::Application.config.manage_vehicles_only_admin ? 'Only available with an admin api_key.' : nil
     desc "Delete vehicle#{Mapotempo::Application.config.manage_vehicles_only_admin ? ' (admin)' : ''}.",
       detail: detailDelete,
-      nickname: 'deleteVehicle'
+      nickname: 'deleteVehicle',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
     end
@@ -329,7 +337,7 @@ class V01::Vehicles < Grape::API
           vehicle.destroy!
           status 204
         else
-          error! 'Forbidden', 403
+          error! V01::Status.code_response(:code_403), 403
         end
       else
         current_customer.vehicles.where(id).first!.destroy!
@@ -339,7 +347,9 @@ class V01::Vehicles < Grape::API
 
     desc "Delete multiple vehicles#{Mapotempo::Application.config.manage_vehicles_only_admin ? ' (admin)' : ''}.",
       detail: detailDelete,
-      nickname: 'deleteVehicles'
+      nickname: 'deleteVehicles',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :ids, type: Array[String], desc: 'Ids separated by comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
     end
@@ -352,7 +362,7 @@ class V01::Vehicles < Grape::API
             }.each(&:destroy!)
             status 204
           else
-            error! 'Forbidden', 403
+            error! V01::Status.code_response(:code_403), 403
           end
         else
           current_customer.vehicles.select{ |vehicle|

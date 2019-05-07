@@ -15,20 +15,11 @@
 # along with Mapotempo. If not, see:
 # <http://www.gnu.org/licenses/agpl.html>
 #
-class V01::Routers < Grape::API
-  resource :routers do
-    desc 'Fetch customer\'s routers.',
-      detail: 'Get the list of available routers which can be used for finding route.',
-      nickname: 'getRouters',
-      is_array: true,
-      success: V01::Status.success(:code_200, V01::Entities::Router),
-      failure: V01::Status.failures(is_array: true, override: {code_403: 'Forbidden. Operation not allowed with an admin api key..'})
-    get do
-      if @current_user.admin?
-        error!(V01::Status.code_response(:code_403, after: 'Operation not allowed with an admin api key.'), 403)
-      else
-        present @current_customer.profile.routers.load, with: V01::Entities::Router
-      end
-    end
+class V01::Entities::Status204 < Grape::Entity
+  def self.entity_name
+    'V01_Status204'
   end
+
+  expose(:message, documentation: { type: String, desc: 'Server rendered messages.', values: ['No content.'] })
+  expose(:status, documentation: {type: Integer, desc: 'Error code.', values: [204] })
 end

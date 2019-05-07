@@ -37,7 +37,8 @@ class V01::VehicleUsages < Grape::API
         desc 'Fetch customer\'s vehicle_usages.',
           nickname: 'getVehicleUsages',
           is_array: true,
-          success: V01::Entities::VehicleUsageWithVehicle
+          success: V01::Status.success(:code_200, V01::Entities::VehicleUsageWithVehicle),
+          failure: V01::Status.failures(is_array: true, override: {code_404: 'VehicleUsageSet or VehicleUsage not found.'})
         params do
           optional :ids, type: Array[Integer], desc: 'Select returned vehicle_usages by id.', coerce_with: CoerceArrayInteger
         end
@@ -51,13 +52,14 @@ class V01::VehicleUsages < Grape::API
           if vehicle_usage_set && vehicle_usages
             present vehicle_usages, with: V01::Entities::VehicleUsageWithVehicle
           else
-            error! 'VehicleUsageSet or VehicleUsage not found', 404
+            error! V01::Status.code_response(:code_404, before: 'VehicleUsageSet or VehicleUsage'), 404
           end
         end
 
         desc 'Fetch vehicle_usage.',
           nickname: 'getVehicleUsage',
-          success: V01::Entities::VehicleUsageWithVehicle
+          success: V01::Status.success(:code_200, V01::Entities::VehicleUsageWithVehicle),
+          failure: V01::Status.failures(override: {code_404: 'VehicleUsageSet or VehicleUsage not found.'})
         params do
           requires :id, type: Integer
         end
@@ -70,12 +72,13 @@ class V01::VehicleUsages < Grape::API
               return
             end
           end
-          error! 'VehicleUsageSet or VehicleUsage not found', 404
+          error! V01::Status.code_response(:code_404, before: 'VehicleUsageSet or VehicleUsage'), 404
         end
 
         desc 'Update vehicle_usage.',
           nickname: 'updateVehicleUsage',
-          success: V01::Entities::VehicleUsageWithVehicle
+          success: V01::Status.success(:code_200, V01::Entities::VehicleUsageWithVehicle),
+          failure: V01::Status.failures(override: {code_404: 'VehicleUsageSet or VehicleUsage not found.' })
         params do
           requires :id, type: Integer
 
@@ -112,7 +115,7 @@ class V01::VehicleUsages < Grape::API
               return
             end
           end
-          error! 'VehicleUsageSet or VehicleUsage not found', 404
+          error! V01::Status.code_response(:code_404, before: 'VehicleUsageSet or VehicleUsage'), 404
         end
       end
     end

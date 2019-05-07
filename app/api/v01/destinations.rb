@@ -99,7 +99,8 @@ class V01::Destinations < Grape::API
     desc 'Fetch customer\'s destinations.',
       nickname: 'getDestinations',
       is_array: true,
-      success: V01::Entities::Destination
+      success: V01::Status.success(:code_200, V01::Entities::Destination),
+      failure: V01::Status.failures(is_array: true)
     params do
       optional :ids, type: Array[String], desc: 'Select returned destinations by id separated with comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
       optional :quantities, type: Boolean, default: false, desc: 'Include the quantities when using geojson output.'
@@ -121,7 +122,8 @@ class V01::Destinations < Grape::API
 
     desc 'Fetch destination.',
       nickname: 'getDestination',
-      success: V01::Entities::Destination
+      success: V01::Status.success(:code_200, V01::Entities::Destination),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
     end
@@ -132,7 +134,8 @@ class V01::Destinations < Grape::API
 
     desc 'Create destination.',
       nickname: 'createDestination',
-      success: V01::Entities::Destination
+      success: V01::Status.success(:code_201, V01::Entities::Destination),
+      failure: V01::Status.failures
     params do
       use :params_from_entity, entity: V01::Entities::Destination.documentation.except(:id, :tag_ids).deep_merge(
         name: { required: true },
@@ -151,7 +154,10 @@ class V01::Destinations < Grape::API
       detail: 'Import multiple destinations and visits. Use your internal and unique ids as a "reference" to automatically retrieve and update objects. If "route" key is provided for a visit or if a planning attribute is sent, a planning will be automatically created at the same time. If all "route" attibutes are blank or none attribute for planning is sent, only destinations and visits will be created/updated.',
       nickname: 'importDestinations',
       is_array: true,
-      success: V01::Entities::Destination
+      http_codes: [
+        V01::Status.success(:code_202, V01::Entities::Destination),
+        V01::Status.success(:code_200, V01::Entities::Destination)
+      ].concat(V01::Status.failures(is_array: true, add: [:code_422]))
     params do
       optional(:replace, type: Boolean)
       optional(:planning, type: Hash, desc: 'Planning definition in case of planning created in the same time of destinations import. Planning is created if "route" field is provided in CVS or Json.') do
@@ -200,7 +206,8 @@ class V01::Destinations < Grape::API
     desc 'Update destination.',
       detail: 'If want to force geocoding for a new address, you have to send empty lat/lng with new address.',
       nickname: 'updateDestination',
-      success: V01::Entities::Destination
+      success: V01::Status.success(:code_200, V01::Entities::Destination),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       use :params_from_entity, entity: V01::Entities::Destination.documentation.except(:id, :tag_ids).deep_merge(
@@ -218,7 +225,9 @@ class V01::Destinations < Grape::API
     end
 
     desc 'Delete destination.',
-      nickname: 'deleteDestination'
+      nickname: 'deleteDestination',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
     end
@@ -229,7 +238,9 @@ class V01::Destinations < Grape::API
     end
 
     desc 'Delete multiple destinations.',
-      nickname: 'deleteDestinations'
+      nickname: 'deleteDestinations',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       optional :ids, type: Array[String], desc: 'Ids separated by comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3. If no Id is provided, all objects are deleted.', coerce_with: CoerceArrayString
     end
@@ -255,7 +266,8 @@ class V01::Destinations < Grape::API
     desc 'Geocode destination.',
       detail: 'Result of geocoding is not saved with this operation. You can use update operation to save the result of geocoding.',
       nickname: 'geocodeDestination',
-      success: V01::Entities::Destination
+      success: V01::Status.success(:code_200, V01::Entities::Destination),
+      failure: V01::Status.failures
     params do
       use :params_from_entity, entity: V01::Entities::Destination.documentation.except(:id, :lat, :lng, :geocoding_accuracy, :geocoding_level, :visits)
     end
@@ -268,7 +280,8 @@ class V01::Destinations < Grape::API
     desc 'Reverse geocoding.',
       detail: 'Result of reverse geocoding is not saved with this operation.',
       nickname: 'reverseGeocodingDestination',
-      entity: V01::Entities::Destination
+      success: V01::Status.success(:code_200, V01::Entities::Destination),
+      failure: V01::Status.failures
     params do
       use :params_from_entity, entity: V01::Entities::Destination.documentation.except(:id, :street, :postalcode, :city, :state, :country, :visits)
     end
@@ -279,7 +292,9 @@ class V01::Destinations < Grape::API
 
     if Mapotempo::Application.config.geocode_complete
       desc 'Auto completion on destination.',
-        nickname: 'autocompleteDestination'
+        nickname: 'autocompleteDestination',
+        success: V01::Status.success(:code_200, V01::Entities::Destination),
+        failure: V01::Status.failures
       params do
         use :params_from_entity, entity: V01::Entities::Destination.documentation.except(:id, :visits)
       end

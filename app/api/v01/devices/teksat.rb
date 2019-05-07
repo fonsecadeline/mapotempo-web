@@ -35,16 +35,21 @@ class V01::Devices::Teksat < Grape::API
         end
       end
 
-      desc 'List Devices',
-        detail: 'List Devices',
-        nickname: 'deviceTeksatList'
+      desc 'List Devices.',
+        detail: 'For Teksat devices.',
+        nickname: 'deviceTeksatList',
+        is_array: true,
+        success: V01::Status.success(:code_200, V01::Entities::DeviceItem),
+        failure: V01::Status.failures(is_array: true)
       get 'devices' do
         present service.list_devices, with: V01::Entities::DeviceItem
       end
 
-      desc 'Send Planning Routes',
-        detail: 'Send Planning Routes',
-        nickname: 'deviceTeksatSendMultiple'
+      desc 'Send Planning Routes.',
+        detail: 'For Teksat devices.',
+        nickname: 'deviceTeksatSendMultiple',
+        success: V01::Status.success(:code_201),
+        failure: V01::Status.failures
       params do
         requires :planning_id, type: Integer, desc: 'Planning ID'
       end
@@ -52,9 +57,11 @@ class V01::Devices::Teksat < Grape::API
         device_send_routes device_id: :teksat_id
       end
 
-      desc 'Clear Route',
-        detail: 'Clear Route',
-        nickname: 'deviceTeksatClear'
+      desc 'Clear Route.',
+        detail: 'For Teksat devices.',
+        nickname: 'deviceTeksatClear',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       params do
         requires :route_id, type: Integer, desc: 'Route ID'
       end
@@ -62,9 +69,11 @@ class V01::Devices::Teksat < Grape::API
         device_clear_route
       end
 
-      desc 'Clear Planning Routes',
-        detail: 'Clear Planning Routes',
-        nickname: 'deviceTeksatClearMultiple'
+      desc 'Clear Planning Routes.',
+        detail: 'For Teksat devices.',
+        nickname: 'deviceTeksatClearMultiple',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       params do
         requires :planning_id, type: Integer, desc: 'Planning ID'
       end
@@ -72,9 +81,11 @@ class V01::Devices::Teksat < Grape::API
         device_clear_routes device_id: :teksat_id
       end
 
-      desc 'Sync Vehicles',
-        detail: 'Sync Vehicles',
-        nickname: 'deviceTeksatSync'
+      desc 'Synchronise Vehicles.',
+        detail: 'For Teksat devices.',
+        nickname: 'deviceTeksatSync',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       post 'sync' do
         teksat_sync_vehicles @current_customer, session[:teksat_ticket_id]
         status 204

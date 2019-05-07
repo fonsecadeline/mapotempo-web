@@ -30,9 +30,10 @@ class V01::Tags < Grape::API
 
   resource :tags do
     desc 'Fetch customer\'s tags.',
-         nickname: 'getTags',
-         is_array: true,
-         success: V01::Entities::Tag
+      nickname: 'getTags',
+      is_array: true,
+      success: V01::Status.success(:code_200, V01::Entities::Tag),
+      failure: V01::Status.failures(is_array: true)
     params do
       optional :ids, type: Array[String], desc: 'Select returned tags by id separated with comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
     end
@@ -46,8 +47,9 @@ class V01::Tags < Grape::API
     end
 
     desc 'Fetch tag.',
-         nickname: 'getTag',
-         success: V01::Entities::Tag
+      nickname: 'getTag',
+      success: V01::Status.success(:code_200, V01::Entities::Tag),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
     end
@@ -57,12 +59,13 @@ class V01::Tags < Grape::API
     end
 
     desc 'Create tag.',
-         detail: 'By creating a tag, it will be possible to filter visits and create a planning with only necessary visits.',
-         nickname: 'createTag',
-         success: V01::Entities::Tag
+      detail: 'By creating a tag, it will be possible to filter visits and create a planning with only necessary visits.',
+      nickname: 'createTag',
+      success: V01::Status.success(:code_201, V01::Entities::Tag),
+      failure: V01::Status.failures
     params do
       use :params_from_entity, entity: V01::Entities::Tag.documentation.except(:id).deep_merge(
-          label: {required: true}
+        label: {required: true}
       )
     end
     post do
@@ -72,8 +75,9 @@ class V01::Tags < Grape::API
     end
 
     desc 'Update tag.',
-         nickname: 'updateTag',
-         success: V01::Entities::Tag
+      nickname: 'updateTag',
+      success: V01::Status.success(:code_200, V01::Entities::Tag),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       use :params_from_entity, entity: V01::Entities::Tag.documentation.except(:id)
@@ -86,7 +90,9 @@ class V01::Tags < Grape::API
     end
 
     desc 'Delete tag.',
-         nickname: 'deleteTag'
+      nickname: 'deleteTag',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
     end
@@ -97,7 +103,9 @@ class V01::Tags < Grape::API
     end
 
     desc 'Delete multiple tags.',
-         nickname: 'deleteTags'
+      nickname: 'deleteTags',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :ids, type: Array[String], desc: 'Ids separated by comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
     end

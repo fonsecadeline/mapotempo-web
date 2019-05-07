@@ -55,9 +55,10 @@ class V01::Visits < Grape::API
 
       resource :visits do
         desc 'Fetch destination\'s visits.',
-          nickname: 'getVisits',
-          is_array: true,
-          success: V01::Entities::Visit
+        nickname: 'getVisits',
+        is_array: true,
+        success: V01::Status.success(:code_200, V01::Entities::Visit),
+        failure: V01::Status.failures(is_array: true)
         params do
           optional :ids, type: Array[String], desc: 'Select returned visits by id separated with comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
         end
@@ -75,7 +76,8 @@ class V01::Visits < Grape::API
 
         desc 'Fetch visit.',
           nickname: 'getVisit',
-          success: V01::Entities::Visit
+          success: V01::Status.success(:code_200, V01::Entities::Visit),
+          failure: V01::Status.failures
         params do
           requires :id, type: String, desc: SharedParams::ID_DESC
         end
@@ -87,7 +89,8 @@ class V01::Visits < Grape::API
 
         desc 'Create visit.',
           nickname: 'createVisit',
-          success: V01::Entities::Visit
+          success: V01::Status.success(:code_201, V01::Entities::Visit),
+          failure: V01::Status.failures
         params do
           use :params_from_entity, entity: V01::Entities::Visit.documentation.except(
               :id,
@@ -125,18 +128,20 @@ class V01::Visits < Grape::API
         desc 'Update visit.',
           detail: 'If want to force geocoding for a new address, you have to send empty lat/lng with new address.',
           nickname: 'updateVisit',
-          success: V01::Entities::Visit
+          success: V01::Status.success(:code_200, V01::Entities::Visit),
+          failure: V01::Status.failures
         params do
           requires :id, type: String, desc: SharedParams::ID_DESC
           use :params_from_entity, entity: V01::Entities::Visit.documentation.except(
-              :id,
-              :destination_id,
-              :tag_ids,
-              :open1,
-              :close1,
-              :take_over,
-              :open2,
-              :close2)
+            :id,
+            :destination_id,
+            :tag_ids,
+            :open1,
+            :close1,
+            :take_over,
+            :open2,
+            :close2
+          )
 
           optional :tag_ids, type: Array[Integer], desc: 'Ids separated by comma.', coerce_with: CoerceArrayInteger, documentation: { param_type: 'form' }
 
@@ -162,7 +167,9 @@ class V01::Visits < Grape::API
         end
 
         desc 'Delete visit.',
-          nickname: 'deleteVisit'
+          nickname: 'deleteVisit',
+          success: V01::Status.success(:code_204),
+          failure: V01::Status.failures
         params do
           requires :id, type: String, desc: SharedParams::ID_DESC
         end
@@ -180,7 +187,9 @@ class V01::Visits < Grape::API
 
   resource :visits do
     desc 'Delete multiple visits.',
-      nickname: 'deleteVisits'
+      nickname: 'deleteVisits',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       optional :ids, type: Array[String], desc: 'Ids separated by comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
     end

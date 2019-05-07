@@ -33,16 +33,21 @@ class V01::Devices::Tomtom < Grape::API
         error! e.message, 200
       end
 
-      desc 'List Devices',
-        detail: 'List Devices',
-        nickname: 'deviceTomtomList'
+      desc 'List Devices.',
+        detail: 'For TomTom device.',
+        nickname: 'deviceTomtomList',
+        is_array: true,
+        success: V01::Status.success(:code_200, V01::Entities::DeviceItem),
+        failure: V01::Status.failures(is_array: true)
       get '/devices' do
         present service.list_devices, with: V01::Entities::DeviceItem
       end
 
-      desc 'Send Planning Routes',
-        detail: 'Send Planning Routes',
-        nickname: 'deviceTomtomSendMultiple'
+      desc 'Send Planning Routes.',
+        detail: 'For TomTom device.',
+        nickname: 'deviceTomtomSendMultiple',
+        success: V01::Status.success(:code_201),
+        failure: V01::Status.failures
       params do
         requires :planning_id, type: Integer, desc: 'Planning ID'
         requires :type, type: String, desc: 'Action Name', values: %w(waypoints orders)
@@ -51,9 +56,11 @@ class V01::Devices::Tomtom < Grape::API
         device_send_routes params.slice(:type).merge(device_id: :tomtom_id)
       end
 
-      desc 'Clear Route',
-        detail: 'Clear Route',
-        nickname: 'deviceTomtomClear'
+      desc 'Clear Route.',
+        detail: 'For TomTom device.',
+        nickname: 'deviceTomtomClear',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       params do
         requires :route_id, type: Integer, desc: 'Route ID'
       end
@@ -61,9 +68,11 @@ class V01::Devices::Tomtom < Grape::API
         device_clear_route
       end
 
-      desc 'Clear Planning Routes',
-        detail: 'Clear Planning Routes',
-        nickname: 'deviceTomtomClearMultiple'
+      desc 'Clear Planning Routes.',
+        detail: 'For TomTom device.',
+        nickname: 'deviceTomtomClearMultiple',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       params do
         requires :planning_id, type: Integer, desc: 'Planning ID'
       end
@@ -71,9 +80,11 @@ class V01::Devices::Tomtom < Grape::API
         device_clear_routes device_id: :tomtom_id
       end
 
-      desc 'Sync Vehicles',
-        detail: 'Sync Vehicles',
-        nickname: 'deviceTomtomSync'
+      desc 'Synchronise Vehicles.',
+        detail: 'For TomTom device.',
+        nickname: 'deviceTomtomSync',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       post '/sync' do
         tomtom_sync_vehicles @customer
         status 204

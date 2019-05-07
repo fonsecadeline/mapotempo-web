@@ -29,7 +29,7 @@ class V01::Orders < Grape::API
 
     def authorize!
       ability = Ability.new(@current_user)
-      error!('401 Unauthorized', 401) unless ability.can?(:manage, OrderArray)
+      error!(V01::Status.code_response(:code_401), 401) unless ability.can?(:manage, OrderArray)
     end
   end
 
@@ -42,7 +42,8 @@ class V01::Orders < Grape::API
         desc 'Update order.',
           detail: 'Only available if "enable orders" option is active for current customer.',
           nickname: 'updateOrder',
-          success: V01::Entities::Order
+          success: V01::Status.success(:code_200, V01::Entities::Order),
+          failure: V01::Status.failures
         params do
           requires :id, type: Integer
           use :params_from_entity, entity: V01::Entities::Order.documentation.except(:id)

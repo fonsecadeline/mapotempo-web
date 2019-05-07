@@ -33,9 +33,11 @@ class V01::Devices::Notico < Grape::API
         error! e.message, 200
       end
 
-      desc 'Send Planning Routes',
-           detail: 'Send Planning Routes',
-           nickname: 'deviceNoticoSendMultiple'
+      desc 'Send Planning Routes.',
+        detail: 'For Notico device.',
+        nickname: 'deviceNoticoSendMultiple',
+        success: V01::Status.success(:code_201),
+        failure: V01::Status.failures
       params do
         requires :planning_id, type: Integer, desc: 'Planning ID'
       end
@@ -43,9 +45,11 @@ class V01::Devices::Notico < Grape::API
         device_send_routes device_id: :agent_id
       end
 
-      desc 'Clear Route',
-           detail: 'Clear Route',
-           nickname: 'deviceNoticoClear'
+      desc 'Clear Route.',
+        detail: 'For Notico device.',
+        nickname: 'deviceNoticoClear',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       params do
         requires :route_id, type: Integer, desc: 'Route ID'
       end
@@ -53,9 +57,11 @@ class V01::Devices::Notico < Grape::API
         device_clear_route
       end
 
-      desc 'Clear Planning Routes',
-           detail: 'Clear Planning Routes',
-           nickname: 'deviceNoticoClearMultiple'
+      desc 'Clear Planning Routes.',
+        detail: 'For Notico device.',
+        nickname: 'deviceNoticoClearMultiple',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       params do
         requires :planning_id, type: Integer, desc: 'Planning ID'
       end

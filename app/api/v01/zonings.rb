@@ -37,7 +37,8 @@ class V01::Zonings < Grape::API
     desc 'Fetch customer\'s zonings.',
       nickname: 'getZonings',
       is_array: true,
-      success: V01::Entities::Zoning
+      success: V01::Status.success(:code_200, V01::Entities::Zoning),
+      failure: V01::Status.failures(is_array: true)
     params do
       optional :ids, type: Array[Integer], desc: 'Select returned zonings by id.', coerce_with: CoerceArrayInteger
     end
@@ -52,7 +53,8 @@ class V01::Zonings < Grape::API
 
     desc 'Fetch zoning.',
       nickname: 'getZoning',
-      success: V01::Entities::Zoning
+      success: V01::Status.success(:code_200, V01::Entities::Zoning),
+      failure: V01::Status.failures
     params do
       requires :id, type: Integer
     end
@@ -63,7 +65,8 @@ class V01::Zonings < Grape::API
     desc 'Create zoning.',
       detail: 'Create a new empty zoning. Zones will can be created for this zoning thereafter.',
       nickname: 'createZoning',
-      success: V01::Entities::Zoning
+      success: V01::Status.success(:code_201, V01::Entities::Zoning),
+      failure: V01::Status.failures
     params do
       use :params_from_entity, entity: V01::Entities::Zoning.documentation.except(:id).deep_merge(
         name: { required: true }
@@ -77,7 +80,8 @@ class V01::Zonings < Grape::API
 
     desc 'Update zoning.',
       nickname: 'updateZoning',
-      success: V01::Entities::Zoning
+      success: V01::Status.success(:code_200, V01::Entities::Zoning),
+      failure: V01::Status.failures
     params do
       requires :id, type: Integer
       use :params_from_entity, entity: V01::Entities::Zoning.documentation.except(:id)
@@ -89,7 +93,9 @@ class V01::Zonings < Grape::API
     end
 
     desc 'Delete zoning.',
-      nickname: 'deleteZoning'
+      nickname: 'deleteZoning',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :id, type: Integer
     end
@@ -99,7 +105,9 @@ class V01::Zonings < Grape::API
     end
 
     desc 'Delete multiple zonings.',
-      nickname: 'deleteZonings'
+      nickname: 'deleteZonings',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :ids, type: Array[Integer], coerce_with: CoerceArrayInteger
     end
@@ -113,7 +121,8 @@ class V01::Zonings < Grape::API
     desc 'Generate zoning from planning.',
       detail: 'Create new automatic zones in current zoning for a dedicated planning. Only stops in a route with vehicle are taken into account. All previous existing zones are cleared. Each generated zone is linked to a dedicated vehicle.',
       nickname: 'generateFromPlanning',
-      success: V01::Entities::Zoning
+      success: V01::Status.success(:code_200, V01::Entities::Zoning),
+      failure: V01::Status.failures
     params do
       requires :id, type: Integer
       requires :planning_id, type: Integer
@@ -133,7 +142,8 @@ class V01::Zonings < Grape::API
     desc 'Generate zoning automatically.',
       detail: 'Create #N new automatic zones in current zoning for a dedicated planning (#N should be less or egal your vehicle\'s fleet size). All planning\'s stops (or all visits from destinations if there is no planning linked to this zoning) are taken into account, even if they are out of route. All previous existing zones are cleared. Each generated zone is linked to a dedicated vehicle.',
       nickname: 'generateAutomatic',
-      success: V01::Entities::Zoning
+      success: V01::Status.success(:code_200, V01::Entities::Zoning),
+      failure: V01::Status.failures
     params do
       requires :id, type: Integer
       requires :planning_id, type: Integer
@@ -155,7 +165,8 @@ class V01::Zonings < Grape::API
     desc 'Generate isochrones.',
       detail: 'Generate zoning with isochrone polygons for all vehicles. All previous existing zones are cleared.',
       nickname: 'generateIsochrone',
-      success: V01::Entities::Zoning
+      success: V01::Status.success(:code_200, V01::Entities::Zoning),
+      failure: V01::Status.failures(override: {code_404: 'VehicleUsageSet not found' })
     params do
       requires :id, type: Integer
       requires :size, type: Integer, desc: 'Area accessible from the start store by this travel time in seconds.'
@@ -177,7 +188,7 @@ class V01::Zonings < Grape::API
           zoning.save!
           present zoning, with: V01::Entities::Zoning
         else
-          error! 'VehicleUsageSet not found', 404
+          error! V01::Status.code_response(:code_404, before: 'VehicleUsageSet'), 404
         end
       end
     end
@@ -185,7 +196,8 @@ class V01::Zonings < Grape::API
     desc 'Generate isochrone for only one vehicle usage.',
       detail: 'Generate zoning with isochrone polygon from specified vehicle\'s start.',
       nickname: 'generateIsochroneVehicleUsage',
-      success: V01::Entities::Zone
+      success: V01::Status.success(:code_200, V01::Entities::Zone),
+      failure: V01::Status.failures(override: {code_404: 'VehicleUsage not found' })
     params do
       requires :id, type: Integer
       requires :size, type: Integer, desc: 'Area accessible from the start store by this travel time in seconds.'
@@ -208,7 +220,7 @@ class V01::Zonings < Grape::API
           zoning.save!
           present zoning.zones.find{ |z| z.vehicle == vehicle_usage.vehicle }, with: V01::Entities::Zone
         else
-          error! 'VehicleUsage not found', 404
+          error! V01::Status.code_response(:code_404, before: 'VehicleUsage'), 404
         end
       end
     end
@@ -216,7 +228,8 @@ class V01::Zonings < Grape::API
     desc 'Generate isodistances.',
       detail: 'Generate zoning with isodistance polygons for all vehicles. All previous existing zones are cleared.',
       nickname: 'generateIsodistance',
-      success: V01::Entities::Zoning
+      success: V01::Status.success(:code_200, V01::Entities::Zoning),
+      failure: V01::Status.failures(override: {code_404: 'VehicleUsageSet not found'})
     params do
       requires :id, type: Integer
       requires :size, type: Integer, desc: 'Area accessible from the start store by this travel distance in meters.'
@@ -239,7 +252,7 @@ class V01::Zonings < Grape::API
           zoning.save!
           present zoning, with: V01::Entities::Zoning
         else
-          error! 'VehicleUsageSet not found', 404
+          error! V01::Status.code_response(:code_404, before: 'VehicleUsageSet'), 404
         end
       end
     end
@@ -247,7 +260,8 @@ class V01::Zonings < Grape::API
     desc 'Generate isodistance for only one vehicle usage.',
       detail: 'Generate zoning with isodistance polygon from specified vehicle\'s start.',
       nickname: 'generateIsodistanceVehicleUsage',
-      success: V01::Entities::Zone
+      success: V01::Status.success(:code_200, V01::Entities::Zone),
+      failure: V01::Status.failures(override: {code_404: 'VehicleUsage not found'})
     params do
       requires :id, type: Integer
       requires :size, type: Integer, desc: 'Area accessible from the start store by this travel distance in meters.'
@@ -271,7 +285,7 @@ class V01::Zonings < Grape::API
           zoning.save!
           present zoning.zones.find{ |z| z.vehicle == vehicle_usage.vehicle }, with: V01::Entities::Zone
         else
-          error! 'VehicleUsage not found', 404
+          error! V01::Status.code_response(:code_404, before: 'VehicleUsage'), 404
         end
       end
     end
@@ -279,7 +293,8 @@ class V01::Zonings < Grape::API
     desc 'Build isochrone for a point.',
       detail: 'Build isochrone polygon from a specific point. No zoning is saved in database.',
       nickname: 'buildIsochrone',
-      success: V01::Entities::Zoning
+      success: V01::Status.success(:code_200, V01::Entities::Zoning),
+      failure: V01::Status.failures
     params do
       requires :lat, type: Float, desc: 'Latitude.'
       requires :lng, type: Float, desc: 'Longitude.'
@@ -302,7 +317,8 @@ class V01::Zonings < Grape::API
     desc 'Build isodistance for a point.',
       detail: 'Build isodistance polygon from a specific point. No zoning is saved in database.',
       nickname: 'buildIsodistance',
-      success: V01::Entities::Zoning
+      success: V01::Status.success(:code_200, V01::Entities::Zoning),
+      failure: V01::Status.failures
     params do
       requires :lat, type: Float, desc: 'Latitude.'
       requires :lng, type: Float, desc: 'Longitude.'
@@ -324,9 +340,12 @@ class V01::Zonings < Grape::API
     end
 
     desc 'Find the zone where a point belongs to.',
-         detail: 'Find the closest zone for the specified coordinates.',
-         nickname: 'polygonByPoint',
-         success: V01::Entities::Zoning
+      detail: 'Find the closest zone for the specified coordinates.',
+      nickname: 'polygonByPoint',
+      http_codes: [
+        V01::Status.success(:code_200, V01::Entities::Zone),
+        V01::Status.success(:code_204)
+      ].concat(V01::Status.failures)
     params do
       requires :lat, type: Float, desc: 'Latitude.'
       requires :lng, type: Float, desc: 'Longitude.'

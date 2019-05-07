@@ -33,9 +33,11 @@ class V01::Devices::Masternaut < Grape::API
         error! e.message, 200
       end
 
-      desc 'Send Planning Routes',
-        detail: 'Send Planning Routes',
-        nickname: 'deviceMasternautSendMultiple'
+      desc 'Send Planning Routes.',
+        detail: 'For Masternaut device.',
+        nickname: 'deviceMasternautSendMultiple',
+        success: V01::Status.success(:code_201),
+        failure: V01::Status.failures
       params do
         requires :planning_id, type: Integer, desc: 'Planning ID'
       end

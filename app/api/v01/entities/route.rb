@@ -15,24 +15,20 @@
 # along with Mapotempo. If not, see:
 # <http://www.gnu.org/licenses/agpl.html>
 #
-class V01::Entities::Route < Grape::Entity
+class V01::Entities::Route < V01::Entities::RouteProperties
   def self.entity_name
     'V01_Route'
   end
 
-  expose(:id, documentation: { type: Integer })
   expose(:ref, documentation: { type: String })
   expose(:distance, documentation: { type: Float, desc: 'Total route\'s distance.' })
   expose(:emission, documentation: { type: Float })
-  expose(:vehicle_usage_id, documentation: { type: Integer })
   expose(:start, documentation: { type: DateTime }) { |m|
     (m.planning.date || Time.zone.today).beginning_of_day + m.start if m.start
   }
   expose(:end, documentation: { type: DateTime }) { |m|
     (m.planning.date || Time.zone.today).beginning_of_day + m.end if m.end
   }
-  expose(:hidden, documentation: { type: 'Boolean' })
-  expose(:locked, documentation: { type: 'Boolean' })
   expose(:outdated, as: :out_of_date, documentation: { type: 'Boolean', desc: 'DEPRECATED. Use outdated instead.' })
   expose(:outdated, documentation: { type: 'Boolean' })
 
@@ -48,74 +44,11 @@ class V01::Entities::Route < Grape::Entity
   expose(:stop_out_of_max_distance, documentation: { type: 'Boolean' })
   expose(:stop_distance, documentation: { type: Float, desc: 'Distance between the vehicle\'s store_stop and last stop.' })
   expose(:stop_drive_time, documentation: { type: Integer, desc: 'Time in seconds between the vehicle\'s store_stop and last stop.' })
-  expose(:color, documentation: { type: String, desc: 'Color code with #. For instance: #FF0000.' })
   expose(:updated_at, documentation: { type: DateTime, desc: 'Last Updated At.'})
   expose(:last_sent_to, documentation: { type: String, desc: 'Type GPS Device of Last Sent.'})
   expose(:last_sent_at, documentation: { type: DateTime, desc: 'Last Time Sent To External GPS Device.'})
   expose(:optimized_at, documentation: { type: DateTime, desc: 'Last optimized at.'})
   expose(:quantities, using: V01::Entities::DeliverableUnitQuantity, documentation: { type: V01::Entities::DeliverableUnitQuantity, is_array: true, param_type: 'form' }) { |m|
     m.quantities ? m.quantities.to_a.collect{ |a| {deliverable_unit_id: a[0], quantity: a[1]} } : []
-  }
-  expose(:geojson, documentation: { type: String, desc: 'Geojson string of track and stops of the route. Default empty, set parameter geojson=true|point|polyline to get this extra content.' }) { |m, options|
-    if options[:geojson] != :false
-      m.to_geojson(true, true,
-        if options[:geojson] == :polyline
-          :polyline
-        elsif options[:geojson] == :point
-          false
-        else
-          true
-        end)
-    end
-  }
-end
-
-class V01::Entities::RouteStatus < Grape::Entity
-  def self.entity_name
-    'V01_RouteStatus'
-  end
-
-  expose(:id, documentation: { type: Integer })
-  expose(:vehicle_usage_id, documentation: { type: Integer })
-  expose(:last_sent_to, documentation: { type: String, desc: 'Type GPS Device of Last Sent.'})
-  expose(:last_sent_at, documentation: { type: DateTime, desc: 'Last Time Sent To External GPS Device.'})
-  expose(:quantities, using: V01::Entities::DeliverableUnitQuantity, documentation: { type: V01::Entities::DeliverableUnitQuantity, is_array: true, param_type: 'form' }) { |m|
-    m.quantities ? m.quantities.to_a.collect{ |a| {deliverable_unit_id: a[0], quantity: a[1]} } : []
-  }
-
-  expose(:departure_status, documentation: { type: String, desc: 'Departure status of start store.' }) { |route| route.departure_status && I18n.t('plannings.edit.stop_status.' + route.departure_status.downcase, default: route.departure_status) }
-  expose(:departure_status_code, documentation: { type: String, desc: 'Status code of start store.' }) { |route| route.departure_status && route.departure_status.downcase }
-  expose(:departure_eta, documentation: { type: DateTime, desc: 'Estimated time of departure from remote device.' })
-  expose(:departure_eta_formated, documentation: { type: DateTime, desc: 'Estimated time of departure from remote device.' }) { |route| route.departure_eta && I18n.l(route.departure_eta, format: :hour_minute) }
-
-  expose(:arrival_status, documentation: { type: String, desc: 'Arrival status of stop store.' }) { |route| route.arrival_status && I18n.t('plannings.edit.stop_status.' + route.arrival_status.downcase, default: route.arrival_status) }
-  expose(:arrival_status_code, documentation: { type: String, desc: 'Status code of stop store.' }) { |route| route.arrival_status && route.arrival_status.downcase }
-  expose(:arrival_eta, documentation: { type: DateTime, desc: 'Estimated time of arrival from remote device.' })
-  expose(:arrival_eta_formated, documentation: { type: DateTime, desc: 'Estimated time of arrival from remote device.' }) { |route| route.arrival_eta && I18n.l(route.arrival_eta, format: :hour_minute) }
-
-  expose(:stops, using: V01::Entities::StopStatus, documentation: { type: V01::Entities::StopStatus, is_array: true })
-end
-
-class V01::Entities::RouteProperties < Grape::Entity
-  def self.entity_name
-    'V01_RouteProperties'
-  end
-
-  expose(:id, documentation: { type: Integer })
-  expose(:vehicle_usage_id, documentation: { type: Integer })
-  expose(:hidden, documentation: { type: 'Boolean' })
-  expose(:locked, documentation: { type: 'Boolean' })
-  expose(:color, documentation: { type: String, desc: 'Color code with #. For instance: #FF0000.' })
-  expose(:geojson, documentation: { type: String, desc: 'Geojson string of track and stops of the route. Default empty, set parameter geojson=true|point|polyline to get this extra content.' }) { |m, options|
-    if options[:geojson] != :false
-      m.to_geojson(true, true,
-        if options[:geojson] == :polyline
-          :polyline
-        elsif options[:geojson] == :point
-          false
-        else
-          true
-        end)
-    end
   }
 end

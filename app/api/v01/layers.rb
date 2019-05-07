@@ -21,10 +21,11 @@ class V01::Layers < Grape::API
       detail: 'Get the list of available layers which can be used for maps.',
       nickname: 'getLayers',
       is_array: true,
-      success: V01::Entities::Layer
+      success: V01::Status.success(:code_200, V01::Entities::Layer),
+      failure: V01::Status.failures(is_array: true, override: {code_403: 'Forbidden. Operation not allowed with an admin api key.'})
     get do
       if @current_user.admin?
-        error! 'Forbidden, empty customer', 403
+        error! V01::Status.code_response(:code_403, after: 'Operation not allowed with an admin api key.'), 403
       else
         present current_customer.profile.layers.load, with: V01::Entities::Layer
       end

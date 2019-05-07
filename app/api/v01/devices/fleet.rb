@@ -33,16 +33,21 @@ class V01::Devices::Fleet < Grape::API
         error! e.message, 200
       end
 
-      desc 'List Devices',
-        detail: 'List Mapotempo Live Devices',
-        nickname: 'deviceFleetList'
+      desc 'List Devices.',
+        detail: 'List Mapotempo Live devices (Fleet).',
+        nickname: 'deviceFleetList',
+        is_array: true,
+        success: V01::Status.success(:code_200, V01::Entities::DeviceItem),
+        failure: V01::Status.failures(is_array: true)
       get '/devices' do
         present service.list_devices, with: V01::Entities::DeviceItem
       end
 
-      desc 'Send Planning Routes',
-        detail: 'Send Planning Routes in Mapotempo Live',
-        nickname: 'deviceFleetSendMultiple'
+      desc 'Send Planning Routes.',
+        detail: 'In Mapotempo Live (Fleet).',
+        nickname: 'deviceFleetSendMultiple',
+        success: V01::Status.success(:code_201),
+        failure: V01::Status.failures
       params do
         requires :planning_id, type: Integer, desc: 'Planning ID'
       end
@@ -50,9 +55,11 @@ class V01::Devices::Fleet < Grape::API
         device_send_routes params.slice(:type).merge(device_id: :fleet_user)
       end
 
-      desc 'Clear Route',
-        detail: 'Clear Route in Mapotempo Live',
-        nickname: 'deviceFleetClear'
+      desc 'Clear Route.',
+        detail: 'In Mapotempo Live (Fleet).',
+        nickname: 'deviceFleetClear',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       params do
         requires :route_id, type: Integer, desc: 'Route ID'
       end
@@ -60,16 +67,18 @@ class V01::Devices::Fleet < Grape::API
         device_clear_route
       end
 
-      desc 'Clear Routes',
-        detail: 'Clear Routes in Mapotempo Live',
-        nickname: 'deviceFleetClearMultiple'
+      desc 'Clear multiple routes.',
+        detail: 'In Mapotempo Live (Fleet).',
+        nickname: 'deviceFleetClearMultiple',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       params do
         requires :external_refs, type: Array do
           requires :fleet_user, type: String
           requires :external_ref, type: String
         end
       end
-      post '/clear_multiple' do
+      delete '/clear_multiple' do
         routes = service.clear_routes_by_external_ref(params[:external_refs])
 
         routes.each { |route|
@@ -80,9 +89,12 @@ class V01::Devices::Fleet < Grape::API
         present routes, with: V01::Entities::DeviceRouteLastSentAt
       end
 
-      desc 'Get Fleet routes',
-        detail: 'Get Fleet routes',
-        nickname: 'getFleetRoutes'
+      desc 'Get Fleet routes.',
+        detail: 'In Mapotempo Live (Fleet).',
+        nickname: 'getFleetRoutes',
+        is_array: true,
+        success: V01::Status.success(:code_200),
+        failure: V01::Status.failures(is_array: true)
       params do
         optional :from, type: Date
         optional :to, type: Date
@@ -114,35 +126,41 @@ class V01::Devices::Fleet < Grape::API
         }
       end
 
-      desc 'Sync Vehicles',
-           detail: 'Sync Vehicles',
-           nickname: 'deviceFleetSync'
+      desc 'Synchronise Vehicles.',
+        detail: 'In Mapotempo Live (Fleet).',
+        nickname: 'deviceFleetSync',
+        success: V01::Status.success(:code_204),
+        failure: V01::Status.failures
       post '/sync' do
         fleet_sync_vehicles @customer
         status 204
       end
 
-      desc 'Create company with drivers',
-           detail: 'Create company with a driver by vehicle',
-           nickname: 'deviceFleetCreateCompanyAndDrivers'
-      get '/create_company' do
+      desc 'Create company with drivers.',
+        detail: 'In Mapotempo Live (Fleet).',
+        nickname: 'deviceFleetCreateCompanyAndDrivers',
+        success: V01::Status.success(:code_200),
+        failure: V01::Status.failures
+      patch '/create_company' do
         if @customer.reseller.authorized_fleet_administration?
           data = service.create_company['admin_user'].slice('email', 'api_key')
           data['drivers'] = service.create_or_update_drivers(@current_user)
           data
         else
-          error! 'Forbidden', 403
+          error! V01::Status.code_response(:code_403), 403
         end
       end
 
-      desc 'Create drivers',
-           detail: 'Create driver by vehicle',
-           nickname: 'deviceFleetCreateDrivers'
-      get '/create_or_update_drivers' do
+      desc 'Create drivers.',
+        detail: 'In Mapotempo Live (Fleet).',
+        nickname: 'deviceFleetCreateDrivers',
+        success: V01::Status.success(:code_200),
+        failure: V01::Status.failures
+      patch '/create_or_update_drivers' do
         if @customer.reseller.authorized_fleet_administration?
           service.create_or_update_drivers(@current_user) if @current_customer.reseller.authorized_fleet_administration?
         else
-          error! 'Forbidden', 403
+          error! V01::Status.code_response(:code_403), 403
         end
       end
     end

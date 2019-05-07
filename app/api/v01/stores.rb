@@ -32,9 +32,10 @@ class V01::Stores < Grape::API
 
   resource :stores do
     desc 'Fetch customer\'s stores. At least one store exists per customer.',
-         nickname: 'getStores',
-         is_array: true,
-         success: V01::Entities::Store
+      nickname: 'getStores',
+      is_array: true,
+      success: V01::Status.success(:code_200, V01::Entities::Store),
+      failure: V01::Status.failures(is_array: true)
     params do
       optional :ids, type: Array[String], desc: 'Select returned stores by id separated with comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
     end
@@ -71,8 +72,9 @@ class V01::Stores < Grape::API
     end
 
     desc 'Fetch store.',
-         nickname: 'getStore',
-         success: V01::Entities::Store
+      nickname: 'getStore',
+      success: V01::Status.success(:code_200, V01::Entities::Store),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
     end
@@ -82,13 +84,14 @@ class V01::Stores < Grape::API
     end
 
     desc 'Create store.',
-         detail: '(Note a default store is already automatically created with a customer.)',
-         nickname: 'createStore',
-         success: V01::Entities::Store
+      detail: '(Note a default store is already automatically created with a customer.)',
+      nickname: 'createStore',
+      success: V01::Status.success(:code_201, V01::Entities::Store),
+      failure: V01::Status.failures
     params do
       use :params_from_entity, entity: V01::Entities::Store.documentation.except(:id).deep_merge(
-          name: {required: true},
-          geocoding_accuracy: {desc: 'Must be inside 0..1 range.'}
+        name: {required: true},
+        geocoding_accuracy: {desc: 'Must be inside 0..1 range.'}
       )
     end
     post do
@@ -98,9 +101,10 @@ class V01::Stores < Grape::API
     end
 
     desc 'Import stores by upload a CSV file or by JSON.',
-         nickname: 'importStores',
-         is_array: true,
-         success: V01::Entities::Store
+      nickname: 'importStores',
+      is_array: true,
+      success: V01::Status.success(:code_200, V01::Entities::Store),
+      failure: V01::Status.failures(is_array: true, add: [:code_422])
     params do
       use :params_from_entity, entity: V01::Entities::StoresImport.documentation
     end
@@ -119,9 +123,10 @@ class V01::Stores < Grape::API
     end
 
     desc 'Update store.',
-         detail: 'If want to force geocoding for a new address, you have to send empty lat/lng with new address.',
-         nickname: 'updateStore',
-         success: V01::Entities::Store
+      detail: 'If want to force geocoding for a new address, you have to send empty lat/lng with new address.',
+      nickname: 'updateStore',
+      success: V01::Status.success(:code_200, V01::Entities::Store),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
       use :params_from_entity, entity: V01::Entities::Store.documentation.except(:id).deep_merge(
@@ -138,8 +143,10 @@ class V01::Stores < Grape::API
     end
 
     desc 'Delete store.',
-         detail: 'At least one remaining store is required after deletion.',
-         nickname: 'deleteStore'
+      detail: 'At least one remaining store is required after deletion.',
+      nickname: 'deleteStore',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :id, type: String, desc: SharedParams::ID_DESC
     end
@@ -150,8 +157,10 @@ class V01::Stores < Grape::API
     end
 
     desc 'Delete multiple stores.',
-         detail: 'At least one remaining store is required after deletion.',
-         nickname: 'deleteStores'
+      detail: 'At least one remaining store is required after deletion.',
+      nickname: 'deleteStores',
+      success: V01::Status.success(:code_204),
+      failure: V01::Status.failures
     params do
       requires :ids, type: Array[String], desc: 'Ids separated by comma. You can specify ref (not containing comma) instead of id, in this case you have to add "ref:" before each ref, e.g. ref:ref1,ref:ref2,ref:ref3.', coerce_with: CoerceArrayString
     end
@@ -165,9 +174,10 @@ class V01::Stores < Grape::API
     end
 
     desc 'Geocode store.',
-         detail: 'Result of geocoding is not saved with this operation. You can use update operation to save the result of geocoding.',
-         nickname: 'geocodeStore',
-         success: V01::Entities::Store
+      detail: 'Result of geocoding is not saved with this operation. You can use update operation to save the result of geocoding.',
+      nickname: 'geocodeStore',
+      success: V01::Status.success(:code_200, V01::Entities::Store),
+      failure: V01::Status.failures
     params do
       use :params_from_entity, entity: V01::Entities::Store.documentation.except(:id, :lat, :lng, :geocoding_accuracy, :geocoding_level)
     end
@@ -179,7 +189,10 @@ class V01::Stores < Grape::API
 
     if Mapotempo::Application.config.geocode_complete
       desc 'Auto completion on store.',
-           nickname: 'autocompleteStore'
+        nickname: 'autocompleteStore',
+        is_array: true,
+        success: V01::Status.success(:code_200),
+        failure: V01::Status.failures(is_array: true)
       params do
         use :params_from_entity, entity: V01::Entities::Store.documentation.except(:id)
       end
@@ -194,9 +207,10 @@ class V01::Stores < Grape::API
     end
 
     desc 'Reverse geocoding.',
-         detail: 'Result of reverse geocoding is not saved with this operation.',
-         nickname: 'reverseGeocodingStore',
-         entity: V01::Entities::Store
+      detail: 'Result of reverse geocoding is not saved with this operation.',
+      nickname: 'reverseGeocodingStore',
+      success: V01::Status.success(:code_200, V01::Entities::Store),
+      failure: V01::Status.failures
     params do
       use :params_from_entity, entity: V01::Entities::Store.documentation.except(:id, :color, :name, :icon, :icon_size, :street, :postalcode, :city, :state, :country)
     end
@@ -204,6 +218,5 @@ class V01::Stores < Grape::API
       store = current_customer.stores.build(store_params.except(:id, :color, :name, :icon, :icon_size))
       store.reverse_geocoding(params[:lat], params[:lng])
     end
-
   end
 end

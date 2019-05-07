@@ -201,7 +201,7 @@ class V01::CustomerTest < ActiveSupport::TestCase
 
   test 'should duplicate customer' do
     assert_difference('Customer.count', +1) do
-      put api_admin(@customer.id.to_s + '/duplicate')
+      patch api_admin(@customer.id.to_s + '/duplicate')
       assert_equal Customer.last.id, JSON.parse(last_response.body, symbolize_names: true)[:id], last_response.body
       assert last_response.ok?, last_response.body
     end
@@ -209,10 +209,10 @@ class V01::CustomerTest < ActiveSupport::TestCase
 
   test 'should not duplicate customer' do
     assert_no_difference('Customer.count') do
-      put api_admin(customers(:customer_two).id.to_s + '/duplicate')
+      patch api_admin(customers(:customer_two).id.to_s + '/duplicate')
       assert_equal 404, last_response.status, 'Bad response: ' + last_response.body
 
-      put api(@customer.id.to_s + '/duplicate')
+      patch api(@customer.id.to_s + '/duplicate')
       assert_equal 403, last_response.status, 'Bad response: ' + last_response.body
     end
   end
@@ -220,9 +220,8 @@ class V01::CustomerTest < ActiveSupport::TestCase
   test 'Should duplicate customer without users' do
     assert_difference 'Customer.count', +1 do
       assert_no_difference 'User.count' do
-        put api_admin(@customer.id.to_s + '/duplicate', 'json', {'exclude_users' => true})
+        patch api_admin(@customer.id.to_s + '/duplicate', 'json', {'exclude_users' => true})
       end
     end
   end
-
 end
