@@ -8,11 +8,18 @@ class V01::ErrorTest < ActiveSupport::TestCase
   end
 
   setup do
+    @customer = customers(:customer_one)
   end
 
   def api(part = nil, param = {}, format = 'json')
     part = part ? '/' + part.to_s : ''
-    "/api/0.1/#{part}.#{format}?api_key=testkey1&" + param.collect{ |k, v| "#{k}=" + URI.escape(v.to_s) }.join('&')
+    "/api/0.1/customers#{part}.#{format}?api_key=testkey1&" + param.collect{ |k, v| "#{k}=" + URI.escape(v.to_s) }.join('&')
+  end
+
+  def database_error_assertions(message)
+    (assert_equal 409, last_response.status) &&
+      (assert_kind_of Hash, JSON.parse(last_response.body)) &&
+      (assert_equal message, JSON.parse(last_response.body)['message'])
   end
 
   test 'should return a 404 error in JSON format for route not found' do
@@ -21,4 +28,27 @@ class V01::ErrorTest < ActiveSupport::TestCase
     assert_equal 'application/json; charset=UTF-8', last_response.content_type, 'Bad content type for request: ' + last_response.body
   end
 
+  test 'should rescue database error' do
+    message = "#{I18n.t('errors.database.default')} #{I18n.t('errors.database.invalid_statement')}"
+    Customer.stub_any_instance(:assign_attributes, ->(*_a) { raise ActiveRecord::StatementInvalid.new(self, nil) }) do
+      put api(@customer.id), ref: 'ref-abcd'
+      assert database_error_assertions(message)
+    end
+
+    message = "#{I18n.t('errors.database.default')} #{I18n.t('errors.database.deadlock')}"
+    Customer.stub_any_instance(:assign_attributes, ->(*_a) { raise ActiveRecord::StaleObjectError.new(self, nil) }) do
+      put api(@customer.id), ref: 'ref-abcd'
+      assert database_error_assertions(message)
+    end
+
+    Customer.stub_any_instance(:assign_attributes, ->(*_a) { raise PG::TRDeadlockDetected.new }) do
+      put api(@customer.id), ref: 'ref-abcd'
+      assert database_error_assertions(message)
+    end
+
+    Customer.stub_any_instance(:assign_attributes, ->(*_a) { raise PG::TRSerializationFailure.new }) do
+      put api(@customer.id), ref: 'ref-abcd'
+      assert database_error_assertions(message)
+    end
+  end
 end
