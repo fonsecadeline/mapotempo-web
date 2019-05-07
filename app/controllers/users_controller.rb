@@ -49,8 +49,8 @@ class UsersController < ApplicationController
 
   def set_password
     if @user.update user_password_params
-      @user.confirm! if !@user.confirmed?
-      bypass_sign_in(@user)
+      @user.confirm! unless @user.confirmed?
+      sign_in(:user, @user)
       redirect_to_default
     else
       render action: :password

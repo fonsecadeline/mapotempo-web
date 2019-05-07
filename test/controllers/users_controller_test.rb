@@ -69,4 +69,21 @@ class UsersControllerTest < ActionController::TestCase
     assert assigns(:user).confirmed?
     assert_redirected_to edit_user_path(@user)
   end
+
+  test 'should update user password and set the trackable fields' do
+    sign_out(@user)
+    @user = users(:unconfirmed_user)
+    assert !@user.confirmed?
+    patch :set_password, id: @user.id, token: @user.confirmation_token, user: {password: 'abcd1212', password_confirmation: 'abcd1212'}
+
+    assert assigns(:user).confirmed?
+    assert_redirected_to edit_user_path(@user)
+
+    @user.reload
+    assert_not_nil @user.sign_in_count
+    assert_not_nil @user.current_sign_in_at
+    assert_not_nil @user.last_sign_in_at
+    assert_not_nil @user.current_sign_in_ip
+    assert_not_nil @user.last_sign_in_ip
+  end
 end
