@@ -34,6 +34,10 @@
   'default_time_zone': 'Paris'
   'activemodel':
     'models':
+      'deliverable_unit':
+        'quantity':
+          'key':
+            'cannot_be_empty': 'La clé de la quantitié d''unité livrable ne peut être vide'
       'import_csv': 'Import CSV'
       'import_csvs':
         'one': 'Import CSV'

@@ -17,14 +17,29 @@
 #
 class DeliverableUnitQuantity < Serializable
   def initialize(quantities)
-    @hash = quantities ? Hash[quantities.map{ |k, v|
-      if v && !v.empty?
+    @hash = if quantities
+      Hash[quantities.map{ |key, value|
+        next unless value && !value.empty?
+
+        if key.empty?
+          raise(ActiveRecord::RecordInvalid.new(InvalidDeliverableUnitQuantity.new), I18n.t('activemodel.models.deliverable_unit.quantity.key.cannot_be_empty'))
+        end
+
         # float value will be validated by the model
-        value = Float(v) rescue v
-        [Integer(k), value]
-      else
-        nil
-      end
-    }.compact] : {}
+        new_value = begin
+                      Float(value)
+                    rescue StandardError
+                      value
+                    end
+        [Integer(key), new_value]
+      }.compact]
+    else
+      {}
+    end
   end
+end
+
+##
+class InvalidDeliverableUnitQuantity
+  include ActiveModel::Model
 end

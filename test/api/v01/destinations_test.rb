@@ -732,6 +732,18 @@ class V01::DestinationsTest < ActiveSupport::TestCase
     end
   end
 
+  test 'should catch excpetions when updating destination with wrong arguments' do
+    put api, {
+      destinations: [
+        @destination.attributes.merge(visits: [{quantities: [{label: 'kg', quantity: 10}]}])
+      ]
+    }.to_json, 'CONTENT_TYPE' => 'application/json'
+    body = JSON.parse(last_response.body)
+
+    assert_equal 400, last_response.status
+    assert_equal I18n.t('activemodel.models.deliverable_unit.quantity.key.cannot_be_empty'), body['message']
+  end
+
   test 'should destroy a destination' do
     routes = @destination.visits.flat_map{ |v| v.stop_visits.map(&:route) }
     assert_difference('Destination.count', -1) do
