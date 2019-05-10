@@ -62,6 +62,21 @@ import 'polyline-encoded';
 
 import '../../assets/javascripts/screenLog.js.erb';
 
+// Hack for leaflet working with webpacker (https://github.com/Leaflet/Leaflet/issues/4968)
+
+import marker from 'leaflet/dist/images/marker-icon.png';
+import marker2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+// Remove leaflet default icon url
+delete L.Icon.Default.prototype._getIconUrl;
+
+// Re-setup leaflet images urls
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: marker2x,
+    iconUrl: marker,
+    shadowUrl: markerShadow
+});
 
 // Manage flash messages
 $(document).on('page:change', function () {
