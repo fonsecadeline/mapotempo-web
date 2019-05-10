@@ -59,7 +59,7 @@ class V01::Destinations < Grape::API
       else
         current_customer.destinations.includes_visits
       end
-      '{"type":"FeatureCollection","features":[' + destinations.map { |d|
+      '{"type":"FeatureCollection","features":[' + destinations.select(&:position?).map { |d|
           feat = {
             type: 'Feature',
             geometry: {
