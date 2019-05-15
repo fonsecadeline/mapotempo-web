@@ -2004,8 +2004,10 @@ export const plannings_edit = function(params) {
     $('.sidebar').toggleClass('extended');
     if ($('.sidebar').hasClass('extended')) {
       $(".routes").sortable("enable");
+      $('#planning_name_extended').text($('#planning_name').val()).removeClass("hidden-block");
     } else {
       $(".routes").sortable("disable");
+      $('#planning_name_extended').addClass("hidden-block");
     }
 
     $(".route-btn-group").each(function(idx, elem) {
