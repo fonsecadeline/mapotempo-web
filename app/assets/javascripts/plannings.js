@@ -2438,7 +2438,7 @@ var plannings_index = function(params) {
     planning_ids = $('[name^=planning]:checked').map(function() { return $(this).val(); }).toArray().join(',');
 
     var url = params.external_url
-      .replace('{PLANNING_ID}', planning_ids)
+      .replace('{PLANNING_IDS}', planning_ids)
       .replace('{API_KEY}', params.user_api_key)
       .replace('{CUSTOMER_ID}', params.customer_id);
 
