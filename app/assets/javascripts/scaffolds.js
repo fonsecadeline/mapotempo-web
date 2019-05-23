@@ -522,7 +522,7 @@ var routerOptionsSelect = function(selectId, params) {
   };
 
   var checkSelectFieldState = function($field, stateValue) {
-    if (stateValue === 'true') {
+    if (stateValue === true) {
       $field.fadeIn();
       $field.find('select').removeAttr('disabled');
     } else {
