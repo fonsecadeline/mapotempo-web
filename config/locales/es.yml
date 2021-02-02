@@ -936,7 +936,9 @@ es:
       route: gira
       ref_vehicle: vehículo
       stop_type: tipo parada
+      stop_type_store: deposito
       stop_type_visit: visita
+      stop_type_rest: descanso
       name: nombre
       street: vía
       detail: complemento
@@ -958,7 +960,7 @@ es:
       geocoding_level: nivel geocodificacion
       take_over: duración visita
       take_over_desc: duración anticipada de la visita
-      quantity: Cantidad
+      quantity: cantidad
       quantity1_1_desc: 'depreciado : utilizar mas bien  "cantidades".'
       quantity1_2_desc: 'depreciado : utilizar mas bien "cantidades".'
       active: entregado
